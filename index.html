@@ -3,115 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>客户探查报告 · AI工具与半导体行业高价值客户扫描</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<title>客户探查报告 · AI工具与半导体行业高价值客户产品画像</title>
 <style>
   :root {
-    --bg: #f5f6fa;
-    --card-bg: #ffffff;
-    --primary: #2563eb;
-    --accent: #7c3aed;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --text: #1e293b;
-    --text-muted: #64748b;
+    --bg: #f8f9fb; --card-bg: #ffffff;
+    --primary: #2563eb; --accent: #7c3aed;
+    --text: #1e293b; --text-muted: #64748b;
     --border: #e2e8f0;
-    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-    --shadow-lg: 0 10px 25px rgba(0,0,0,.08);
+    --shadow: 0 1px 3px rgba(0,0,0,.06);
     --radius: 12px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-
-  .container { max-width: 1320px; margin: 0 auto; padding: 20px 24px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
 
   /* Hero */
-  .hero { background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e3a5f 100%); color: #fff; border-radius: var(--radius); padding: 48px 40px; margin-bottom: 28px; position: relative; overflow: hidden; }
-  .hero::after { content: ''; position: absolute; right: -60px; top: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(37,99,235,.3) 0%, transparent 70%); border-radius: 50%; }
-  .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; }
-  .hero .subtitle { font-size: 16px; color: #94a3b8; margin-bottom: 24px; position: relative; z-index: 1; }
-  .hero .meta-row { display: flex; gap: 32px; flex-wrap: wrap; position: relative; z-index: 1; }
-  .hero .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #cbd5e1; }
-  .hero .meta-item .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-  .hero .meta-item .icon.blue { background: rgba(37,99,235,.2); }
-  .hero .meta-item .icon.purple { background: rgba(124,58,237,.2); }
-  .hero .meta-item .icon.green { background: rgba(16,185,129,.2); }
-
-  /* Stat Cards */
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
-  .stat-card { background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow); border-left: 4px solid var(--primary); transition: transform .2s, box-shadow .2s; }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-  .stat-card.purple { border-left-color: var(--accent); }
-  .stat-card.green { border-left-color: var(--success); }
-  .stat-card.orange { border-left-color: var(--warning); }
-  .stat-card .label { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--text); }
-  .stat-card .note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #172554 100%); color: #fff; border-radius: var(--radius); padding: 40px 36px; margin-bottom: 28px; }
+  .hero h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .hero .subtitle { font-size: 15px; color: #94a3b8; margin-bottom: 16px; }
+  .hero .meta-row { display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: #cbd5e1; }
+  .hero .meta-row span { display: flex; align-items: center; gap: 4px; }
 
   /* Section */
-  .section { background: var(--card-bg); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 24px; box-shadow: var(--shadow); }
-  .section h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
-  .section h2 .badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-  .section h2 .badge.domestic { background: #dbeafe; color: #1d4ed8; }
-  .section h2 .badge.overseas { background: #fce7f3; color: #be185d; }
-  .section .sec-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+  .section { background: var(--card-bg); border-radius: var(--radius); padding: 28px 30px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .section h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .section h2 .badge { font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; }
+  .badge.domestic { background: #dbeafe; color: #1d4ed8; }
+  .badge.overseas { background: #fce7f3; color: #be185d; }
+  .section .sec-desc { font-size: 14px; color: var(--text-muted); margin: 8px 0 20px; }
 
-  /* Chart grid */
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-  .chart-grid.single { grid-template-columns: 1fr; }
-  @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
-  .chart-box { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
-  .chart-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
-  .chart-box canvas { max-height: 350px; }
-
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { background: #f8fafc; text-align: left; padding: 10px 14px; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border); white-space: nowrap; font-size: 13px; }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: #f8fafc; }
-  .priority-3 { color: #ef4444; font-weight: 700; }
-  .priority-2 { color: #f59e0b; font-weight: 600; }
-  .priority-1 { color: #10b981; font-weight: 600; }
-  .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  /* Product Profile Card */
+  .prod-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; margin-bottom: 16px; transition: box-shadow .15s; }
+  .prod-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+  .prod-card .pc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .pc-name { font-size: 17px; font-weight: 700; }
+  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
   .tag.ipo { background: #fef3c7; color: #92400e; }
   .tag.growth { background: #d1fae5; color: #065f46; }
-  .tag.brand { background: #ede9fe; color: #6b21a8; }
-  .tag.zero-ad { background: #fee2e2; color: #991b1b; }
-  .tag.overseas { background: #dbeafe; color: #1e40af; }
+  .tag.tech { background: #ede9fe; color: #6b21a8; }
+  .tag.scale { background: #dbeafe; color: #1e40af; }
+  .tag.overseas { background: #fce7f3; color: #9d174d; }
+  .tag.brand { background: #fee2e2; color: #991b1b; }
+  .pc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .pc-body { grid-template-columns: 1fr; } }
+  .pc-col h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .pc-col p, .pc-col ul { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 0; }
+  .pc-col ul { padding-left: 16px; }
+  .pc-col ul li { margin-bottom: 2px; }
+  .pc-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; color: var(--accent); line-height: 1.6; }
 
-  /* Insight Cards */
-  .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
-  .insight-card { background: var(--card-bg); border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow); border-top: 3px solid var(--accent); }
-  .insight-card .num { font-size: 24px; font-weight: 800; color: var(--accent); opacity: .3; float: right; margin-top: -6px; }
-  .insight-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .insight-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
-
-  /* Timeline */
-  .timeline { position: relative; padding-left: 28px; }
-  .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--border); }
-  .timeline-item { position: relative; margin-bottom: 16px; padding-left: 20px; }
-  .timeline-item::before { content: ''; position: absolute; left: -23px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--primary); }
-  .timeline-item.now::before { background: var(--danger); box-shadow: 0 0 0 2px var(--danger); }
-  .timeline-item .tl-date { font-size: 12px; color: var(--text-muted); }
-  .timeline-item .tl-title { font-size: 14px; font-weight: 600; }
-  .timeline-item .tl-desc { font-size: 13px; color: var(--text-muted); }
+  /* Priority Table */
+  .table-wrap { overflow-x: auto; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f1f5f9; text-align: left; padding: 8px 12px; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border); white-space: nowrap; font-size: 12px; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #fafbfc; }
+  .pri-3 { color: #ef4444; font-weight: 700; }
+  .pri-2 { color: #f59e0b; font-weight: 600; }
+  .pri-1 { color: #94a3b8; }
 
   /* Footer */
-  .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text-muted); }
+  .footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); line-height: 1.8; }
 
-  /* Dual column layout for company cards */
-  .company-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; margin-bottom: 20px; }
-  .company-card { background: #f8fafc; border-radius: 10px; padding: 18px 20px; border: 1px solid var(--border); transition: box-shadow .2s; }
-  .company-card:hover { box-shadow: var(--shadow); }
-  .company-card .cc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .company-card .cc-name { font-size: 16px; font-weight: 700; }
-  .company-card .cc-rev { font-size: 13px; color: var(--primary); font-weight: 600; }
-  .company-card .cc-bg { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px; }
-  .company-card .cc-opp { font-size: 13px; color: var(--accent); line-height: 1.6; padding: 8px 12px; background: #f5f3ff; border-radius: 8px; border-left: 3px solid var(--accent); }
-
-  hr.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 20px; }
 </style>
 </head>
 <body>
@@ -120,123 +75,381 @@
 
   <!-- ═══ HERO ═══ -->
   <div class="hero">
-    <h1>📊 客户探查报告：AI工具与半导体行业高价值客户扫描</h1>
-    <div class="subtitle">效果广告 + 品牌广告 · 国内与海外双线覆盖 · 30家潜在客户初步扫描</div>
+    <h1>客户探查报告：AI工具与半导体行业高价值客户产品画像</h1>
+    <div class="subtitle">聚焦客户产品线与技术架构 · 国内与海外双线覆盖 · 30家客户深度产品梳理</div>
     <div class="meta-row">
-      <div class="meta-item"><span class="icon blue">📅</span> 报告日期：2026年6月5日</div>
-      <div class="meta-item"><span class="icon purple">🏢</span> 覆盖：AI工具 10家 + 芯片与存储 20家</div>
-      <div class="meta-item"><span class="icon green">🎯</span> 其中约8家以上存在较明确的即时跟进窗口</div>
-    </div>
-  </div>
-
-  <!-- ═══ STAT CARDS ═══ -->
-  <div class="stat-grid">
-    <div class="stat-card">
-      <div class="label">🏆 年化收入领先客户</div>
-      <div class="value">OpenAI</div>
-      <div class="note">据Sacra等来源，年化收入约$250亿；2026年首次投放超级碗品牌广告</div>
-    </div>
-    <div class="stat-card purple">
-      <div class="label">🔥 处于IPO窗口的国内客户</div>
-      <div class="value">4 家</div>
-      <div class="note">智谱AI · 长鑫存储 · 长江存储 · Kimi（筹备预期）</div>
-    </div>
-    <div class="stat-card green">
-      <div class="label">💎 公开信息中未见大规模广告投放</div>
-      <div class="value">2 家</div>
-      <div class="note">DeepSeek · Midjourney，均为高估值/高收入但品牌广告投入有限</div>
-    </div>
-    <div class="stat-card orange">
-      <div class="label">⚡ 近期业绩增长较突出的客户</div>
-      <div class="value">6 家</div>
-      <div class="note">铠侠 +93% · 兆易创新 +522% · 长江存储 +445% 等</div>
+      <span>📅 报告日期：2026年6月5日</span>
+      <span>🏢 覆盖：AI工具 10家 + 芯片/存储 20家</span>
+      <span>🎯 其中约8家存在较明确的产品商业化窗口</span>
     </div>
   </div>
 
   <!-- ═══ PART 1: DOMESTIC AI ═══ -->
   <div class="section">
-    <h2><span class="badge domestic">国内篇</span> AI工具公司 — 用户规模与品牌需求对比</h2>
-    <div class="sec-desc">国内AI应用市场集中度较高；据QuestMobile（2026年4月），豆包MAU 3.45亿居首。智谱AI因推进双重上市，品牌建设需求较为突出。</div>
+    <h2><span class="badge domestic">国内篇</span> AI工具公司 · 产品深度画像</h2>
+    <div class="sec-desc">国内AI应用已形成豆包一超多强格局。以下按各家公司产品矩阵、核心技术栈、用户群与商业模式展开。</div>
 
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3>📱 月活跃用户参考对比（亿）</h3>
-        <canvas id="chartDomAI"></canvas>
+    <!-- 豆包 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🥇 豆包（Doubao） · 字节跳动</span>
+        <div class="pc-tags"><span class="tag scale">MAU 3.45亿</span><span class="tag tech">全场景智能体</span></div>
       </div>
-      <div class="chart-box">
-        <h3>🎯 品牌广告需求评估参考（5分制，基于公开信息推断）</h3>
-        <canvas id="chartDomAIRadar"></canvas>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>豆包App/Web/PC：</strong>全场景AI智能助手，支持文字/图片/语音/视频多模态交互，集对话、写作、翻译、编程、图像生成于一体</li>
+            <li><strong>即梦（Jimeng）：</strong>AI图像与视频生成工具，面向创意设计人群</li>
+            <li><strong>星绘（Xinghui）：</strong>AI图像编辑与风格迁移产品</li>
+            <li><strong>扣子（Coze）：</strong>低代码AI Bot/Agent开发平台，面向开发者与领域专家</li>
+            <li><strong>豆包·PC版：</strong>桌面端AI客户端，2026年强化本地Agent能力</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>核心技术 & 用户群</h4>
+          <ul>
+            <li>字节自研大模型底座，支持超长上下文与多模态理解生成</li>
+            <li>2026年演进为"全场景AI智能体平台"——从单一助手向插件化Agent生态转型</li>
+            <li>2026年央视春晚独家AI云合作伙伴，成为国内首个DAU破亿的独立AI应用</li>
+            <li>用户群：C端国民级覆盖（学生/白领/创作者），B端通过扣子渗透开发者与中小企业</li>
+            <li>商业模式：订阅+广告双轨，扣子平台按API用量计费</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>从单一工具向"超级入口"平台化演进，品牌广告需求持续攀升。字节生态内即梦、星绘、扣子等子产品可整体提案。C端增长留存与B端开发者获取的双线效果广告需求较明确。</div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin:20px 0 12px;">客户详情卡</h3>
-    <div class="company-grid">
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🥇 字节跳动 · 豆包</span><span class="cc-rev">MAU 3.45亿</span></div>
-        <div class="cc-bg">据QuestMobile（2026），MAU居国内AI原生应用首位。2026年央视春晚AI云合作伙伴，据报道DAU突破1亿。字节生态含即梦、星绘等AI子产品。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>从AI工具向平台化方向演进，品牌广告存在持续性需求；C端增长和留存方面效果广告需求较明确；通过字节生态整体提案，有提升客单价的空间。⭐⭐⭐</div>
+    <!-- 智谱AI -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔥 智谱AI（Zhipu AI）</span>
+        <div class="pc-tags"><span class="tag ipo">双重上市中</span><span class="tag tech">GLM模型家族</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔥 智谱AI</span><span class="tag ipo">IPO推进中</span></div>
-        <div class="cc-bg">据Sina News（2026年6月），已在港交所上市，并公告拟冲刺科创板，预计募资不超过150亿元。GLM系列大模型覆盖B端API和C端应用。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>双重上市背景下面临资本市场品牌建设需求，IPO路演和投资者关系传播需求较为明确。B端面向CTO/CIO决策者的精准营销及大型整合campaign存在预算出口。⭐⭐⭐</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>智谱清言（ChatGLM）：</strong>C端AI对话助手，支持创意写作、AI画图、代码助手、数据分析</li>
+            <li><strong>GLM-4/GLM-5系列大模型：</strong>覆盖语言、视觉、代码的通用大模型，GLM-5.1入选《时代》"2026最具影响力AI"</li>
+            <li><strong>AutoGLM 2.0：</strong>AI Agent平台（2026年5月发布），对标GPT-5 Agent Mode</li>
+            <li><strong>开放平台（MaaS）：</strong>面向企业与开发者的API服务，提供模型微调、私有化部署</li>
+            <li><strong>智谱清言学习搭子：</strong>AI驱动的个人学习伙伴，对标NotebookLM</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>核心技术 & 用户群</h4>
+          <ul>
+            <li>源自清华的学院派技术团队，GLM（General Language Model）自研架构，强调中英双语能力</li>
+            <li>港股已上市，2026年6月1日公告拟冲刺科创板，预计募资≤150亿元</li>
+            <li>研发投入高企，持续推进从基座模型到Agent平台的垂直整合</li>
+            <li>用户群：B端企业（API客户含金融/政企/互联网），C端面向知识工作者与学生</li>
+            <li>商业模式：API调用计费（核心）+ C端订阅 + 私有化部署项目</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🌍 MiniMax</span><span class="tag overseas">海外布局</span></div>
-        <div class="cc-bg">据Sina Finance（2026年6月），已完成港股上市，市值录得较大涨幅。核心产品包括Talkie（AI社交）和海螺AI，海外市场表现较好。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>海外用户获取是较明确的需求方向（美国/东南亚/中东市场的效果广告）。港股上市后面临持续收入增长压力，国内品牌建设预算可能同步增加。需具备海外投放能力。⭐⭐</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>双重上市背景下资本市场品牌建设窗口紧迫。拟募资150亿元中相当比例用于平台推广，大型整合campaign预算出口明确。B端面向CTO/CIO决策者的精准营销需求清晰。建议即时切入。</div>
+    </div>
+
+    <!-- Kimi -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🌙 Kimi · 月之暗面（Moonshot AI）</span>
+        <div class="pc-tags"><span class="tag scale">MAU 1.27亿</span><span class="tag tech">长上下文+Agent</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">💎 DeepSeek</span><span class="tag zero-ad">品牌广告投入有限</span></div>
-        <div class="cc-bg">据QuestMobile（2026），月活约1亿，居国内前三。据Sohu（2026年5月），国家大基金洽谈主导首轮融资，估值或达450亿美元。以开源免费商用和MoE架构为特点。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>公开信息中未见大规模品牌广告投放。若融资完成，从以技术社区为主的传播方式转向更广泛的公众品牌传播，可能带来新的广告需求。面向开发者与企业决策者的精准营销是潜在切入方向。⭐⭐</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Kimi App/Web：</strong>以"200万字长上下文"为核心卖点的AI助手，支持文件/网页/图片上传与深度推理分析</li>
+            <li><strong>Kimi K2.6：</strong>2026年4月开源的最新大模型，1万亿参数MoE架构，32B激活参数，支持多模态输入（文本/图像/视频），代码与Agent能力行业领先</li>
+            <li><strong>Kimi Work：</strong>2026年6月内测的通用型本地Agent，面向知识工作者的桌面端自动执行工具</li>
+            <li><strong>Kimi Code：</strong>驱动本地Agent的内核引擎，负责安装使用技能、执行定时任务</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>核心技术 & 用户群</h4>
+          <ul>
+            <li>杨植麟创立，专注长文本+深度推理，"200万字上下文"是国内差异化最明确的定位</li>
+            <li>K2.6支持SWE-bench等编码基准测试表现亮眼，从"阅读工具"向"编程Agent"扩展</li>
+            <li>用户群：知识工作者、学术研究者、程序员、律师等高信息密度职业人群粘性较高</li>
+            <li>商业模式：C端订阅（核心）+ API服务 + 企业版</li>
+            <li>"AI六小虎"中尚未IPO，若启动上市筹备将催生品牌传播需求</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🌙 月之暗面 · Kimi</span><span class="tag growth">差异化定位</span></div>
-        <div class="cc-bg">据QuestMobile（2026），MAU约1.27亿，国内第三。以"200万字长上下文"为核心差异化卖点，在知识工作者和学术研究人群中用户粘性较高。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>作为尚未IPO的AI六小虎成员，若启动上市筹备，可能催生品牌传播与资本市场沟通需求。"长文本+深度推理"的差异化定位适合面向知识工作者的精准创意campaign。⭐⭐</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>"长上下文+深度推理"的差异化定位适合面向知识工作者的精准创意campaign。在豆包马太效应下，品牌+效果的"防御性增长"策略需广告支撑。Kimi Work Agent发布是新的产品营销节点。</div>
+    </div>
+
+    <!-- DeepSeek -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">💎 DeepSeek · 深度求索</span>
+        <div class="pc-tags"><span class="tag tech">开源MoE</span><span class="tag scale">估值~$450亿</span></div>
       </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>DeepSeek Chat（App/Web）：</strong>C端免费AI对话助手，基于最新V4模型，支持1M上下文与深度推理</li>
+            <li><strong>DeepSeek-V4-Pro/Flash（2026.4发布）：</strong>旗舰模型体系，V4-Pro面向复杂Agent编码任务，V4-Flash面向成本敏感场景，1M上下文标准化</li>
+            <li><strong>DeepSeek-V3系列：</strong>通用大模型基础线，从V3演进至V3.2-Speciale，引入Hybrid Think/Non-Think架构与Sparse Attention</li>
+            <li><strong>DeepSeek-R1系列：</strong>独立推理模型线，R1-0528支持function calling与JSON output</li>
+            <li><strong>开源模型生态：</strong>全部模型开源免费商用，构建开发者生态</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>核心技术 & 用户群</h4>
+          <ul>
+            <li>以MoE（混合专家）架构+极低成本策略震动全球，V4系列推理成本仅为竞品的1/5-1/10</li>
+            <li>自研训练框架+自建智算集群+万卡算力，不依赖外部云服务</li>
+            <li>2026年5月，国家大基金洽谈主导首轮外部融资，估值或达450亿美元</li>
+            <li>用户群：开发者/技术社区（核心）、C端免费用户（MAU超1亿）、企业API客户</li>
+            <li>商业模式：API服务（收费极低）+ 企业服务；C端完全免费，无品牌广告</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>长期以"开源+技术至上"形象运营，公开信息中未见大规模品牌广告投放。若国家大基金领投的首轮融资完成，"极客品牌→公众品牌"转型可能催生新增广告需求。开发者生态与B端商业化是精准营销切入点。</div>
+    </div>
+
+    <!-- MiniMax -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🌍 MiniMax（稀宇科技）</span>
+        <div class="pc-tags"><span class="tag overseas">全球化</span><span class="tag tech">多模态模型</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Talkie / 星野（海外/国内）：</strong>AI角色扮演与娱乐社交应用，MAU约2,005万，为公司最大C端产品，覆盖200+国家</li>
+            <li><strong>海螺AI / Hailuo AI：</strong>综合性AI助手，含视频生成（海螺视频）、语音、音乐等功能，MAU约565万</li>
+            <li><strong>MiniMax Agent：</strong>编程与办公专用AI Agent，MAU约143万，编程token消耗量6个月增长超10倍</li>
+            <li><strong>MiniMax 语音：</strong>AI语音类产品，MAU约49万</li>
+            <li><strong>M2系列模型 API（MaaS）：</strong>文本/视频/语音/音乐四大模型，服务21.4万企业客户与开发者</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>核心技术 & 用户群</h4>
+          <ul>
+            <li>"AI六小虎"中商业化路径最独特——"应用派先锋"，海外收入占比约70%</li>
+            <li>已港股上市，2025年营收约7,900万美元（同比+159%），AI原生产品收入占67.2%</li>
+            <li>累计服务超200个国家/地区的2.36亿用户，视频生成是增长最快的功能</li>
+            <li>用户群：海外C端（美国/东南亚/中东为主）+ 全球开发者与企业客户</li>
+            <li>商业模式：C端订阅与内购 + API调用计费（MaaS占32.8%）</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>海外用户获取是核心需求——美国/东南亚/中东的效果广告需求清晰。港股上市后承受持续收入增长压力，国内品牌建设预算同步扩张。AI社交赛道竞争激励，差异化品牌定位campaign是持续需求。</div>
     </div>
   </div>
 
   <!-- ═══ PART 2: DOMESTIC CHIP ═══ -->
   <div class="section">
-    <h2><span class="badge domestic">国内篇</span> 芯片与存储公司 — 营收规模与品牌需求矩阵</h2>
-    <div class="sec-desc">在半导体自主化政策背景下，IPO推进和业绩拐点共同驱动品牌建设需求。长鑫存储、长江存储推进IPO，寒武纪录得上市后首次盈利，均为值得关注的跟进窗口。</div>
+    <h2><span class="badge domestic">国内篇</span> 芯片与存储公司 · 产品深度画像</h2>
+    <div class="sec-desc">半导体自主化政策背景下，国内存储、AI芯片、设备三条赛道均有代表性公司推进IPO或录得业绩拐点。以下聚焦产品线与技术架构。</div>
 
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3>💰 2025年度营收参考对比（亿元人民币）</h3>
-        <canvas id="chartDomChip"></canvas>
+    <!-- 中芯国际 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🏭 中芯国际（SMIC）</span>
+        <div class="pc-tags"><span class="tag scale">营收664.5亿</span><span class="tag tech">7nm量产</span></div>
       </div>
-      <div class="chart-box">
-        <h3>📈 净利润率参考对比（基于年报数据）</h3>
-        <canvas id="chartDomChipMargin"></canvas>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li>12英寸/8英寸晶圆代工服务，制程覆盖0.35μm至7nm</li>
+            <li>14nm FinFET工艺产能利用率超95%，7nm已于2026年实现规模量产</li>
+            <li>服务领域：手机SoC、AI推理芯片、IoT、汽车电子、电源管理IC</li>
+            <li>全球晶圆代工第三，中国大陆第一</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>客户以国内Fabless+海外二线芯片设计公司为主</li>
+            <li>纯晶圆代工模式（不涉及自有品牌芯片），B2B商业模式</li>
+            <li>2025年净利98.6亿元（+32.4%），毛利率21%</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>7nm量产突破是重大技术里程碑，需在产业界与公众层面广泛传播。B2B为主，行业媒体、政企关系传播、ESG报告发布是契合的投放场景。</div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin:20px 0 12px;">建议重点关注的高优先级客户</h3>
-    <div class="company-grid">
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔥 长鑫存储</span><span class="tag ipo">IPO推进中</span></div>
-        <div class="cc-bg">据上交所招股书（2026），2025年营收617.99亿元（同比+155%），归母净利18.75亿元，较上年亏损78.70亿元扭亏为盈。中国大陆DRAM量产企业，A股IPO推进中。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>IPO进程中的品牌建设是较突出的机会窗口。作为中国大陆DRAM领域的重要参与者，技术自主叙事和扭亏为盈的业绩拐点具有品牌传播和投资者关系传播价值。⭐⭐⭐ 建议即时跟进</div>
+    <!-- 长鑫存储 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔥 长鑫存储（CXMT）</span>
+        <div class="pc-tags"><span class="tag ipo">IPO推进中</span><span class="tag tech">DRAM量产</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔥 长江存储</span><span class="tag ipo">IPO筹备中</span></div>
-        <div class="cc-bg">据Counterpoint Research和Sina Finance（2026年6月），2026年Q1营收同比增长约445%，全球NAND市场份额从约8%升至约13%，接近行业前三。正在推进国内IPO筹备。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>营收高增长和市场份额提升具有较强的传播潜力。IPO相关的品牌传播、政企客户信任建设和技术突破叙事（Xtacking架构等）是主要切入点。⭐⭐⭐ 建议即时跟进</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>DDR5：</strong>2026年Q1全面量产，良率85%，成本比海外品牌低15-20%，已占国内消费级市场25%份额</li>
+            <li><strong>LPDDR5X：</strong>低功耗DRAM，覆盖12Gb/16Gb颗粒，速率8533-9600Mbps，面向智能手机/平板/轻薄本</li>
+            <li><strong>LPCAMM模组：</strong>新型内存模组形态，容量16GB/32GB</li>
+            <li><strong>DDR4/DDR3L：</strong>成熟制程DRAM，面向工业/汽车/IoT</li>
+            <li>正在推进HBM3研发，IPO募资295亿元将重点投入HBM量产</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>中国唯一DRAM量产企业（IDM一体化模式，设计+制造+封测全链条）</li>
+            <li>客户：国内PC/服务器OEM、手机品牌厂商、汽车电子厂商</li>
+            <li>2025年营收617.99亿元（+155%），归母净利18.75亿元，历史性扭亏为盈</li>
+            <li>预计2026年7月科创板正式挂牌</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔥 寒武纪</span><span class="tag growth">首次盈利</span></div>
-        <div class="cc-bg">据China Development（2026年5月），2025年营收64.97亿元（同比+453.21%），归母净利20.59亿元，为上市五年来首次全年盈利。中国AI芯片设计领域重要企业。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>上市以来首次盈利具有一定的品牌叙事价值。2026年Q1拟首次分红，被视为从研发投入期进入商业化回报期的标志性节点。财经和产业媒体传播存在窗口机会。⭐⭐⭐ 建议即时跟进</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>IPO品牌建设是最大机会窗口。"自主可控DRAM唯一玩家"叙事具有极强品牌传播价值。扭亏为盈的业绩拐点适合财经媒体投放与投资者关系传播。建议即时切入。</div>
+    </div>
+
+    <!-- 长江存储 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔥 长江存储（YMTC）</span>
+        <div class="pc-tags"><span class="tag ipo">IPO筹备中</span><span class="tag tech">Xtacking架构</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">⚡ 兆易创新</span><span class="tag growth">Q1高增长</span></div>
-        <div class="cc-bg">据Baidu News（2026），2025年营收92.02亿元，归母净利16.77亿元。2026年Q1净利14.61亿元，同比增长522.79%。NOR Flash和MCU领域的重要企业。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>Q1业绩大幅增长为财经媒体和投资者关系传播创造了窗口。工业与汽车存储的增长叙事适合面向B2B决策者的精准投放。建议财报季定期跟进。⭐⭐</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>3D NAND Flash：</strong>消费级/企业级SSD核心存储芯片，全球市场份额从8%升至13%</li>
+            <li><strong>Xtacking® 3.0/4.0架构：</strong>自研"分头制造+键合集成"技术，实现外围电路与存储阵列分别在两片晶圆加工后垂直互联</li>
+            <li><strong>267层3D NAND TLC：</strong>已通过Xtacking 4.0实现规模量产（TechInsights验证），读写速度与能效比达国际先进水平</li>
+            <li>三期项目2026年下半年量产，产能持续扩张</li>
+            <li>迫使三星首次向中国支付NAND专利费，标志技术影响力获国际认可</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>IDM模式，覆盖NAND设计+制造+封装，面向消费电子/数据中心/企业存储</li>
+            <li>受益于中国本土算力采购旺盛和全球存储供应紧张</li>
+            <li>2026年Q1营收同比增长约445%，逼近全球前三</li>
+            <li>正在推进国内IPO筹备</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>IPO上市传播是核心需求，445%增速+"冲击全球前三"叙事传播力极强。Xtacking技术突破需面向产业界与投资界有效传递。面向政企客户的品牌信任建设是B2B切入方向。建议即时切入。</div>
+    </div>
+
+    <!-- 寒武纪 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔥 寒武纪（Cambricon）</span>
+        <div class="pc-tags"><span class="tag growth">首次盈利</span><span class="tag tech">AI芯片</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>思元（Siyuan）系列云端AI芯片：</strong>思元590（训练+推理）、思元370（推理），覆盖数据中心大规模AI训练与推理场景</li>
+            <li><strong>边缘端AI加速卡：</strong>面向智能制造、智慧交通、安防等边缘计算场景</li>
+            <li><strong>终端智能处理器IP：</strong>授权给手机/loT芯片厂商集成</li>
+            <li>"云-边-端"全场景产品矩阵，国内AI芯片设计龙头</li>
+            <li>在"国产替代英伟达"叙事中占据核心位置</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>Fabless模式（仅设计，制造外包），客户涵盖云服务商/政企数据中心/智能设备厂商</li>
+            <li>2025年营收64.97亿元（+453.21%），归母净利20.59亿元，上市五年来首次全年盈利</li>
+            <li>2026年Q1拟首次分红（每10股派15元），标志从研发投入期进入商业化回报期</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>"上市以来首次盈利+首次分红"是里程碑式品牌叙事节点。在"国产替代英伟达"的行业大叙事中品牌传播价值较高。财经+产业媒体集中传播和投资者关系传播是核心方向。建议即时切入。</div>
+    </div>
+
+    <!-- 兆易创新 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">⚡ 兆易创新（GigaDevice）</span>
+        <div class="pc-tags"><span class="tag growth">Q1净利+523%</span><span class="tag tech">存储+MCU</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>NOR Flash：</strong>全球第二大供应商，含车规级SPI NOR Flash（GD25LX128J系列已批量供货国内主流自动驾驶车型），覆盖消费/工业/汽车</li>
+            <li><strong>32位通用MCU：</strong>国内第一大供应商，基于ARM Cortex-M/RISC-V架构，应用于IoT/工控/汽车电子</li>
+            <li><strong>利基型DRAM：</strong>DDR3L/DDR4/LPDDR4产品线，预计2026年LPDDR4量产</li>
+            <li><strong>SLC NAND + 传感器 + 模拟芯片：</strong>构建"存储+MCU+传感器+模拟"四大产品线的平台型芯片设计龙头</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>Fabless模式，产品广泛用于消费电子/工业控制/汽车电子/IoT</li>
+            <li>2025年营收92.02亿元，2026年Q1净利14.61亿元（+522.79%），接近2025年全年的87%</li>
+            <li>存储周期上行带动量价齐升，盈利能力大幅跃升</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>Q1业绩爆发创造"超预期"强传播窗口，财经媒体+投资者关系传播需求明确。工业/汽车存储高增长叙事适合B2B精准投放。财报季定期跟进。</div>
+    </div>
+
+    <!-- 北方华创 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔧 北方华创（NAURA）</span>
+        <div class="pc-tags"><span class="tag scale">营收393.5亿</span><span class="tag tech">半导体设备</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>刻蚀设备：</strong>ICP/CCP刻蚀机，覆盖硅/介质/金属刻蚀，已进入国内主流晶圆厂产线</li>
+            <li><strong>薄膜沉积设备：</strong>PVD/CVD/ALD，覆盖逻辑/存储/功率半导体</li>
+            <li><strong>清洗设备：</strong>单片/槽式清洗机</li>
+            <li><strong>氧化扩散炉、退火炉</strong>等热处理设备</li>
+            <li>国内半导体设备行业营收绝对第一，受益于国内晶圆厂大规模扩产</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>客户与模式</h4>
+          <ul>
+            <li>B2B设备供应商，客户为中芯国际/长江存储/长鑫存储/华虹等国内主要晶圆厂</li>
+            <li>2025年营收393.53亿元（+31%），净利润54.09亿元</li>
+            <li>"设备国家队"身份，在国产替代浪潮中地位突出</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>"设备国家队"身份+393亿营收具有强品牌叙事。刻蚀/薄膜等关键设备国产化是热门的产业品牌传播素材。面向晶圆厂客户的B2B精准营销（技术白皮书、行业峰会）是核心投放形式。</div>
+    </div>
+
+    <!-- 海光 / 澜起 / 紫光 / 君正 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">📋 更多值得关注的国内芯片公司</span>
+        <div class="pc-tags"><span class="tag tech">差异化产品</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>公司 · 核心产品</h4>
+          <ul>
+            <li><strong>海光信息：</strong>国产x86兼容CPU（海光系列）+ DCU加速器（深算系列），面向服务器与数据中心，2025年扣非净利9.23亿（+74.86%）</li>
+            <li><strong>澜起科技：</strong>全球内存接口芯片龙头，DDR5 RCD/MDB芯片，AI服务器核心供应商。2025年净利润率41%，综合赚钱能力A股存储芯片企业第一</li>
+            <li><strong>紫光国微：</strong>军工特种IC + 智能安全芯片（SIM卡/银行卡/eID），毛利率55.56%</li>
+            <li><strong>北京君正：</strong>微处理器芯片（XBurst系列）+ 智能视频芯片，AI存储+汽车芯片双赛道布局</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>广告切入点</h4>
+          <ul>
+            <li><strong>海光：</strong>DCU与英伟达GPU的竞争替代叙事，面向政企+信创市场的品牌信任建设</li>
+            <li><strong>澜起：</strong>内存接口芯片全球领先的技术叙事，跨境B2B品牌建设</li>
+            <li><strong>紫光国微：</strong>军工+安全芯片的特殊属性，适合精准的政企类媒体投放</li>
+            <li><strong>北京君正：</strong>AI存储+汽车芯片的"成长故事"，适合投资者与产业界内容传播</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>整体策略：</strong>以上四家各有差异化增长故事，适合财报季定期跟踪，以投资者关系传播和行业媒体精准投放为主要切入方向。</div>
     </div>
   </div>
 
@@ -244,423 +457,343 @@
 
   <!-- ═══ PART 3: OVERSEAS AI ═══ -->
   <div class="section">
-    <h2><span class="badge overseas">海外篇</span> AI工具公司 — 年化收入与品牌化进程</h2>
-    <div class="sec-desc">OpenAI与Anthropic同时在2026年超级碗投放广告，反映出头部AI公司加大品牌广告投入的趋势。从以技术社区传播为主，到兼顾大众品牌建设，这一变化值得关注。</div>
+    <h2><span class="badge overseas">海外篇</span> AI工具公司 · 产品深度画像</h2>
+    <div class="sec-desc">OpenAI与Anthropic同时在2026年超级碗投放广告，标志着头部AI公司从技术传播转向品牌驱动的关键转折。以下展开各公司产品全貌。</div>
 
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3>💵 年化收入参考对比（亿美元，对数刻度）</h3>
-        <canvas id="chartOverseasAI"></canvas>
+    <!-- OpenAI -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🥇 OpenAI</span>
+        <div class="pc-tags"><span class="tag scale">年化~$250亿</span><span class="tag brand">超级碗广告</span></div>
       </div>
-      <div class="chart-box">
-        <h3>🏷️ 品牌广告投入阶段评估参考</h3>
-        <canvas id="chartOverseasAIBrand"></canvas>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>ChatGPT：</strong>全球最大AI对话产品，月活超9亿，覆盖Web/App/桌面端，支持文字/图片/语音/视频多模态交互</li>
+            <li><strong>GPT-4o/GPT-5系列大模型：</strong>旗舰多模态模型，支撑ChatGPT与API服务</li>
+            <li><strong>Sora：</strong>文生视频模型，面向创意与媒体行业</li>
+            <li><strong>Codex：</strong>AI编程助手，推出后已获50万次应用下载</li>
+            <li><strong>API平台：</strong>面向开发者与企业客户，提供模型调用、微调、Assistants API等</li>
+            <li><strong>ChatGPT Enterprise：</strong>面向大型企业的私有化部署方案</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 用户群</h4>
+          <ul>
+            <li>Freemium+订阅：免费版+ChatGPT Plus（$20/月）+ Pro（$200/月）+ Team/Enterprise</li>
+            <li>API调用计费：按token计费，GPT-4o价格持续下调</li>
+            <li>估值约8,400亿美元（2026年2月融资后）</li>
+            <li>用户群：C端全球用户（9亿MAU）+ 企业客户（含财富500强）+ 开发者</li>
+            <li>2026年超级碗首次投放电视广告，标志从"开发者工具"向"大众消费品牌"转型</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>品牌广告从零到有爆发增长，超级碗级别预算验证品牌建设战略优先级。广告+订阅双轨商业化下效果广告需求持续增强。中国市场本地化品牌建设存在广告需求。</div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin:20px 0 12px;">客户详情卡</h3>
-    <div class="company-grid">
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🥇 OpenAI</span><span class="cc-rev">年化约$250亿</span></div>
-        <div class="cc-bg">据Sacra（2026），2026年2月年化收入约250亿美元，估值约8,400亿美元。ChatGPT月活超9亿。2026年超级碗首次投放电视广告，被视为大众品牌建设的重要信号。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>从开发者工具向大众消费品延伸，品牌广告投放有所增加。中国市场若开展本地化品牌建设，可能产生广告需求。在本报告覆盖的AI公司中预算规模靠前。⭐⭐⭐</div>
+    <!-- Anthropic -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🛡️ Anthropic</span>
+        <div class="pc-tags"><span class="tag brand">品牌驱动</span><span class="tag tech">安全AI</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🛡️ Anthropic</span><span class="tag brand">品牌驱动策略</span></div>
-        <div class="cc-bg">据AI Native Foundation（2025），营收从约10亿美元增长至超50亿美元。2026年超级碗投放4支系列广告，以"广告不会进入Claude"为核心信息，品牌定位强调安全与思考。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>品牌广告是Anthropic的重要竞争手段之一，而非仅辅助工具。其品牌叙事依赖价值观输出，创意型品牌campaign需求预计较为持续。⭐⭐</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Claude（App/Web/API）：</strong>AI对话助手与模型服务，品牌定位"纯粹的思考空间"，强调安全性与无广告体验</li>
+            <li><strong>Claude Opus/Sonnet/Haiku：</strong>三档模型系列，从旗舰推理到轻量快速响应分层服务</li>
+            <li><strong>Claude Enterprise：</strong>面向企业的安全管理与合规化部署方案</li>
+            <li><strong>Claude Code：</strong>AI编程助手，对标GitHub Copilot</li>
+            <li><strong>API平台：</strong>模型调用、Agent构建工具、安全护栏（Safety Guardrails）</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 用户群</h4>
+          <ul>
+            <li>C端订阅（Claude Pro $20/月）+ 企业版 + API计费</li>
+            <li>营收从2025年初约10亿美元增长至2025年8月超50亿美元</li>
+            <li>2026年超级碗投放4支系列广告，"广告不会进入Claude"为核心信息，直接挑战OpenAI</li>
+            <li>用户群：安全意识强的企业客户（金融/医疗/法律）+ 知识工作者 + 开发者</li>
+            <li>品牌定位极度依赖价值观输出，品牌广告是其核心竞争手段而非辅助工具</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🎨 Canva</span><span class="tag overseas">全球190+国运营</span></div>
-        <div class="cc-bg">据TechCrunch（2026年2月），年化收入约42亿美元（同比+40%），MAU约2.65亿。AI Magic Studio驱动企业级采纳，在全球190多个国家运营。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>全球化布局意味着多个新兴市场的用户获取需求。从个人设计工具向企业协作平台延伸，B2B品牌广告需求可能增加。AI功能迭代为产品营销提供持续素材。⭐⭐⭐</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>品牌广告是Anthropic的核心竞争手段——意味着持续且高投入的品牌campaign预算。"反广告"的品牌叙事本身需要大量广告传播，创意型品牌广告需求旺盛。企业级B2B精准营销是效果广告切入点。</div>
+    </div>
+
+    <!-- Canva -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🎨 Canva</span>
+        <div class="pc-tags"><span class="tag scale">年化$42亿</span><span class="tag overseas">190+国运营</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">💎 Midjourney</span><span class="tag zero-ad">以社区增长为主</span></div>
-        <div class="cc-bg">据UISDC（2026年1月），年收入约5亿美元，以Discord社区为核心渠道，未依赖风险投资。2025年推出V1视频模型，从图像生成向视频生成扩展。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>公开信息中未见大规模品牌广告投放。产品线从图像向视频扩展可能带来新用户获取需求。中国市场的官方本地化品牌建设存在空白。⭐⭐</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Canva设计平台（Web/App）：</strong>全球最大在线设计工具，模板驱动的图形设计、演示文稿、视频编辑、网站搭建</li>
+            <li><strong>AI Magic Studio：</strong>AI功能套件——Magic Design（AI生成设计）、Magic Write（AI文案）、Magic Edit（AI图像编辑）、AI视频生成等</li>
+            <li><strong>Canva for Enterprise：</strong>企业协作版，含品牌管理、团队协作、权限管理等B2B功能</li>
+            <li><strong>Canva Print：</strong>在线印刷服务，打通"设计→实物"的O2O闭环</li>
+            <li><strong>Canva Developers API：</strong>面向开发者的集成与定制化能力</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 用户群</h4>
+          <ul>
+            <li>Freemium+订阅：免费版+Canva Pro+Canva for Teams+Enterprise</li>
+            <li>2025年年化收入42亿美元（+40%），MAU 2.65亿，全球190+国运营</li>
+            <li>AI功能月使用次数达数亿量级，企业级采纳是核心增长引擎</li>
+            <li>用户群：个人设计师/营销人员/中小企业主 → 大型企业团队</li>
+            <li>从"个人设计工具"向"企业协作平台"升级中</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">📝 Notion</span><span class="tag growth">企业级增长</span></div>
-        <div class="cc-bg">据CNBC和Notion Statistics（2025-2026），年化收入约6亿美元，估值约110亿美元，用户超1亿。约75%的财富500强企业有团队使用。Notion AI是收入增长的重要引擎。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>企业级客户拓展和AI功能迭代可能带动B2B品牌广告需求。面对Microsoft Loop等竞品，差异化品牌定位或需广告支撑。⭐⭐</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>全球化运营意味着多个新兴市场（含中国）的用户获取需求持续存在。企业化转型推动B2B品牌广告需求增加。AI功能持续迭代创造高频产品营销素材。效果+品牌双线需求均较明确。</div>
+    </div>
+
+    <!-- Midjourney -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🎨 Midjourney</span>
+        <div class="pc-tags"><span class="tag tech">图像→视频</span><span class="tag brand">广告投入有限</span></div>
       </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Midjourney图像生成（Discord/Web）：</strong>以媲美专业摄影/插画的美学品质著称，Discord社区为核心交互渠道</li>
+            <li><strong>V1视频模型（2025年推出）：</strong>从静态图像生成扩展到动态视频生成，面向创意/广告/影视行业</li>
+            <li><strong>Web独立界面：</strong>逐步脱离对Discord的单一依赖，进入主流Web产品形态</li>
+            <li>核心竞争壁垒：卓越的美学调校、强大的社区网络效应、极低的运营成本</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 用户群</h4>
+          <ul>
+            <li>纯订阅制（$10/月基础→$60/月专业），无免费版、无广告、无投资方</li>
+            <li>年收入约5亿美元（UISDC估算），以Discord社区为唯一增长渠道</li>
+            <li>用户群：设计师/艺术家/广告创意人员/建筑可视化/游戏美术</li>
+            <li>面临DALL·E、Adobe Firefly、Stable Diffusion竞争加剧</li>
+            <li>中国市场有大量非官方中文版和教程，官方缺乏在地化品牌建设</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>长期以社区口碑增长，公开信息中未见规模化品牌广告投放——存在品牌广告"处女地"机会。从图像向视频的产品线扩展可能带来新用户获取需求。中国市场的官方本地化品牌建设存在空白。</div>
+    </div>
+
+    <!-- Notion -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">📝 Notion</span>
+        <div class="pc-tags"><span class="tag scale">年化$6亿</span><span class="tag growth">企业级增长</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>Notion工作空间（Web/App/桌面）：</strong>All-in-one协作文档平台，集笔记、数据库、项目管理、Wiki知识库于一体</li>
+            <li><strong>Notion AI：</strong>内嵌AI能力——AI写作/总结/翻译/Q&A/自动建表，为公司核心收入增长引擎</li>
+            <li><strong>Notion Calendar：</strong>日程管理与协作日历</li>
+            <li><strong>Notion Sites：</strong>基于工作空间快速发布为公开网站</li>
+            <li><strong>Notion Marketplace + API：</strong>第三方集成生态，连接Slack/GitHub/Figma等工具</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 用户群</h4>
+          <ul>
+            <li>Freemium+订阅：个人免费→Plus（$10/月）→Business（$15/月）→Enterprise</li>
+            <li>用户超1亿，约75%财富500强企业有团队使用，估值约110亿美元</li>
+            <li>面对Microsoft Loop、Google Docs等巨头竞争，差异化定位"all-in-one工作空间"</li>
+            <li>用户群：知识工作者/中小团队/大型企业/教育机构</li>
+            <li>AI功能是近两年的核心差异化引擎</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>企业级客户拓展是核心增长战略，B2B品牌广告需求明确。AI功能迭代创造持续产品营销素材。在巨头竞争中的差异化品牌定位需要广告支撑。中国、印度等新兴市场存在用户获取需求。</div>
     </div>
   </div>
 
   <!-- ═══ PART 4: OVERSEAS CHIP ═══ -->
   <div class="section">
-    <h2><span class="badge overseas">海外篇</span> 芯片与存储公司 — 全球半导体营收参考</h2>
-    <div class="sec-desc">英伟达和台积电在营收规模上领先同业。存储芯片行业景气上行，三星、铠侠、SK海力士业绩增长较为显著。英特尔处于战略转型期，品牌叙事面临调整。</div>
+    <h2><span class="badge overseas">海外篇</span> 芯片与存储公司 · 产品深度画像</h2>
+    <div class="sec-desc">全球半导体行业在AI算力需求与存储超级周期双重驱动下持续扩张。以下重点展开英伟达、三星等头部公司的产品体系与技术路线。</div>
 
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3>🏭 半导体营收参考对比（亿美元）<span style="font-size:11px;color:#94a3b8;font-weight:400;">* 部分数据为基于季度财报的年化或估算值</span></h3>
-        <canvas id="chartOverseasChip"></canvas>
+    <!-- 英伟达 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🥇 英伟达（NVIDIA）</span>
+        <div class="pc-tags"><span class="tag scale">营收$1,257亿</span><span class="tag tech">AI GPU</span></div>
       </div>
-      <div class="chart-box">
-        <h3>📊 营收增速与毛利率参考矩阵<br><span style="font-size:11px;color:#94a3b8;font-weight:400;">气泡大小反映相对营收规模</span></h3>
-        <canvas id="chartOverseasChipBubble"></canvas>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>H100/H200 Hopper架构GPU：</strong>AI训练与推理主力，H200配备141GB HBM3e，显存带宽4.8TB/s</li>
+            <li><strong>B200/B300 Blackwell架构GPU：</strong>新一代数据中心GPU，NVL72系统集成72颗GPU，算力大幅跃升</li>
+            <li><strong>DGX/HGX系统：</strong>AI超级计算机整机方案，面向大型数据中心与企业私有化部署</li>
+            <li><strong>CUDA平台+AI Enterprise：</strong>软件生态护城河——编程框架、AI模型库、推理优化工具</li>
+            <li><strong>Omniverse：</strong>3D协作与数字孪生平台</li>
+            <li><strong>GeForce RTX消费级GPU：</strong>游戏与创作者显卡，RTX 50系列</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>市场地位 & 挑战</h4>
+          <ul>
+            <li>2025年全球半导体营收冠军，AI训练市场垄断地位</li>
+            <li>市值突破5万亿美元，全球最高市值半导体企业</li>
+            <li>中国市场：H200获美国批准对华出售（附加配额限制），中国企业集体未下单，国产替代份额已达41-52%</li>
+            <li>面临华为昇腾、寒武纪等国产AI芯片的持续替代压力</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>中国市场的企业级品牌建设需求增强——CUDA生态推广、技术大会赞助、高校合作等B2B品牌传播。中国本土替代压力下，在地化品牌信任建设具有战略价值。决策链长，适合长期关系培育。</div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin:20px 0 12px;">值得关注的客户速览</h3>
-    <div class="company-grid">
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔥 三星电子</span><span class="cc-rev">Q1净利约¥2,643亿</span></div>
-        <div class="cc-bg">据Xueqiu（2026年5月），DS部门Q1营收约81.7万亿韩元（同比+225%）。已率先量产HBM4，在中国拥有消费电子和半导体双线业务。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>消费电子+半导体双线业务广告预算规模较大且相对稳定。中国区品牌传播和新品发布campaign可分别切入。⭐⭐⭐ 建议即时跟进</div>
+    <!-- 三星电子 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🔥 三星电子（Samsung Electronics）</span>
+        <div class="pc-tags"><span class="tag scale">Q1净利~¥2,643亿</span><span class="tag tech">HBM4量产</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">⚡ 铠侠</span><span class="tag growth">利润高增长</span></div>
-        <div class="cc-bg">据Baidu News（2026年5月），2025财年营收约1,005亿人民币（+37%），净利同比增长103.6%创历史新高，2026年产能已完全预订。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>营收和利润高增长创造了品牌传播窗口。"AI存储上行周期受益者"叙事+企业级SSD和数据中心B2B推广是主要方向。⭐⭐ 建议即时跟进</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品矩阵</h4>
+          <ul>
+            <li><strong>HBM4 12Hi：</strong>已率先量产的最新一代高带宽内存，面向英伟达/AMD等AI GPU客户</li>
+            <li><strong>DRAM（DDR5/LPDDR5X/GDDR7）：</strong>全球最大DRAM制造商之一，覆盖服务器/PC/手机/显卡全场景</li>
+            <li><strong>NAND Flash（V-NAND）：</strong>垂直堆叠3D NAND，覆盖消费SSD与企业级存储</li>
+            <li><strong>消费电子：</strong>Galaxy手机/平板/手表、电视、家电——在中国拥有庞大消费电子业务</li>
+            <li><strong>晶圆代工（Samsung Foundry）：</strong>3nm GAA工艺，与台积电竞争</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>市场地位</h4>
+          <ul>
+            <li>DS部门Q1营收81.7万亿韩元（+225%），存储器业务贡献74.8万亿韩元</li>
+            <li>Q1单季净利超越2025全年总和</li>
+            <li>消费电子+半导体双线业务，在中国拥有庞大的品牌认知基础</li>
+            <li>在存储芯片超级周期中与SK海力士、美光展开激烈竞争</li>
+          </ul>
+        </div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🔄 英特尔</span><span class="tag brand">品牌叙事调整期</span></div>
-        <div class="cc-bg">据Intel（2026年1月），2025年营收约529亿美元（同比持平），GAAP净亏约3亿美元。CEO陈立武推动18A制程和晶圆代工业务独立，处于战略转型期。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>品牌叙事面临调整，从传统CPU领导者转向代工+先进制程的新定位，可能带来广告投放需求。代工业务B2B推广和AI时代的品牌定位是潜在切入方向。⭐⭐ 建议转型期跟进</div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>在中国拥有庞大的消费电子+半导体双线业务，品牌广告预算体量巨大且稳定。消费电子新品发布与半导体B2B两条线可分别切入不同广告产品组合。建议即时跟进。</div>
+    </div>
+
+    <!-- 台积电 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">🏭 台积电（TSMC）</span>
+        <div class="pc-tags"><span class="tag scale">营收$1,224亿</span><span class="tag tech">3nm/5nm</span></div>
       </div>
-      <div class="company-card">
-        <div class="cc-header"><span class="cc-name">🛡️ 美光科技</span><span class="tag brand">信任建设需求</span></div>
-        <div class="cc-bg">据Xueqiu（2026年5月），2026年Q1非GAAP净利约140亿美元。已启动HBM4量产，在西安设有封测基地。2023年曾遭遇网络安全审查。</div>
-        <div class="cc-opp"><strong>机会分析：</strong>在中国市场存在品牌信任建设的持续性需求。HBM4量产和中国供应链角色可作为品牌传播素材。雇主品牌建设可纳入组合提案。⭐⭐ 建议长期关系培育</div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>产品与技术</h4>
+          <ul>
+            <li><strong>先进制程代工：</strong>3nm/5nm/7nm工艺，被苹果、英伟达、AMD、高通包揽</li>
+            <li><strong>CoWoS先进封装：</strong>将逻辑芯片与HBM内存通过硅中介层集成，英伟达H100/B200核心封装技术</li>
+            <li><strong>3D Fabric：</strong>TSMC的3D IC集成技术平台，含SoIC/InFO/CoWoS三大封装系列</li>
+            <li>全球晶圆代工市占率超60%，绝对霸主</li>
+            <li>2025年净利润552.1亿美元（+51.2%），毛利率59.9%</li>
+            <li>中国大陆南京厂、松江厂运营中</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>商业模式 & 定位</h4>
+          <ul>
+            <li>纯晶圆代工模式（不设计自有芯片），客户即合作伙伴</li>
+            <li>2026年预计营收~1,592亿美元（+30%），净利~789.8亿美元</li>
+            <li>"全球半导体公器"品牌定位，在地缘政治博弈中维持中立形象</li>
+            <li>中国区品牌形象维护和政企关系传播是持续性需求</li>
+          </ul>
+        </div>
       </div>
+      <div class="pc-footer"><strong>广告机会方向：</strong>中国区品牌形象维护与政企关系传播是长期需求。CoWoS先进封装技术领导地位适合B2B行业媒体深度传播。地缘政治背景下，"全球公器"中立品牌叙事具有战略价值。</div>
+    </div>
+
+    <!-- 更多海外芯片公司 -->
+    <div class="prod-card">
+      <div class="pc-header">
+        <span class="pc-name">📋 更多值得关注的海外芯片公司</span>
+        <div class="pc-tags"><span class="tag tech">存储·CPU·通信</span></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-col">
+          <h4>公司 · 核心产品</h4>
+          <ul>
+            <li><strong>SK海力士：</strong>HBM市场份额领先（英伟达核心HBM供应商），DRAM全球第一。2025年营业利润约330亿美元，利润率44%。无锡/重庆有生产基地</li>
+            <li><strong>美光科技：</strong>HBM4已量产，DRAM+NAND全球第三。西安封测基地为中国最大外资半导体封测之一。Q1非GAAP净利约140亿美元</li>
+            <li><strong>铠侠（Kioxia）：</strong>全球NAND闪存核心厂商，2025财年营收约1,005亿元人民币（+37%），净利同比+103.6%创历史新高。2026年产能完全预订</li>
+            <li><strong>博通（Broadcom）：</strong>AI定制芯片（ASIC）领导者——谷歌TPU、Meta等的核心定制芯片合作伙伴。Q2营收221.87亿美元（+47.88%），毛利率69.48%</li>
+            <li><strong>高通（Qualcomm）：</strong>骁龙移动平台（端侧AI引擎）+ 汽车芯片双增长引擎。2025财年营收442.84亿美元创历史新高</li>
+            <li><strong>AMD：</strong>Ryzen CPU持续蚕食英特尔，MI300系列AI GPU挑战英伟达。与OpenAI达成AI芯片供应协议。2025年营收346亿美元创纪录</li>
+            <li><strong>英特尔（Intel）：</strong>18A先进制程+晶圆代工业务独立，CEO陈立武推动历史性转型。2025年营收529亿美元，品牌从"垄断巨头"重构为"转型斗士"</li>
+          </ul>
+        </div>
+        <div class="pc-col">
+          <h4>主要广告切入点</h4>
+          <ul>
+            <li><strong>SK海力士：</strong>中国区品牌传播+CSR（无锡/重庆基地），HBM领导地位叙事</li>
+            <li><strong>美光：</strong>品牌信任修复（2023年网络安全审查后），HBM4量产+中国供应链角色传播</li>
+            <li><strong>铠侠：</strong>利润高增长传播窗口，"AI存储超级周期受益者"叙事，企业级SSD B2B推广</li>
+            <li><strong>博通：</strong>"AI ASIC领导者"品牌定位，高利润率+高分红财务故事</li>
+            <li><strong>高通：</strong>端侧AI+"AI不只云端的"消费者品牌广告，汽车芯片B2B精准营销</li>
+            <li><strong>AMD：</strong>"CPU+GPU双线挑战者"品牌叙事，数据中心B2B推广+消费级游戏/电竞营销</li>
+            <li><strong>英特尔：</strong>品牌重建核心需求——18A制程+代工业务的系统性叙事重构</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pc-footer"><strong>整体策略：</strong>以上七家公司预算规模较大，但中国区广告决策链通常较长，建议以长期关系培育为主。其中铠侠业绩高增长的传播窗口和英特尔品牌重建需求较为紧迫，可近期切入。</div>
     </div>
   </div>
 
-  <!-- ═══ PRIORITY MATRIX ═══ -->
+  <!-- ═══ PRIORITY SUMMARY ═══ -->
   <div class="section">
-    <h2>🎯 客户优先级矩阵 — 综合参考</h2>
-    <div class="sec-desc">横轴为预算潜力，纵轴为需求紧迫度（均为基于公开信息的估算，仅供参考）。右上角区域客户建议优先跟进。</div>
-
-    <div class="chart-grid single">
-      <div class="chart-box">
-        <h3>优先级参考散点图：预算潜力 × 需求紧迫度</h3>
-        <canvas id="chartPriority"></canvas>
-      </div>
-    </div>
-
+    <h2>🎯 客户优先级总览</h2>
+    <div class="sec-desc">基于产品商业化阶段、品牌建设紧迫度与预算潜力综合评估。以下为建议优先级排序，实际策略需结合客户关系与内部能力做进一步判断。</div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>层级</th><th>公司</th><th>市场</th><th>行业</th><th>核心驱动</th><th>广告类型</th><th>建议行动</th></tr>
+          <tr><th>优先级</th><th>公司</th><th>市场</th><th>核心产品</th><th>关键窗口</th><th>建议行动</th></tr>
         </thead>
         <tbody>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>智谱AI</td><td>国内</td><td>AI工具</td><td>双重IPO · 拟募资≤150亿</td><td>品牌+IR传播</td><td>建议即时提案</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>长鑫存储</td><td>国内</td><td>存储芯片</td><td>IPO推进中 · 扭亏为盈</td><td>品牌+投资者关系</td><td>建议即时提案</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>长江存储</td><td>国内</td><td>存储芯片</td><td>IPO筹备 · 营收+445%</td><td>品牌+政企传播</td><td>建议即时提案</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>寒武纪</td><td>国内</td><td>AI芯片</td><td>首次盈利 · 拟首次分红</td><td>品牌+财经媒体</td><td>建议即时提案</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>字节（豆包）</td><td>国内</td><td>AI工具</td><td>MAU 3.45亿 · 春晚合作</td><td>效果+品牌</td><td>建议即时提案</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>OpenAI</td><td>海外</td><td>AI工具</td><td>品牌投入增加 · 年收约$250亿</td><td>品牌+效果</td><td>如有海外能力</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>Canva</td><td>海外</td><td>AI工具</td><td>全球化 · 企业化双驱动</td><td>效果+品牌</td><td>如有海外能力</td></tr>
-          <tr><td class="priority-3">⭐⭐⭐</td><td>三星电子</td><td>海外</td><td>芯片+消费</td><td>中国区双线业务</td><td>品牌+新品</td><td>建议即时跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>DeepSeek</td><td>国内</td><td>AI工具</td><td>约$450亿估值 · 品牌广告有限</td><td>品牌建设</td><td>融资后跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>Kimi</td><td>国内</td><td>AI工具</td><td>IPO预期 · 差异化定位</td><td>品牌+效果</td><td>持续跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>MiniMax</td><td>国内</td><td>AI工具</td><td>海外效果广告需求较明确</td><td>海外效果广告</td><td>如有海外能力</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>兆易创新</td><td>国内</td><td>存储芯片</td><td>Q1净利+522%</td><td>财经传播</td><td>财报季</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>中芯国际</td><td>国内</td><td>晶圆代工</td><td>7nm量产突破</td><td>品牌+ESG</td><td>持续跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>北方华创</td><td>国内</td><td>半导体设备</td><td>据Baidu News，国内营收领先</td><td>B2B品牌</td><td>持续跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>Anthropic</td><td>海外</td><td>AI工具</td><td>品牌广告为重要竞争手段</td><td>创意品牌</td><td>长期关系培育</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>Notion</td><td>海外</td><td>AI工具</td><td>企业级增长 · 年收约$6亿</td><td>B2B品牌</td><td>长期关系培育</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>Midjourney</td><td>海外</td><td>AI工具</td><td>年收约$5亿 · 以社区增长为主</td><td>品牌建设</td><td>产品扩展期</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>美光科技</td><td>海外</td><td>存储芯片</td><td>品牌信任建设 · HBM4量产</td><td>品牌+B2B</td><td>长期关系培育</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>台积电</td><td>海外</td><td>晶圆代工</td><td>中国区品牌形象维护</td><td>政企传播</td><td>长期关系培育</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>英特尔</td><td>海外</td><td>芯片</td><td>品牌叙事调整</td><td>品牌叙事</td><td>转型期跟进</td></tr>
-          <tr><td class="priority-2">⭐⭐</td><td>铠侠</td><td>海外</td><td>存储芯片</td><td>利润高增长 · 传播窗口</td><td>B2B+财经</td><td>建议即时跟进</td></tr>
-          <tr><td class="priority-1">⭐</td><td>澜起/紫光/海光/君正</td><td>国内</td><td>芯片</td><td>各自有差异化增长故事</td><td>定期IR+行业</td><td>财报季定期跟进</td></tr>
-          <tr><td class="priority-1">⭐</td><td>英伟达/SK/博通/高通/AMD</td><td>海外</td><td>芯片</td><td>外企预算较稳但决策链较长</td><td>B2B品牌</td><td>长期关系培育</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>智谱AI</td><td>国内·AI</td><td>GLM模型+AutoGLM+智谱清言</td><td>科创板IPO · 募资≤150亿</td><td>即时提案</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>长鑫存储</td><td>国内·存储</td><td>DDR5/LPDDR5X DRAM</td><td>IPO推进 · 扭亏为盈</td><td>即时提案</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>长江存储</td><td>国内·存储</td><td>3D NAND+Xtacking 4.0</td><td>IPO筹备 · 营收+445%</td><td>即时提案</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>寒武纪</td><td>国内·AI芯片</td><td>思元系列AI芯片</td><td>首次盈利+首次分红</td><td>即时提案</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>字节（豆包）</td><td>国内·AI</td><td>豆包+即梦+扣子+星绘</td><td>MAU 3.45亿 · 平台化</td><td>即时提案</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>OpenAI</td><td>海外·AI</td><td>ChatGPT+GPT-5+Sora+Codex</td><td>品牌投入增加 · 年收$250亿</td><td>如有海外能力</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>Canva</td><td>海外·AI</td><td>Magic Studio+在线设计</td><td>全球化+企业化双驱动</td><td>如有海外能力</td></tr>
+          <tr><td class="pri-3">⭐⭐⭐</td><td>三星电子</td><td>海外·芯片+消费</td><td>HBM4+DRAM+Galaxy</td><td>中国区双线品牌预算</td><td>即时跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>DeepSeek</td><td>国内·AI</td><td>V4系列开源模型</td><td>估值$450亿·品牌广告待启动</td><td>融资后跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>Kimi（月之暗面）</td><td>国内·AI</td><td>K2.6+Kimi Work Agent</td><td>IPO预期·差异化定位</td><td>持续跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>MiniMax</td><td>国内·AI</td><td>Talkie+海螺AI</td><td>海外效果广告需求明确</td><td>如有海外能力</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>兆易创新</td><td>国内·存储MCU</td><td>NOR Flash+32位MCU</td><td>Q1净利+523%</td><td>财报季跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>中芯国际</td><td>国内·代工</td><td>7nm/14nm晶圆代工</td><td>7nm量产突破</td><td>持续跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>北方华创</td><td>国内·设备</td><td>刻蚀/薄膜/清洗设备</td><td>营收393亿·国产替代</td><td>持续跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>Anthropic</td><td>海外·AI</td><td>Claude系列模型</td><td>品牌广告为核心竞争手段</td><td>长期关系培育</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>Notion</td><td>海外·AI</td><td>Notion AI+协作平台</td><td>企业级增长·年收$6亿</td><td>持续跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>Midjourney</td><td>海外·AI</td><td>图像+V1视频生成</td><td>年收$5亿·广告处女地</td><td>产品扩展期</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>铠侠</td><td>海外·存储</td><td>3D NAND Flash</td><td>利润+104%·传播窗口</td><td>即时跟进</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>美光科技</td><td>海外·存储</td><td>HBM4+DRAM+NAND</td><td>品牌信任修复+技术叙事</td><td>长期关系培育</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>台积电</td><td>海外·代工</td><td>3nm+CoWoS先进封装</td><td>中国区品牌形象维护</td><td>长期关系培育</td></tr>
+          <tr><td class="pri-2">⭐⭐</td><td>英特尔</td><td>海外·芯片</td><td>18A制程+代工业务</td><td>品牌叙事重构</td><td>转型期切入</td></tr>
+          <tr><td class="pri-1">⭐</td><td>海光/澜起/紫光/君正</td><td>国内·芯片</td><td>CPU/接口/安全/MCU</td><td>差异化增长故事</td><td>财报季定期跟踪</td></tr>
+          <tr><td class="pri-1">⭐</td><td>英伟达/SK/博通/高通/AMD</td><td>海外·芯片</td><td>GPU/HBM/ASIC/骁龙/CPU</td><td>预算稳定·决策链长</td><td>长期关系培育</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- ═══ TIMELINE ═══ -->
-  <div class="section">
-    <h2>📅 IPO进度与业绩事件参考时间线</h2>
-    <div class="sec-desc">以下时间线标注了当前可识别的品牌传播/广告投放窗口，实际时间节点以上述公司官方公告为准。</div>
-    <div class="timeline">
-      <div class="timeline-item now">
-        <div class="tl-date">2026年6月 · 当前</div>
-        <div class="tl-title">🔥 智谱AI科创板IPO申报</div>
-        <div class="tl-desc">双重上市背景下的品牌建设窗口，拟募资不超过150亿元。IR传播和品牌campaign需求较为明确。</div>
-      </div>
-      <div class="timeline-item now">
-        <div class="tl-date">2026年6月 · 当前</div>
-        <div class="tl-title">🔥 长鑫存储A股IPO推进</div>
-        <div class="tl-desc">中国大陆DRAM领域重要企业，历史性扭亏为盈，资本市场首次亮相可能带动品牌建设需求。</div>
-      </div>
-      <div class="timeline-item now">
-        <div class="tl-date">2026年6月 · 当前</div>
-        <div class="tl-title">⚡ 铠侠/兆易创新/长江存储 业绩高增长传播</div>
-        <div class="tl-desc">Q1/Q4业绩数据公布后，"超预期"叙事的传播窗口期。财经媒体投放和IR传播需求较为明确。</div>
-      </div>
-      <div class="timeline-item">
-        <div class="tl-date">2026年Q3-Q4 · 近期</div>
-        <div class="tl-title">寒武纪 · 拟首次分红 + 品牌叙事升级</div>
-        <div class="tl-desc">上市五年来拟首次分红，从研发投入期进入商业化回报期的叙事升级窗口。</div>
-      </div>
-      <div class="timeline-item">
-        <div class="tl-date">2026年H2 · 近期</div>
-        <div class="tl-title">DeepSeek · 融资完成后品牌化可能性</div>
-        <div class="tl-desc">若国家大基金领投的首轮融资完成，从以技术社区传播为主转向兼顾公众品牌传播，可能带来新的广告需求。</div>
-      </div>
-      <div class="timeline-item">
-        <div class="tl-date">2027年 · 中期</div>
-        <div class="tl-title">Kimi（月之暗面）· IPO预期</div>
-        <div class="tl-desc">若启动上市筹备，品牌传播和资本市场沟通需求预计将有所增加。</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ KEY INSIGHTS ═══ -->
-  <div class="section">
-    <h2>💡 五项值得关注的趋势</h2>
-    <div class="insight-grid">
-      <div class="insight-card">
-        <div class="num">01</div>
-        <h4>头部AI公司品牌广告竞争有所加剧</h4>
-        <p>OpenAI与Anthropic同时在2026年超级碗投放广告，反映出头部AI公司在技术传播之外，开始加大品牌广告投入。这一趋势对广告服务商而言值得关注，但具体预算规模和持续性仍需进一步验证。</p>
-      </div>
-      <div class="insight-card">
-        <div class="num">02</div>
-        <h4>尚未大规模投放广告的公司代表潜在增量</h4>
-        <p>Midjourney（据估算年收入约5亿美元但以社区增长为主）和DeepSeek（据Sohu报道估值约450亿美元）公开信息中未见大规模品牌广告投放。这些公司若启动品牌建设，可能带来新增广告需求，但切入时机和方式需审慎评估。</p>
-      </div>
-      <div class="insight-card">
-        <div class="num">03</div>
-        <h4>IPO是品牌广告需求的重要催化剂</h4>
-        <p>智谱AI（双重上市）、长鑫存储（A股IPO推进中）、长江存储（IPO筹备中）处于上市关键阶段。历史经验表明，IPO期间企业品牌建设和投资者关系传播的需求通常较为集中，建议优先跟进。</p>
-      </div>
-      <div class="insight-card">
-        <div class="num">04</div>
-        <h4>存储行业景气上行创造品牌传播窗口</h4>
-        <p>据各家财报数据，三星DS部门Q1营收同比+225%，铠侠年度净利润同比+103.6%，SK海力士营业利润率约44%。存储行业业绩整体上行，为品牌传播提供了较丰富的素材和窗口。</p>
-      </div>
-      <div class="insight-card">
-        <div class="num">05</div>
-        <h4>内外资客户策略建议差异化</h4>
-        <p>三星、台积电、英伟达等海外公司预算规模较大，但中国区的广告决策通常需要全球总部审批，决策链可能较长，建议以长期关系培育为主。国内处于IPO或业绩高增长期的公司，决策链相对较短，需求更为明确，可争取较快成交。</p>
-      </div>
-    </div>
-  </div>
-
   <!-- ═══ FOOTER ═══ -->
   <div class="footer">
-    本报告基于公开信息整理，数据截至2026年6月5日。广告需求与机会点分析基于公开信息的合理推断，仅供参考。<br>
-    参考文献详见原始Markdown报告（国内篇/海外篇），含QuestMobile、Sacra、TechCrunch、各公司财报及招股书、百度新闻、新浪财经、雪球等来源。
+    本报告基于公开信息整理，数据截至2026年6月5日。产品信息来源于各公司官网、招股书、年报及权威媒体报道。广告需求分析基于公开信息的合理推断，仅供参考。<br>
+    参考文献详见原始Markdown报告（国内篇/海外篇），含QuestMobile、Sacra、TechCrunch、华创证券、Counterpoint Research、Gartner、各公司财报及招股书、百度新闻、新浪财经、雪球等来源。
   </div>
 
-</div><!-- /container -->
-
-<!-- ═══ CHARTS ═══ -->
-<script>
-// ═══ Chart 1: Domestic AI MAU ═══
-new Chart(document.getElementById('chartDomAI'), {
-  type: 'bar',
-  data: {
-    labels: ['豆包','Kimi','DeepSeek','智谱AI','MiniMax'],
-    datasets: [{
-      label: 'MAU参考值（亿）',
-      data: [3.45, 1.27, 1.0, 0.35, 0.25],
-      backgroundColor: ['#2563eb','#7c3aed','#10b981','#f59e0b','#ec4899'],
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: { x: { title: { display: true, text: '亿用户（来源：QuestMobile 2026年4月）' } } }
-  }
-});
-
-// ═══ Chart 2: Domestic AI Brand Radar ═══
-new Chart(document.getElementById('chartDomAIRadar'), {
-  type: 'radar',
-  data: {
-    labels: ['品牌需求紧迫度','预算规模','效果广告需求','B2B精准营销','全球化投放'],
-    datasets: [
-      { label: '智谱AI', data: [5,4,3,5,2], borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', borderWidth: 2 },
-      { label: '豆包', data: [4,5,5,3,2], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', borderWidth: 2 },
-      { label: 'DeepSeek', data: [3,4,3,4,2], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', borderWidth: 2 },
-    ]
-  },
-  options: {
-    responsive: true,
-    scales: { r: { min: 0, max: 5, ticks: { stepSize: 1 } } },
-    plugins: { subtitle: { display: true, text: '基于公开信息的估算，仅供参考', font: { size: 10 } } }
-  }
-});
-
-// ═══ Chart 3: Domestic Chip Revenue ═══
-new Chart(document.getElementById('chartDomChip'), {
-  type: 'bar',
-  data: {
-    labels: ['中芯国际','长鑫存储','北方华创','兆易创新','寒武纪','紫光国微','澜起科技','北京君正'],
-    datasets: [{
-      label: '2025营收（亿元）',
-      data: [664.5, 617.99, 393.53, 92.02, 64.97, 61.46, 54.56, 47.41],
-      backgroundColor: ['#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#10b981','#14b8a6','#8b5cf6'],
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false }, subtitle: { display: true, text: '数据来源：各公司年报/招股书', font: { size: 10 } } },
-    scales: { y: { title: { display: true, text: '亿元人民币' } } }
-  }
-});
-
-// ═══ Chart 4: Domestic Chip Net Margin ═══
-new Chart(document.getElementById('chartDomChipMargin'), {
-  type: 'bar',
-  data: {
-    labels: ['澜起科技','紫光国微','海光信息','兆易创新','寒武纪','中芯国际','北方华创','北京君正'],
-    datasets: [{
-      label: '净利润率参考值 %',
-      data: [41, 23.4, 18.5, 18.2, 31.7, 14.8, 13.7, 7.9],
-      backgroundColor: ['#10b981','#10b981','#14b8a6','#14b8a6','#f59e0b','#3b82f6','#3b82f6','#94a3b8'],
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false }, subtitle: { display: true, text: '基于年报数据的近似值', font: { size: 10 } } },
-    scales: { y: { title: { display: true, text: '%' }, max: 50 } }
-  }
-});
-
-// ═══ Chart 5: Overseas AI Revenue ═══
-new Chart(document.getElementById('chartOverseasAI'), {
-  type: 'bar',
-  data: {
-    labels: ['OpenAI','Anthropic','Canva','Notion','Midjourney'],
-    datasets: [{
-      label: '年化收入参考值（亿美元）',
-      data: [250, 50, 42, 6, 5],
-      backgroundColor: ['#2563eb','#7c3aed','#10b981','#f59e0b','#ec4899'],
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: { y: { title: { display: true, text: '亿美元（对数刻度）' }, type: 'logarithmic' } }
-  }
-});
-
-// ═══ Chart 6: Overseas AI Brand Stage ═══
-new Chart(document.getElementById('chartOverseasAIBrand'), {
-  type: 'bar',
-  data: {
-    labels: ['OpenAI','Anthropic','Canva','Notion','Midjourney'],
-    datasets: [
-      { label: '品牌广告投入度（估算）', data: [5,5,4,3,1], backgroundColor: '#7c3aed', borderRadius: 6 },
-      { label: '效果广告需求（估算）', data: [4,2,5,4,3], backgroundColor: '#2563eb', borderRadius: 6 },
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: { subtitle: { display: true, text: '基于公开信息的估算，仅供参考', font: { size: 10 } } },
-    scales: { y: { title: { display: true, text: '5分制估算' }, max: 5 } }
-  }
-});
-
-// ═══ Chart 7: Overseas Chip Revenue ═══
-new Chart(document.getElementById('chartOverseasChip'), {
-  type: 'bar',
-  data: {
-    labels: ['英伟达','台积电','SK海力士','三星DS*','英特尔','高通','AMD','博通*','美光*','铠侠*'],
-    datasets: [{
-      label: '年度营收参考值（亿美元）',
-      data: [1257, 1224, 682, 600, 529, 443, 346, 440, 300, 140],
-      backgroundColor: ['#10b981','#2563eb','#f59e0b','#7c3aed','#ef4444','#06b6d4','#ec4899','#84cc16','#f97316','#6366f1'],
-      borderRadius: 6,
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      subtitle: { display: true, text: '* 部分为基于季度财报的年化或估算值；数据来源见原始报告参考文献', font: { size: 10 } }
-    },
-    scales: { y: { title: { display: true, text: '亿美元' } } }
-  }
-});
-
-// ═══ Chart 8: Bubble Chart ═══
-new Chart(document.getElementById('chartOverseasChipBubble'), {
-  type: 'bubble',
-  data: {
-    datasets: [
-      { label: '英伟达', data: [{x:50,y:40,r:35}], backgroundColor: 'rgba(16,185,129,0.6)' },
-      { label: '台积电', data: [{x:51,y:45,r:33}], backgroundColor: 'rgba(37,99,235,0.6)' },
-      { label: 'SK海力士', data: [{x:50,y:44,r:25}], backgroundColor: 'rgba(245,158,11,0.6)' },
-      { label: '三星DS*', data: [{x:225,y:40,r:22}], backgroundColor: 'rgba(124,58,237,0.6)' },
-      { label: '英特尔', data: [{x:0,y:36,r:22}], backgroundColor: 'rgba(239,68,68,0.6)' },
-      { label: '高通', data: [{x:13,y:30,r:20}], backgroundColor: 'rgba(6,182,212,0.6)' },
-      { label: 'AMD', data: [{x:15,y:50,r:17}], backgroundColor: 'rgba(236,72,153,0.6)' },
-      { label: '博通*', data: [{x:47,y:42,r:18}], backgroundColor: 'rgba(132,204,22,0.6)' },
-      { label: '铠侠*', data: [{x:37,y:35,r:12}], backgroundColor: 'rgba(99,102,241,0.6)' },
-    ]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: { title: { display: true, text: '营收增速参考 %' } },
-      y: { title: { display: true, text: '毛利率参考 %' }, min: 20, max: 60 }
-    },
-    plugins: {
-      tooltip: { callbacks: { label: ctx => ctx.dataset.label } },
-      subtitle: { display: true, text: '* 三星DS增速为Q1同比（225%），气泡大小反映相对营收规模。均为参考值。', font: { size: 10 } }
-    }
-  }
-});
-
-// ═══ Chart 9: Priority Scatter ═══
-new Chart(document.getElementById('chartPriority'), {
-  type: 'scatter',
-  data: {
-    datasets: [
-      { label: '建议即时切入', data: [
-        {x:8,y:10,name:'智谱AI'},{x:9,y:9,name:'长鑫存储'},{x:8,y:9,name:'长江存储'},
-        {x:7,y:9,name:'寒武纪'},{x:10,y:8,name:'豆包'},{x:10,y:8,name:'OpenAI'},
-        {x:8,y:7,name:'Canva'},{x:9,y:7,name:'三星'},
-      ], backgroundColor: '#ef4444', pointRadius: 8, pointHoverRadius: 12 },
-      { label: '建议近期跟进', data: [
-        {x:7,y:7,name:'DeepSeek'},{x:6,y:6,name:'Kimi'},{x:5,y:6,name:'MiniMax'},
-        {x:5,y:7,name:'兆易创新'},{x:7,y:5,name:'中芯国际'},{x:6,y:5,name:'北方华创'},
-        {x:5,y:7,name:'铠侠'},
-      ], backgroundColor: '#f59e0b', pointRadius: 7, pointHoverRadius: 11 },
-      { label: '建议长期培育', data: [
-        {x:6,y:5,name:'Anthropic'},{x:5,y:5,name:'Notion'},{x:4,y:5,name:'Midjourney'},
-        {x:6,y:4,name:'美光'},{x:7,y:4,name:'台积电'},{x:8,y:6,name:'英特尔'},
-        {x:9,y:4,name:'英伟达'},{x:7,y:3,name:'高通'},{x:6,y:4,name:'AMD'},
-        {x:4,y:4,name:'澜起科技'},{x:3,y:4,name:'紫光国微'},
-      ], backgroundColor: '#94a3b8', pointRadius: 6, pointHoverRadius: 10 },
-    ]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: { title: { display: true, text: '预算潜力（估算） →' }, min: 0, max: 11 },
-      y: { title: { display: true, text: '需求紧迫度（估算） →' }, min: 0, max: 11 }
-    },
-    plugins: {
-      subtitle: { display: true, text: '基于公开信息的估算，仅供参考', font: { size: 10 } },
-      tooltip: {
-        callbacks: {
-          label: function(ctx) {
-            const name = ctx.raw.name || ctx.dataset.data[ctx.dataIndex]?.name || '';
-            return name + ' (预算潜力:' + ctx.raw.x + ', 紧迫度:' + ctx.raw.y + ')';
-          }
-        }
-      }
-    }
-  }
-});
-</script>
+</div>
 
 </body>
 </html>
