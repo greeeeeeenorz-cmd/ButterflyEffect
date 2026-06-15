@@ -1,799 +1,1052 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>客户探查报告 · AI工具与半导体行业高价值客户产品画像</title>
-<style>
-  :root {
-    --bg: #f8f9fb; --card-bg: #ffffff;
-    --primary: #2563eb; --accent: #7c3aed;
-    --text: #1e293b; --text-muted: #64748b;
-    --border: #e2e8f0;
-    --shadow: 0 1px 3px rgba(0,0,0,.06);
-    --radius: 12px;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
-  .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-
-  /* Hero */
-  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #172554 100%); color: #fff; border-radius: var(--radius); padding: 40px 36px; margin-bottom: 28px; }
-  .hero h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
-  .hero .subtitle { font-size: 15px; color: #94a3b8; margin-bottom: 16px; }
-  .hero .meta-row { display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: #cbd5e1; }
-  .hero .meta-row span { display: flex; align-items: center; gap: 4px; }
-
-  /* Section */
-  .section { background: var(--card-bg); border-radius: var(--radius); padding: 28px 30px; margin-bottom: 20px; box-shadow: var(--shadow); }
-  .section h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-  .section h2 .badge { font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; }
-  .badge.domestic { background: #dbeafe; color: #1d4ed8; }
-  .badge.overseas { background: #fce7f3; color: #be185d; }
-  .section .sec-desc { font-size: 14px; color: var(--text-muted); margin: 8px 0 20px; }
-
-  /* Product Profile Card */
-  .prod-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; margin-bottom: 16px; transition: box-shadow .15s; }
-  .prod-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.06); }
-  .prod-card .pc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-  .pc-name { font-size: 17px; font-weight: 700; }
-  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .tag { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .tag.ipo { background: #fef3c7; color: #92400e; }
-  .tag.growth { background: #d1fae5; color: #065f46; }
-  .tag.tech { background: #ede9fe; color: #6b21a8; }
-  .tag.scale { background: #dbeafe; color: #1e40af; }
-  .tag.overseas { background: #fce7f3; color: #9d174d; }
-  .tag.brand { background: #fee2e2; color: #991b1b; }
-  .pc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 768px) { .pc-body { grid-template-columns: 1fr; } }
-  .pc-col h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-  .pc-col p, .pc-col ul { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 0; }
-  .pc-col ul { padding-left: 16px; }
-  .pc-col ul li { margin-bottom: 2px; }
-  .pc-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13px; color: var(--accent); line-height: 1.6; }
-
-  /* Priority Table */
-  .table-wrap { overflow-x: auto; margin-top: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: #f1f5f9; text-align: left; padding: 8px 12px; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border); white-space: nowrap; font-size: 12px; }
-  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: #fafbfc; }
-  .pri-3 { color: #ef4444; font-weight: 700; }
-  .pri-2 { color: #f59e0b; font-weight: 600; }
-  .pri-1 { color: #94a3b8; }
-
-  /* Footer */
-  .footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); line-height: 1.8; }
-
-  hr.divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 20px; }
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易系产品对接人网络图</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; height: 100vh; overflow: hidden; }
+        #chart { width: 100vw; height: 100vh; }
+        
+        /* 图例/切片器 - 悬停展开 */
+        .legend-container {
+            position: fixed;
+            top: 110px;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            align-items: stretch;
+            height: calc(100vh - 110px - 60px);
+        }
+        .legend-tab {
+            width: 36px;
+            height: 100%;
+            background: white;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            writing-mode: vertical-rl;
+            transition: background 0.2s;
+        }
+        .legend-tab:hover,
+        .legend-container:hover .legend-tab,
+        .legend-container.pinned .legend-tab { background: #e6f7ff; color: #1890ff; }
+        
+        .legend {
+            width: 0;
+            height: 100%;
+            background: white;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.35s ease, transform 0.35s ease, width 0.35s ease;
+            white-space: nowrap;
+        }
+        .legend-container:hover .legend,
+        .legend.expanded {
+            width: clamp(220px, 20vw, 280px);
+            opacity: 1;
+            transform: translateX(0);
+            padding: 16px;
+            overflow-y: auto;
+        }
+        
+        .legend h4 { margin-bottom: 12px; font-size: 14px; color: #333; display: flex; align-items: center; gap: 6px; }
+        .legend-section { margin-bottom: 16px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 6px; font-size: 12px; cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: background 0.2s; }
+        .legend-item:hover { background: #f5f5f5; }
+        .legend-item.selected { 
+            background: #e6f7ff !important; 
+            border: 1px solid #91d5ff;
+        }
+        .legend-item.selected .legend-dot,
+        .legend-item.selected .legend-square,
+        .legend-item.selected .legend-line {
+            box-shadow: 0 0 6px currentColor;
+        }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+        .legend-square { width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; flex-shrink: 0; }
+        .legend-line { width: 24px; height: 2px; margin-right: 8px; flex-shrink: 0; }
+        .legend-count { margin-left: auto; font-size: 10px; color: #999; }
+        
+        /* 工具栏 */
+        .toolbar { 
+            position: fixed; 
+            top: 20px; 
+            left: 40px; 
+            display: flex; 
+            gap: 8px; 
+            z-index: 100; 
+            flex-wrap: wrap;
+            max-width: calc(100vw - 400px);
+        }
+        .toolbar-btn { background: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s; white-space: nowrap; }
+        .toolbar-btn:hover { background: #f5f5f5; }
+        .toolbar-btn.active { background: #1890ff; color: white; }
+        
+        /* 搜索框 */
+        .search-box { 
+            position: fixed; 
+            top: 70px; 
+            left: 40px; 
+            z-index: 100; 
+        }
+        .search-input { 
+            width: clamp(140px, 20vw, 240px); 
+            padding: 8px 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            outline: none; 
+            background: white;
+        }
+        .search-input:focus { border-color: #1890ff; }
+        
+        /* 面包屑导航 */
+        .breadcrumb { 
+            position: fixed; 
+            top: 110px; 
+            left: 40px; 
+            display: flex; 
+            gap: 4px; 
+            z-index: 100; 
+            font-size: 13px; 
+            color: #666; 
+            display: none; 
+        }
+        .breadcrumb.active { display: flex; }
+        .breadcrumb-item { cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; }
+        .breadcrumb-item:hover { background: #f0f0f0; color: #1890ff; }
+        
+        /* 详情面板 */
+        .detail-panel { 
+            position: fixed; 
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: clamp(240px, 22vw, 300px); 
+            max-height: calc(100vh - 140px);
+            background: white; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15); 
+            z-index: 100; 
+            display: none; 
+            overflow: hidden;
+            flex-direction: column;
+            cursor: move;
+            user-select: none;
+        }
+        .detail-panel.active { display: flex; }
+        .detail-header { 
+            padding: 16px 20px; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            position: relative; 
+            flex-shrink: 0; 
+        }
+        .detail-avatar { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            font-weight: bold; 
+            border: 3px solid rgba(255,255,255,0.3); 
+            flex-shrink: 0; 
+        }
+        .detail-name-wrap {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-name { 
+            font-size: 18px; 
+            font-weight: 600; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
+            color: white;
+        }
+        .detail-type { 
+            font-size: 12px; 
+            opacity: 0.9; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
+            color: rgba(255,255,255,0.85);
+        }
+        .detail-close { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            width: 26px; 
+            height: 26px; 
+            border: none; 
+            background: rgba(255,255,255,0.2); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            color: white; 
+            font-size: 14px; 
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .detail-close:hover { background: rgba(255,255,255,0.4); }
+        
+        .detail-body { padding: 12px 20px; flex-shrink: 0; max-height: 120px; overflow-y: auto; }
+        .detail-row { display: flex; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: #666; width: 50px; flex-shrink: 0; }
+        .detail-value { color: #333; flex: 1; word-break: break-all; }
+        
+        .detail-relations { padding: 0 16px 16px; overflow-y: auto; flex: 1; min-height: 0; }
+        .detail-relations h5 { font-size: 12px; color: #666; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .relation-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .relation-tag { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 16px; font-size: 11px; background: #f5f5f5; color: #333; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .relation-tag:hover { background: #e6f7ff; border-color: #1890ff; color: #1890ff; }
+        .relation-tag .role { font-size: 10px; color: #999; margin-right: 4px; }
+        .relation-tag.product { background: #e6f7ff; border-color: #91d5ff; }
+        .relation-tag.person { background: #fff7e6; border-color: #ffc53d; color: #d46b08; }
+        
+        /* 统计栏 */
+        .stats-bar { 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: white; 
+            padding: 10px 24px; 
+            border-radius: 24px; 
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1); 
+            display: flex; 
+            gap: clamp(16px, 4vw, 32px); 
+            z-index: 100; 
+        }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: clamp(16px, 2vw, 20px); font-weight: 600; color: #333; }
+        .stat-label { font-size: clamp(10px, 1.2vw, 11px); color: #999; }
+        
+        /* 聚焦提示 */
+        .focus-hint { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1890ff; color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; z-index: 100; display: none; box-shadow: 0 2px 12px rgba(24,144,255,0.3); white-space: nowrap; }
+        .focus-hint.active { display: block; }
+    </style>
 </head>
 <body>
-
-<div class="container">
-
-  <!-- ═══ HERO ═══ -->
-  <div class="hero">
-    <h1>客户探查报告：AI工具与半导体行业高价值客户产品画像</h1>
-    <div class="subtitle">聚焦客户产品线与技术架构 · 国内与海外双线覆盖 · 30家客户深度产品梳理</div>
-    <div class="meta-row">
-      <span>📅 报告日期：2026年6月5日</span>
-      <span>🏢 覆盖：AI工具 10家 + 芯片/存储 20家</span>
-      <span>🎯 其中约8家存在较明确的产品商业化窗口</span>
+    <div id="chart"></div>
+    
+    <!-- 切片器 -->
+    <div class="legend-container" id="legendContainer">
+        <div class="legend-tab" id="legendTab">筛选</div>
+        <div class="legend" id="legend"></div>
     </div>
-  </div>
-
-  <!-- ═══ PART 1: DOMESTIC AI ═══ -->
-  <div class="section">
-    <h2><span class="badge domestic">国内篇</span> AI工具公司 · 产品深度画像</h2>
-    <div class="sec-desc">国内AI应用已形成豆包一超多强格局。以下按各家公司产品矩阵、核心技术栈、用户群与商业模式展开。</div>
-
-    <!-- 豆包 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🥇 豆包（Doubao） · 字节跳动</span>
-        <div class="pc-tags"><span class="tag scale">MAU 3.45亿</span><span class="tag tech">全场景智能体</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>豆包App/Web/PC：</strong>全场景AI智能助手，支持文字/图片/语音/视频多模态交互，集对话、写作、翻译、编程、图像生成于一体</li>
-            <li><strong>即梦（Jimeng）：</strong>AI图像与视频生成工具，面向创意设计人群</li>
-            <li><strong>星绘（Xinghui）：</strong>AI图像编辑与风格迁移产品</li>
-            <li><strong>扣子（Coze）：</strong>低代码AI Bot/Agent开发平台，面向开发者与领域专家</li>
-            <li><strong>豆包·PC版：</strong>桌面端AI客户端，2026年强化本地Agent能力</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>核心技术 & 用户群</h4>
-          <ul>
-            <li>字节自研大模型底座，支持超长上下文与多模态理解生成</li>
-            <li>2026年演进为"全场景AI智能体平台"——从单一助手向插件化Agent生态转型</li>
-            <li>2026年央视春晚独家AI云合作伙伴，成为国内首个DAU破亿的独立AI应用</li>
-            <li>用户群：C端国民级覆盖（学生/白领/创作者），B端通过扣子渗透开发者与中小企业</li>
-            <li>商业模式：订阅+广告双轨，扣子平台按API用量计费</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>从单一工具向"超级入口"平台化演进，品牌广告需求持续攀升。字节生态内即梦、星绘、扣子等子产品可整体提案。C端增长留存与B端开发者获取的双线效果广告需求较明确。</div>
+    
+    <!-- 聚焦提示 -->
+    <div class="focus-hint" id="focusHint">🔍 已聚焦到一级关联节点</div>
+    
+    <!-- 工具栏 -->
+    <div class="toolbar">
+        <button class="toolbar-btn active" id="btnAll">显示全部</button>
+        <button class="toolbar-btn" id="btnProducts">只看产品</button>
+        <button class="toolbar-btn" id="btnPersons">只看对接人</button>
     </div>
-
-    <!-- 智谱AI -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔥 智谱AI（Zhipu AI）</span>
-        <div class="pc-tags"><span class="tag ipo">双重上市中</span><span class="tag tech">GLM模型家族</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>智谱清言（ChatGLM）：</strong>C端AI对话助手，支持创意写作、AI画图、代码助手、数据分析</li>
-            <li><strong>GLM-4/GLM-5系列大模型：</strong>覆盖语言、视觉、代码的通用大模型，GLM-5.1入选《时代》"2026最具影响力AI"</li>
-            <li><strong>AutoGLM 2.0：</strong>AI Agent平台（2026年5月发布），对标GPT-5 Agent Mode</li>
-            <li><strong>开放平台（MaaS）：</strong>面向企业与开发者的API服务，提供模型微调、私有化部署</li>
-            <li><strong>智谱清言学习搭子：</strong>AI驱动的个人学习伙伴，对标NotebookLM</li>
-          </ul>
+    
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索产品/对接人...">
+    </div>
+    
+    <!-- 面包屑 -->
+    <div class="breadcrumb" id="breadcrumb">
+        <span class="breadcrumb-item" onclick="resetView()">🏠 全局视图</span>
+    </div>
+    
+    <!-- 详情面板 -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header" id="detailHeader">
+            <div class="detail-avatar" id="detailAvatar">📦</div>
+            <div class="detail-name-wrap">
+                <div class="detail-name" id="detailName">名称</div>
+                <div class="detail-type" id="detailType">类型</div>
+            </div>
+            <button class="detail-close" onclick="closeDetail()">×</button>
         </div>
-        <div class="pc-col">
-          <h4>核心技术 & 用户群</h4>
-          <ul>
-            <li>源自清华的学院派技术团队，GLM（General Language Model）自研架构，强调中英双语能力</li>
-            <li>港股已上市，2026年6月1日公告拟冲刺科创板，预计募资≤150亿元</li>
-            <li>研发投入高企，持续推进从基座模型到Agent平台的垂直整合</li>
-            <li>用户群：B端企业（API客户含金融/政企/互联网），C端面向知识工作者与学生</li>
-            <li>商业模式：API调用计费（核心）+ C端订阅 + 私有化部署项目</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>双重上市背景下资本市场品牌建设窗口紧迫。拟募资150亿元中相当比例用于平台推广，大型整合campaign预算出口明确。B端面向CTO/CIO决策者的精准营销需求清晰。建议即时切入。</div>
+        <div class="detail-body" id="detailBody"></div>
+        <div class="detail-relations" id="detailRelations"></div>
+    </div>
+    
+    <!-- 统计栏 -->
+    <div class="stats-bar">
+        <div class="stat-item"><div class="stat-value" id="statProducts">0</div><div class="stat-label">产品</div></div>
+        <div class="stat-item"><div class="stat-value" id="statPersons">0</div><div class="stat-label">对接人</div></div>
+        <div class="stat-item"><div class="stat-value" id="statRelations">0</div><div class="stat-label">关联</div></div>
     </div>
 
-    <!-- Kimi -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🌙 Kimi · 月之暗面（Moonshot AI）</span>
-        <div class="pc-tags"><span class="tag scale">MAU 1.27亿</span><span class="tag tech">长上下文+Agent</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Kimi App/Web：</strong>以"200万字长上下文"为核心卖点的AI助手，支持文件/网页/图片上传与深度推理分析</li>
-            <li><strong>Kimi K2.6：</strong>2026年4月开源的最新大模型，1万亿参数MoE架构，32B激活参数，支持多模态输入（文本/图像/视频），代码与Agent能力行业领先</li>
-            <li><strong>Kimi Work：</strong>2026年6月内测的通用型本地Agent，面向知识工作者的桌面端自动执行工具</li>
-            <li><strong>Kimi Code：</strong>驱动本地Agent的内核引擎，负责安装使用技能、执行定时任务</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>核心技术 & 用户群</h4>
-          <ul>
-            <li>杨植麟创立，专注长文本+深度推理，"200万字上下文"是国内差异化最明确的定位</li>
-            <li>K2.6支持SWE-bench等编码基准测试表现亮眼，从"阅读工具"向"编程Agent"扩展</li>
-            <li>用户群：知识工作者、学术研究者、程序员、律师等高信息密度职业人群粘性较高</li>
-            <li>商业模式：C端订阅（核心）+ API服务 + 企业版</li>
-            <li>"AI六小虎"中尚未IPO，若启动上市筹备将催生品牌传播需求</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>"长上下文+深度推理"的差异化定位适合面向知识工作者的精准创意campaign。在豆包马太效应下，品牌+效果的"防御性增长"策略需广告支撑。Kimi Work Agent发布是新的产品营销节点。</div>
-    </div>
-
-    <!-- DeepSeek -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">💎 DeepSeek · 深度求索</span>
-        <div class="pc-tags"><span class="tag tech">开源MoE</span><span class="tag scale">估值~$450亿</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>DeepSeek Chat（App/Web）：</strong>C端免费AI对话助手，基于最新V4模型，支持1M上下文与深度推理</li>
-            <li><strong>DeepSeek-V4-Pro/Flash（2026.4发布）：</strong>旗舰模型体系，V4-Pro面向复杂Agent编码任务，V4-Flash面向成本敏感场景，1M上下文标准化</li>
-            <li><strong>DeepSeek-V3系列：</strong>通用大模型基础线，从V3演进至V3.2-Speciale，引入Hybrid Think/Non-Think架构与Sparse Attention</li>
-            <li><strong>DeepSeek-R1系列：</strong>独立推理模型线，R1-0528支持function calling与JSON output</li>
-            <li><strong>开源模型生态：</strong>全部模型开源免费商用，构建开发者生态</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>核心技术 & 用户群</h4>
-          <ul>
-            <li>以MoE（混合专家）架构+极低成本策略震动全球，V4系列推理成本仅为竞品的1/5-1/10</li>
-            <li>自研训练框架+自建智算集群+万卡算力，不依赖外部云服务</li>
-            <li>2026年5月，国家大基金洽谈主导首轮外部融资，估值或达450亿美元</li>
-            <li>用户群：开发者/技术社区（核心）、C端免费用户（MAU超1亿）、企业API客户</li>
-            <li>商业模式：API服务（收费极低）+ 企业服务；C端完全免费，无品牌广告</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>长期以"开源+技术至上"形象运营，公开信息中未见大规模品牌广告投放。若国家大基金领投的首轮融资完成，"极客品牌→公众品牌"转型可能催生新增广告需求。开发者生态与B端商业化是精准营销切入点。</div>
-    </div>
-
-    <!-- MiniMax -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🌍 MiniMax（稀宇科技）</span>
-        <div class="pc-tags"><span class="tag overseas">全球化</span><span class="tag tech">多模态模型</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Talkie / 星野（海外/国内）：</strong>AI角色扮演与娱乐社交应用，MAU约2,005万，为公司最大C端产品，覆盖200+国家</li>
-            <li><strong>海螺AI / Hailuo AI：</strong>综合性AI助手，含视频生成（海螺视频）、语音、音乐等功能，MAU约565万</li>
-            <li><strong>MiniMax Agent：</strong>编程与办公专用AI Agent，MAU约143万，编程token消耗量6个月增长超10倍</li>
-            <li><strong>MiniMax 语音：</strong>AI语音类产品，MAU约49万</li>
-            <li><strong>M2系列模型 API（MaaS）：</strong>文本/视频/语音/音乐四大模型，服务21.4万企业客户与开发者</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>核心技术 & 用户群</h4>
-          <ul>
-            <li>"AI六小虎"中商业化路径最独特——"应用派先锋"，海外收入占比约70%</li>
-            <li>已港股上市，2025年营收约7,900万美元（同比+159%），AI原生产品收入占67.2%</li>
-            <li>累计服务超200个国家/地区的2.36亿用户，视频生成是增长最快的功能</li>
-            <li>用户群：海外C端（美国/东南亚/中东为主）+ 全球开发者与企业客户</li>
-            <li>商业模式：C端订阅与内购 + API调用计费（MaaS占32.8%）</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>海外用户获取是核心需求——美国/东南亚/中东的效果广告需求清晰。港股上市后承受持续收入增长压力，国内品牌建设预算同步扩张。AI社交赛道竞争激励，差异化品牌定位campaign是持续需求。</div>
-    </div>
-  </div>
-
-  <!-- ═══ PART 2: DOMESTIC CHIP ═══ -->
-  <div class="section">
-    <h2><span class="badge domestic">国内篇</span> 芯片与存储公司 · 产品深度画像</h2>
-    <div class="sec-desc">半导体自主化政策背景下，国内存储、AI芯片、设备三条赛道均有代表性公司推进IPO或录得业绩拐点。以下聚焦产品线与技术架构。</div>
-
-    <!-- 中芯国际 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🏭 中芯国际（SMIC）</span>
-        <div class="pc-tags"><span class="tag scale">营收664.5亿</span><span class="tag tech">7nm量产</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li>12英寸/8英寸晶圆代工服务，制程覆盖0.35μm至7nm</li>
-            <li>14nm FinFET工艺产能利用率超95%，7nm已于2026年实现规模量产</li>
-            <li>服务领域：手机SoC、AI推理芯片、IoT、汽车电子、电源管理IC</li>
-            <li>全球晶圆代工第三，中国大陆第一</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>客户以国内Fabless+海外二线芯片设计公司为主</li>
-            <li>纯晶圆代工模式（不涉及自有品牌芯片），B2B商业模式</li>
-            <li>2025年净利98.6亿元（+32.4%），毛利率21%</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>7nm量产突破是重大技术里程碑，需在产业界与公众层面广泛传播。B2B为主，行业媒体、政企关系传播、ESG报告发布是契合的投放场景。</div>
-    </div>
-
-    <!-- 长鑫存储 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔥 长鑫存储（CXMT）</span>
-        <div class="pc-tags"><span class="tag ipo">IPO推进中</span><span class="tag tech">DRAM量产</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>DDR5：</strong>2026年Q1全面量产，良率85%，成本比海外品牌低15-20%，已占国内消费级市场25%份额</li>
-            <li><strong>LPDDR5X：</strong>低功耗DRAM，覆盖12Gb/16Gb颗粒，速率8533-9600Mbps，面向智能手机/平板/轻薄本</li>
-            <li><strong>LPCAMM模组：</strong>新型内存模组形态，容量16GB/32GB</li>
-            <li><strong>DDR4/DDR3L：</strong>成熟制程DRAM，面向工业/汽车/IoT</li>
-            <li>正在推进HBM3研发，IPO募资295亿元将重点投入HBM量产</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>中国唯一DRAM量产企业（IDM一体化模式，设计+制造+封测全链条）</li>
-            <li>客户：国内PC/服务器OEM、手机品牌厂商、汽车电子厂商</li>
-            <li>2025年营收617.99亿元（+155%），归母净利18.75亿元，历史性扭亏为盈</li>
-            <li>预计2026年7月科创板正式挂牌</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>IPO品牌建设是最大机会窗口。"自主可控DRAM唯一玩家"叙事具有极强品牌传播价值。扭亏为盈的业绩拐点适合财经媒体投放与投资者关系传播。建议即时切入。</div>
-    </div>
-
-    <!-- 长江存储 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔥 长江存储（YMTC）</span>
-        <div class="pc-tags"><span class="tag ipo">IPO筹备中</span><span class="tag tech">Xtacking架构</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>3D NAND Flash：</strong>消费级/企业级SSD核心存储芯片，全球市场份额从8%升至13%</li>
-            <li><strong>Xtacking® 3.0/4.0架构：</strong>自研"分头制造+键合集成"技术，实现外围电路与存储阵列分别在两片晶圆加工后垂直互联</li>
-            <li><strong>267层3D NAND TLC：</strong>已通过Xtacking 4.0实现规模量产（TechInsights验证），读写速度与能效比达国际先进水平</li>
-            <li>三期项目2026年下半年量产，产能持续扩张</li>
-            <li>迫使三星首次向中国支付NAND专利费，标志技术影响力获国际认可</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>IDM模式，覆盖NAND设计+制造+封装，面向消费电子/数据中心/企业存储</li>
-            <li>受益于中国本土算力采购旺盛和全球存储供应紧张</li>
-            <li>2026年Q1营收同比增长约445%，逼近全球前三</li>
-            <li>正在推进国内IPO筹备</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>IPO上市传播是核心需求，445%增速+"冲击全球前三"叙事传播力极强。Xtacking技术突破需面向产业界与投资界有效传递。面向政企客户的品牌信任建设是B2B切入方向。建议即时切入。</div>
-    </div>
-
-    <!-- 寒武纪 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔥 寒武纪（Cambricon）</span>
-        <div class="pc-tags"><span class="tag growth">首次盈利</span><span class="tag tech">AI芯片</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>思元（Siyuan）系列云端AI芯片：</strong>思元590（训练+推理）、思元370（推理），覆盖数据中心大规模AI训练与推理场景</li>
-            <li><strong>边缘端AI加速卡：</strong>面向智能制造、智慧交通、安防等边缘计算场景</li>
-            <li><strong>终端智能处理器IP：</strong>授权给手机/loT芯片厂商集成</li>
-            <li>"云-边-端"全场景产品矩阵，国内AI芯片设计龙头</li>
-            <li>在"国产替代英伟达"叙事中占据核心位置</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>Fabless模式（仅设计，制造外包），客户涵盖云服务商/政企数据中心/智能设备厂商</li>
-            <li>2025年营收64.97亿元（+453.21%），归母净利20.59亿元，上市五年来首次全年盈利</li>
-            <li>2026年Q1拟首次分红（每10股派15元），标志从研发投入期进入商业化回报期</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>"上市以来首次盈利+首次分红"是里程碑式品牌叙事节点。在"国产替代英伟达"的行业大叙事中品牌传播价值较高。财经+产业媒体集中传播和投资者关系传播是核心方向。建议即时切入。</div>
-    </div>
-
-    <!-- 兆易创新 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">⚡ 兆易创新（GigaDevice）</span>
-        <div class="pc-tags"><span class="tag growth">Q1净利+523%</span><span class="tag tech">存储+MCU</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>NOR Flash：</strong>全球第二大供应商，含车规级SPI NOR Flash（GD25LX128J系列已批量供货国内主流自动驾驶车型），覆盖消费/工业/汽车</li>
-            <li><strong>32位通用MCU：</strong>国内第一大供应商，基于ARM Cortex-M/RISC-V架构，应用于IoT/工控/汽车电子</li>
-            <li><strong>利基型DRAM：</strong>DDR3L/DDR4/LPDDR4产品线，预计2026年LPDDR4量产</li>
-            <li><strong>SLC NAND + 传感器 + 模拟芯片：</strong>构建"存储+MCU+传感器+模拟"四大产品线的平台型芯片设计龙头</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>Fabless模式，产品广泛用于消费电子/工业控制/汽车电子/IoT</li>
-            <li>2025年营收92.02亿元，2026年Q1净利14.61亿元（+522.79%），接近2025年全年的87%</li>
-            <li>存储周期上行带动量价齐升，盈利能力大幅跃升</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>Q1业绩爆发创造"超预期"强传播窗口，财经媒体+投资者关系传播需求明确。工业/汽车存储高增长叙事适合B2B精准投放。财报季定期跟进。</div>
-    </div>
-
-    <!-- 北方华创 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔧 北方华创（NAURA）</span>
-        <div class="pc-tags"><span class="tag scale">营收393.5亿</span><span class="tag tech">半导体设备</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>刻蚀设备：</strong>ICP/CCP刻蚀机，覆盖硅/介质/金属刻蚀，已进入国内主流晶圆厂产线</li>
-            <li><strong>薄膜沉积设备：</strong>PVD/CVD/ALD，覆盖逻辑/存储/功率半导体</li>
-            <li><strong>清洗设备：</strong>单片/槽式清洗机</li>
-            <li><strong>氧化扩散炉、退火炉</strong>等热处理设备</li>
-            <li>国内半导体设备行业营收绝对第一，受益于国内晶圆厂大规模扩产</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>客户与模式</h4>
-          <ul>
-            <li>B2B设备供应商，客户为中芯国际/长江存储/长鑫存储/华虹等国内主要晶圆厂</li>
-            <li>2025年营收393.53亿元（+31%），净利润54.09亿元</li>
-            <li>"设备国家队"身份，在国产替代浪潮中地位突出</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>"设备国家队"身份+393亿营收具有强品牌叙事。刻蚀/薄膜等关键设备国产化是热门的产业品牌传播素材。面向晶圆厂客户的B2B精准营销（技术白皮书、行业峰会）是核心投放形式。</div>
-    </div>
-
-    <!-- 海光 / 澜起 / 紫光 / 君正 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">📋 更多值得关注的国内芯片公司</span>
-        <div class="pc-tags"><span class="tag tech">差异化产品</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>公司 · 核心产品</h4>
-          <ul>
-            <li><strong>海光信息：</strong>国产x86兼容CPU（海光系列）+ DCU加速器（深算系列），面向服务器与数据中心，2025年扣非净利9.23亿（+74.86%）</li>
-            <li><strong>澜起科技：</strong>全球内存接口芯片龙头，DDR5 RCD/MDB芯片，AI服务器核心供应商。2025年净利润率41%，综合赚钱能力A股存储芯片企业第一</li>
-            <li><strong>紫光国微：</strong>军工特种IC + 智能安全芯片（SIM卡/银行卡/eID），毛利率55.56%</li>
-            <li><strong>北京君正：</strong>微处理器芯片（XBurst系列）+ 智能视频芯片，AI存储+汽车芯片双赛道布局</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>广告切入点</h4>
-          <ul>
-            <li><strong>海光：</strong>DCU与英伟达GPU的竞争替代叙事，面向政企+信创市场的品牌信任建设</li>
-            <li><strong>澜起：</strong>内存接口芯片全球领先的技术叙事，跨境B2B品牌建设</li>
-            <li><strong>紫光国微：</strong>军工+安全芯片的特殊属性，适合精准的政企类媒体投放</li>
-            <li><strong>北京君正：</strong>AI存储+汽车芯片的"成长故事"，适合投资者与产业界内容传播</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>整体策略：</strong>以上四家各有差异化增长故事，适合财报季定期跟踪，以投资者关系传播和行业媒体精准投放为主要切入方向。</div>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- ═══ PART 3: OVERSEAS AI ═══ -->
-  <div class="section">
-    <h2><span class="badge overseas">海外篇</span> AI工具公司 · 产品深度画像</h2>
-    <div class="sec-desc">OpenAI与Anthropic同时在2026年超级碗投放广告，标志着头部AI公司从技术传播转向品牌驱动的关键转折。以下展开各公司产品全貌。</div>
-
-    <!-- OpenAI -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🥇 OpenAI</span>
-        <div class="pc-tags"><span class="tag scale">年化~$250亿</span><span class="tag brand">超级碗广告</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>ChatGPT：</strong>全球最大AI对话产品，月活超9亿，覆盖Web/App/桌面端，支持文字/图片/语音/视频多模态交互</li>
-            <li><strong>GPT-4o/GPT-5系列大模型：</strong>旗舰多模态模型，支撑ChatGPT与API服务</li>
-            <li><strong>Sora：</strong>文生视频模型，面向创意与媒体行业</li>
-            <li><strong>Codex：</strong>AI编程助手，推出后已获50万次应用下载</li>
-            <li><strong>API平台：</strong>面向开发者与企业客户，提供模型调用、微调、Assistants API等</li>
-            <li><strong>ChatGPT Enterprise：</strong>面向大型企业的私有化部署方案</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 用户群</h4>
-          <ul>
-            <li>Freemium+订阅：免费版+ChatGPT Plus（$20/月）+ Pro（$200/月）+ Team/Enterprise</li>
-            <li>API调用计费：按token计费，GPT-4o价格持续下调</li>
-            <li>估值约8,400亿美元（2026年2月融资后）</li>
-            <li>用户群：C端全球用户（9亿MAU）+ 企业客户（含财富500强）+ 开发者</li>
-            <li>2026年超级碗首次投放电视广告，标志从"开发者工具"向"大众消费品牌"转型</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>品牌广告从零到有爆发增长，超级碗级别预算验证品牌建设战略优先级。广告+订阅双轨商业化下效果广告需求持续增强。中国市场本地化品牌建设存在广告需求。</div>
-    </div>
-
-    <!-- Anthropic -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🛡️ Anthropic</span>
-        <div class="pc-tags"><span class="tag brand">品牌驱动</span><span class="tag tech">安全AI</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Claude（App/Web/API）：</strong>AI对话助手与模型服务，品牌定位"纯粹的思考空间"，强调安全性与无广告体验</li>
-            <li><strong>Claude Opus/Sonnet/Haiku：</strong>三档模型系列，从旗舰推理到轻量快速响应分层服务</li>
-            <li><strong>Claude Enterprise：</strong>面向企业的安全管理与合规化部署方案</li>
-            <li><strong>Claude Code：</strong>AI编程助手，对标GitHub Copilot</li>
-            <li><strong>API平台：</strong>模型调用、Agent构建工具、安全护栏（Safety Guardrails）</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 用户群</h4>
-          <ul>
-            <li>C端订阅（Claude Pro $20/月）+ 企业版 + API计费</li>
-            <li>营收从2025年初约10亿美元增长至2025年8月超50亿美元</li>
-            <li>2026年超级碗投放4支系列广告，"广告不会进入Claude"为核心信息，直接挑战OpenAI</li>
-            <li>用户群：安全意识强的企业客户（金融/医疗/法律）+ 知识工作者 + 开发者</li>
-            <li>品牌定位极度依赖价值观输出，品牌广告是其核心竞争手段而非辅助工具</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>品牌广告是Anthropic的核心竞争手段——意味着持续且高投入的品牌campaign预算。"反广告"的品牌叙事本身需要大量广告传播，创意型品牌广告需求旺盛。企业级B2B精准营销是效果广告切入点。</div>
-    </div>
-
-    <!-- Canva -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🎨 Canva</span>
-        <div class="pc-tags"><span class="tag scale">年化$42亿</span><span class="tag overseas">190+国运营</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Canva设计平台（Web/App）：</strong>全球最大在线设计工具，模板驱动的图形设计、演示文稿、视频编辑、网站搭建</li>
-            <li><strong>AI Magic Studio：</strong>AI功能套件——Magic Design（AI生成设计）、Magic Write（AI文案）、Magic Edit（AI图像编辑）、AI视频生成等</li>
-            <li><strong>Canva for Enterprise：</strong>企业协作版，含品牌管理、团队协作、权限管理等B2B功能</li>
-            <li><strong>Canva Print：</strong>在线印刷服务，打通"设计→实物"的O2O闭环</li>
-            <li><strong>Canva Developers API：</strong>面向开发者的集成与定制化能力</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 用户群</h4>
-          <ul>
-            <li>Freemium+订阅：免费版+Canva Pro+Canva for Teams+Enterprise</li>
-            <li>2025年年化收入42亿美元（+40%），MAU 2.65亿，全球190+国运营</li>
-            <li>AI功能月使用次数达数亿量级，企业级采纳是核心增长引擎</li>
-            <li>用户群：个人设计师/营销人员/中小企业主 → 大型企业团队</li>
-            <li>从"个人设计工具"向"企业协作平台"升级中</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>全球化运营意味着多个新兴市场（含中国）的用户获取需求持续存在。企业化转型推动B2B品牌广告需求增加。AI功能持续迭代创造高频产品营销素材。效果+品牌双线需求均较明确。</div>
-    </div>
-
-    <!-- Midjourney -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🎨 Midjourney</span>
-        <div class="pc-tags"><span class="tag tech">图像→视频</span><span class="tag brand">广告投入有限</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Midjourney图像生成（Discord/Web）：</strong>以媲美专业摄影/插画的美学品质著称，Discord社区为核心交互渠道</li>
-            <li><strong>V1视频模型（2025年推出）：</strong>从静态图像生成扩展到动态视频生成，面向创意/广告/影视行业</li>
-            <li><strong>Web独立界面：</strong>逐步脱离对Discord的单一依赖，进入主流Web产品形态</li>
-            <li>核心竞争壁垒：卓越的美学调校、强大的社区网络效应、极低的运营成本</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 用户群</h4>
-          <ul>
-            <li>纯订阅制（$10/月基础→$60/月专业），无免费版、无广告、无投资方</li>
-            <li>年收入约5亿美元（UISDC估算），以Discord社区为唯一增长渠道</li>
-            <li>用户群：设计师/艺术家/广告创意人员/建筑可视化/游戏美术</li>
-            <li>面临DALL·E、Adobe Firefly、Stable Diffusion竞争加剧</li>
-            <li>中国市场有大量非官方中文版和教程，官方缺乏在地化品牌建设</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>长期以社区口碑增长，公开信息中未见规模化品牌广告投放——存在品牌广告"处女地"机会。从图像向视频的产品线扩展可能带来新用户获取需求。中国市场的官方本地化品牌建设存在空白。</div>
-    </div>
-
-    <!-- Notion -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">📝 Notion</span>
-        <div class="pc-tags"><span class="tag scale">年化$6亿</span><span class="tag growth">企业级增长</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>Notion工作空间（Web/App/桌面）：</strong>All-in-one协作文档平台，集笔记、数据库、项目管理、Wiki知识库于一体</li>
-            <li><strong>Notion AI：</strong>内嵌AI能力——AI写作/总结/翻译/Q&A/自动建表，为公司核心收入增长引擎</li>
-            <li><strong>Notion Calendar：</strong>日程管理与协作日历</li>
-            <li><strong>Notion Sites：</strong>基于工作空间快速发布为公开网站</li>
-            <li><strong>Notion Marketplace + API：</strong>第三方集成生态，连接Slack/GitHub/Figma等工具</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 用户群</h4>
-          <ul>
-            <li>Freemium+订阅：个人免费→Plus（$10/月）→Business（$15/月）→Enterprise</li>
-            <li>用户超1亿，约75%财富500强企业有团队使用，估值约110亿美元</li>
-            <li>面对Microsoft Loop、Google Docs等巨头竞争，差异化定位"all-in-one工作空间"</li>
-            <li>用户群：知识工作者/中小团队/大型企业/教育机构</li>
-            <li>AI功能是近两年的核心差异化引擎</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>企业级客户拓展是核心增长战略，B2B品牌广告需求明确。AI功能迭代创造持续产品营销素材。在巨头竞争中的差异化品牌定位需要广告支撑。中国、印度等新兴市场存在用户获取需求。</div>
-    </div>
-  </div>
-
-  <!-- ═══ PART 4: OVERSEAS CHIP ═══ -->
-  <div class="section">
-    <h2><span class="badge overseas">海外篇</span> 芯片与存储公司 · 产品深度画像</h2>
-    <div class="sec-desc">全球半导体行业在AI算力需求与存储超级周期双重驱动下持续扩张。以下重点展开英伟达、三星等头部公司的产品体系与技术路线。</div>
-
-    <!-- 英伟达 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🥇 英伟达（NVIDIA）</span>
-        <div class="pc-tags"><span class="tag scale">营收$1,257亿</span><span class="tag tech">AI GPU</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>H100/H200 Hopper架构GPU：</strong>AI训练与推理主力，H200配备141GB HBM3e，显存带宽4.8TB/s</li>
-            <li><strong>B200/B300 Blackwell架构GPU：</strong>新一代数据中心GPU，NVL72系统集成72颗GPU，算力大幅跃升</li>
-            <li><strong>DGX/HGX系统：</strong>AI超级计算机整机方案，面向大型数据中心与企业私有化部署</li>
-            <li><strong>CUDA平台+AI Enterprise：</strong>软件生态护城河——编程框架、AI模型库、推理优化工具</li>
-            <li><strong>Omniverse：</strong>3D协作与数字孪生平台</li>
-            <li><strong>GeForce RTX消费级GPU：</strong>游戏与创作者显卡，RTX 50系列</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>市场地位 & 挑战</h4>
-          <ul>
-            <li>2025年全球半导体营收冠军，AI训练市场垄断地位</li>
-            <li>市值突破5万亿美元，全球最高市值半导体企业</li>
-            <li>中国市场：H200获美国批准对华出售（附加配额限制），中国企业集体未下单，国产替代份额已达41-52%</li>
-            <li>面临华为昇腾、寒武纪等国产AI芯片的持续替代压力</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>中国市场的企业级品牌建设需求增强——CUDA生态推广、技术大会赞助、高校合作等B2B品牌传播。中国本土替代压力下，在地化品牌信任建设具有战略价值。决策链长，适合长期关系培育。</div>
-    </div>
-
-    <!-- 三星电子 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🔥 三星电子（Samsung Electronics）</span>
-        <div class="pc-tags"><span class="tag scale">Q1净利~¥2,643亿</span><span class="tag tech">HBM4量产</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品矩阵</h4>
-          <ul>
-            <li><strong>HBM4 12Hi：</strong>已率先量产的最新一代高带宽内存，面向英伟达/AMD等AI GPU客户</li>
-            <li><strong>DRAM（DDR5/LPDDR5X/GDDR7）：</strong>全球最大DRAM制造商之一，覆盖服务器/PC/手机/显卡全场景</li>
-            <li><strong>NAND Flash（V-NAND）：</strong>垂直堆叠3D NAND，覆盖消费SSD与企业级存储</li>
-            <li><strong>消费电子：</strong>Galaxy手机/平板/手表、电视、家电——在中国拥有庞大消费电子业务</li>
-            <li><strong>晶圆代工（Samsung Foundry）：</strong>3nm GAA工艺，与台积电竞争</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>市场地位</h4>
-          <ul>
-            <li>DS部门Q1营收81.7万亿韩元（+225%），存储器业务贡献74.8万亿韩元</li>
-            <li>Q1单季净利超越2025全年总和</li>
-            <li>消费电子+半导体双线业务，在中国拥有庞大的品牌认知基础</li>
-            <li>在存储芯片超级周期中与SK海力士、美光展开激烈竞争</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>在中国拥有庞大的消费电子+半导体双线业务，品牌广告预算体量巨大且稳定。消费电子新品发布与半导体B2B两条线可分别切入不同广告产品组合。建议即时跟进。</div>
-    </div>
-
-    <!-- 台积电 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">🏭 台积电（TSMC）</span>
-        <div class="pc-tags"><span class="tag scale">营收$1,224亿</span><span class="tag tech">3nm/5nm</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>产品与技术</h4>
-          <ul>
-            <li><strong>先进制程代工：</strong>3nm/5nm/7nm工艺，被苹果、英伟达、AMD、高通包揽</li>
-            <li><strong>CoWoS先进封装：</strong>将逻辑芯片与HBM内存通过硅中介层集成，英伟达H100/B200核心封装技术</li>
-            <li><strong>3D Fabric：</strong>TSMC的3D IC集成技术平台，含SoIC/InFO/CoWoS三大封装系列</li>
-            <li>全球晶圆代工市占率超60%，绝对霸主</li>
-            <li>2025年净利润552.1亿美元（+51.2%），毛利率59.9%</li>
-            <li>中国大陆南京厂、松江厂运营中</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>商业模式 & 定位</h4>
-          <ul>
-            <li>纯晶圆代工模式（不设计自有芯片），客户即合作伙伴</li>
-            <li>2026年预计营收~1,592亿美元（+30%），净利~789.8亿美元</li>
-            <li>"全球半导体公器"品牌定位，在地缘政治博弈中维持中立形象</li>
-            <li>中国区品牌形象维护和政企关系传播是持续性需求</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>广告机会方向：</strong>中国区品牌形象维护与政企关系传播是长期需求。CoWoS先进封装技术领导地位适合B2B行业媒体深度传播。地缘政治背景下，"全球公器"中立品牌叙事具有战略价值。</div>
-    </div>
-
-    <!-- 更多海外芯片公司 -->
-    <div class="prod-card">
-      <div class="pc-header">
-        <span class="pc-name">📋 更多值得关注的海外芯片公司</span>
-        <div class="pc-tags"><span class="tag tech">存储·CPU·通信</span></div>
-      </div>
-      <div class="pc-body">
-        <div class="pc-col">
-          <h4>公司 · 核心产品</h4>
-          <ul>
-            <li><strong>SK海力士：</strong>HBM市场份额领先（英伟达核心HBM供应商），DRAM全球第一。2025年营业利润约330亿美元，利润率44%。无锡/重庆有生产基地</li>
-            <li><strong>美光科技：</strong>HBM4已量产，DRAM+NAND全球第三。西安封测基地为中国最大外资半导体封测之一。Q1非GAAP净利约140亿美元</li>
-            <li><strong>铠侠（Kioxia）：</strong>全球NAND闪存核心厂商，2025财年营收约1,005亿元人民币（+37%），净利同比+103.6%创历史新高。2026年产能完全预订</li>
-            <li><strong>博通（Broadcom）：</strong>AI定制芯片（ASIC）领导者——谷歌TPU、Meta等的核心定制芯片合作伙伴。Q2营收221.87亿美元（+47.88%），毛利率69.48%</li>
-            <li><strong>高通（Qualcomm）：</strong>骁龙移动平台（端侧AI引擎）+ 汽车芯片双增长引擎。2025财年营收442.84亿美元创历史新高</li>
-            <li><strong>AMD：</strong>Ryzen CPU持续蚕食英特尔，MI300系列AI GPU挑战英伟达。与OpenAI达成AI芯片供应协议。2025年营收346亿美元创纪录</li>
-            <li><strong>英特尔（Intel）：</strong>18A先进制程+晶圆代工业务独立，CEO陈立武推动历史性转型。2025年营收529亿美元，品牌从"垄断巨头"重构为"转型斗士"</li>
-          </ul>
-        </div>
-        <div class="pc-col">
-          <h4>主要广告切入点</h4>
-          <ul>
-            <li><strong>SK海力士：</strong>中国区品牌传播+CSR（无锡/重庆基地），HBM领导地位叙事</li>
-            <li><strong>美光：</strong>品牌信任修复（2023年网络安全审查后），HBM4量产+中国供应链角色传播</li>
-            <li><strong>铠侠：</strong>利润高增长传播窗口，"AI存储超级周期受益者"叙事，企业级SSD B2B推广</li>
-            <li><strong>博通：</strong>"AI ASIC领导者"品牌定位，高利润率+高分红财务故事</li>
-            <li><strong>高通：</strong>端侧AI+"AI不只云端的"消费者品牌广告，汽车芯片B2B精准营销</li>
-            <li><strong>AMD：</strong>"CPU+GPU双线挑战者"品牌叙事，数据中心B2B推广+消费级游戏/电竞营销</li>
-            <li><strong>英特尔：</strong>品牌重建核心需求——18A制程+代工业务的系统性叙事重构</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pc-footer"><strong>整体策略：</strong>以上七家公司预算规模较大，但中国区广告决策链通常较长，建议以长期关系培育为主。其中铠侠业绩高增长的传播窗口和英特尔品牌重建需求较为紧迫，可近期切入。</div>
-    </div>
-  </div>
-
-  <!-- ═══ PRIORITY SUMMARY ═══ -->
-  <div class="section">
-    <h2>🎯 客户优先级总览</h2>
-    <div class="sec-desc">基于产品商业化阶段、品牌建设紧迫度与预算潜力综合评估。以下为建议优先级排序，实际策略需结合客户关系与内部能力做进一步判断。</div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>优先级</th><th>公司</th><th>市场</th><th>核心产品</th><th>关键窗口</th><th>建议行动</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>智谱AI</td><td>国内·AI</td><td>GLM模型+AutoGLM+智谱清言</td><td>科创板IPO · 募资≤150亿</td><td>即时提案</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>长鑫存储</td><td>国内·存储</td><td>DDR5/LPDDR5X DRAM</td><td>IPO推进 · 扭亏为盈</td><td>即时提案</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>长江存储</td><td>国内·存储</td><td>3D NAND+Xtacking 4.0</td><td>IPO筹备 · 营收+445%</td><td>即时提案</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>寒武纪</td><td>国内·AI芯片</td><td>思元系列AI芯片</td><td>首次盈利+首次分红</td><td>即时提案</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>字节（豆包）</td><td>国内·AI</td><td>豆包+即梦+扣子+星绘</td><td>MAU 3.45亿 · 平台化</td><td>即时提案</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>OpenAI</td><td>海外·AI</td><td>ChatGPT+GPT-5+Sora+Codex</td><td>品牌投入增加 · 年收$250亿</td><td>如有海外能力</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>Canva</td><td>海外·AI</td><td>Magic Studio+在线设计</td><td>全球化+企业化双驱动</td><td>如有海外能力</td></tr>
-          <tr><td class="pri-3">⭐⭐⭐</td><td>三星电子</td><td>海外·芯片+消费</td><td>HBM4+DRAM+Galaxy</td><td>中国区双线品牌预算</td><td>即时跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>DeepSeek</td><td>国内·AI</td><td>V4系列开源模型</td><td>估值$450亿·品牌广告待启动</td><td>融资后跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>Kimi（月之暗面）</td><td>国内·AI</td><td>K2.6+Kimi Work Agent</td><td>IPO预期·差异化定位</td><td>持续跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>MiniMax</td><td>国内·AI</td><td>Talkie+海螺AI</td><td>海外效果广告需求明确</td><td>如有海外能力</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>兆易创新</td><td>国内·存储MCU</td><td>NOR Flash+32位MCU</td><td>Q1净利+523%</td><td>财报季跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>中芯国际</td><td>国内·代工</td><td>7nm/14nm晶圆代工</td><td>7nm量产突破</td><td>持续跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>北方华创</td><td>国内·设备</td><td>刻蚀/薄膜/清洗设备</td><td>营收393亿·国产替代</td><td>持续跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>Anthropic</td><td>海外·AI</td><td>Claude系列模型</td><td>品牌广告为核心竞争手段</td><td>长期关系培育</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>Notion</td><td>海外·AI</td><td>Notion AI+协作平台</td><td>企业级增长·年收$6亿</td><td>持续跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>Midjourney</td><td>海外·AI</td><td>图像+V1视频生成</td><td>年收$5亿·广告处女地</td><td>产品扩展期</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>铠侠</td><td>海外·存储</td><td>3D NAND Flash</td><td>利润+104%·传播窗口</td><td>即时跟进</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>美光科技</td><td>海外·存储</td><td>HBM4+DRAM+NAND</td><td>品牌信任修复+技术叙事</td><td>长期关系培育</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>台积电</td><td>海外·代工</td><td>3nm+CoWoS先进封装</td><td>中国区品牌形象维护</td><td>长期关系培育</td></tr>
-          <tr><td class="pri-2">⭐⭐</td><td>英特尔</td><td>海外·芯片</td><td>18A制程+代工业务</td><td>品牌叙事重构</td><td>转型期切入</td></tr>
-          <tr><td class="pri-1">⭐</td><td>海光/澜起/紫光/君正</td><td>国内·芯片</td><td>CPU/接口/安全/MCU</td><td>差异化增长故事</td><td>财报季定期跟踪</td></tr>
-          <tr><td class="pri-1">⭐</td><td>英伟达/SK/博通/高通/AMD</td><td>海外·芯片</td><td>GPU/HBM/ASIC/骁龙/CPU</td><td>预算稳定·决策链长</td><td>长期关系培育</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ═══ FOOTER ═══ -->
-  <div class="footer">
-    本报告基于公开信息整理，数据截至2026年6月5日。产品信息来源于各公司官网、招股书、年报及权威媒体报道。广告需求分析基于公开信息的合理推断，仅供参考。<br>
-    参考文献详见原始Markdown报告（国内篇/海外篇），含QuestMobile、Sacra、TechCrunch、华创证券、Counterpoint Research、Gartner、各公司财报及招股书、百度新闻、新浪财经、雪球等来源。
-  </div>
-
-</div>
-
+    <script>
+    // ============ 数据定义 ============
+    const DATA = {"products": [{"code": "X20", "name": "X20-Marvel Rivals-漫威争锋", "relations": [{"bizType": "国内KOL", "persons": [{"name": "刘岩", "role": "销售", "bizType": "国内KOL"}, {"name": "萨摩", "role": "主运营", "bizType": "国内KOL"}, {"name": "马哲南", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "郭隽珂", "role": "主营销", "bizType": "国内KOL"}, {"name": "李卉娴", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "黎建希", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "罗力", "role": "PM", "bizType": "海外KOL"}, {"name": "罗力", "role": "主运营", "bizType": "海外KOL"}, {"name": "直播", "role": "合作类型", "bizType": "海外KOL"}, {"name": "林翠萍", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "霍昱彤", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "林津琪", "role": "PM", "bizType": "海外UA"}, {"name": "林津琪", "role": "主运营", "bizType": "海外UA"}, {"name": "ALL", "role": "合作类型", "bizType": "海外UA"}]}]}, {"code": "H55", "name": "H55-Identity V-第五人格", "relations": [{"bizType": "国内KOL", "persons": [{"name": "詹小婷", "role": "销售", "bizType": "国内KOL"}, {"name": "丁加加", "role": "PM", "bizType": "国内KOL"}, {"name": "王璐", "role": "主运营", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "夏杨", "role": "主营销", "bizType": "国内KOL"}, {"name": "何邱童", "role": "主营销", "bizType": "国内KOL"}, {"name": "王雨婷", "role": "主营销", "bizType": "国内KOL"}, {"name": "耿菱", "role": "策划", "bizType": "国内KOL"}, {"name": "李嘉俐", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "治治", "role": "PM", "bizType": "海外KOL"}, {"name": "治治", "role": "主运营", "bizType": "海外KOL"}, {"name": "麦麦", "role": "主运营", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "suan", "role": "主营销", "bizType": "海外KOL"}, {"name": "廖海旭", "role": "策划", "bizType": "海外KOL"}, {"name": "邱钰婷", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "PM", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "H72", "name": "H72-Where Winds Meet-燕云十六声", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "詹小婷", "role": "销售", "bizType": "国内KOL"}, {"name": "黄赐罗", "role": "PM", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "殷鸿", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗丹玲", "role": "主营销", "bizType": "国内KOL"}, {"name": "高敏", "role": "主营销", "bizType": "国内KOL"}, {"name": "王崟", "role": "策划", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}, {"name": "雷沙沙", "role": "PM", "bizType": "海外KOL"}, {"name": "沙沙", "role": "主运营", "bizType": "海外KOL"}, {"name": "罗力", "role": "主运营", "bizType": "海外KOL"}, {"name": "黄硕冰", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "张乔治", "role": "主营销", "bizType": "海外KOL"}, {"name": "拖拖", "role": "策划", "bizType": "海外KOL"}, {"name": "列颖欣", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "林津琪", "role": "PM", "bizType": "海外UA"}, {"name": "林津琪", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "H73", "name": "H73-Once Human-七日世界", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "罗皓", "role": "主运营", "bizType": "国内KOL"}, {"name": "殷弘", "role": "主运营", "bizType": "国内KOL"}, {"name": "师帅", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "杨熠宁", "role": "主营销", "bizType": "国内KOL"}, {"name": "辜著崟", "role": "主营销", "bizType": "国内KOL"}, {"name": "李胜泽", "role": "策划", "bizType": "国内KOL"}, {"name": "吴麒国", "role": "策划", "bizType": "国内KOL"}, {"name": "夏培霖", "role": "QC", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "白雨佳", "role": "PM", "bizType": "海外KOL"}, {"name": "小羊", "role": "主运营", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "谢丹", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "唐玥琪", "role": "主营销", "bizType": "海外KOL"}, {"name": "金日", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "夏培霖", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "PM", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "G83US", "name": "G83US-BloodStrike-代号：血战", "relations": [{"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "G83NA", "name": "G83NA-Knives Out-荒野行动", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "马恒", "role": "主营销", "bizType": "国内KOL"}, {"name": "吴裕承", "role": "策划", "bizType": "国内KOL"}, {"name": "李卉娴", "role": "策划", "bizType": "国内KOL"}, {"name": "陈雨青", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "治治", "role": "PM", "bizType": "海外KOL"}, {"name": "治治", "role": "主运营", "bizType": "海外KOL"}, {"name": "鹤子", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "迷路", "role": "主营销", "bizType": "海外KOL"}, {"name": "钟安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "宋俪霖", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "D90", "name": "D90-Naraka-永劫无间", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "杨莹", "role": "主运营", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "金弦", "role": "主营销", "bizType": "国内KOL"}, {"name": "刁统一", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "李胜泽", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "黄烁冰", "role": "PM", "bizType": "海外KOL"}, {"name": "黄烁冰", "role": "主运营", "bizType": "海外KOL"}, {"name": "线下高校", "role": "合作类型", "bizType": "海外KOL"}, {"name": "王皓杰", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "列颖欣", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "L33", "name": "L33-Dunk City Dynasty-全明星街球派对", "relations": []}, {"code": "L36", "name": "L36-逆水寒", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "丁琳", "role": "PM", "bizType": "国内KOL"}, {"name": "林晓茜", "role": "主运营", "bizType": "国内KOL"}, {"name": "杨莹", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "丁势宸", "role": "主营销", "bizType": "国内KOL"}, {"name": "孙沁嫄", "role": "主营销", "bizType": "国内KOL"}, {"name": "戴小凡", "role": "策划", "bizType": "国内KOL"}, {"name": "李萌萌", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "U5", "name": "U5-Eggy Party-蛋仔派对", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "殷弘", "role": "主运营", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "王一雯", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "王思语", "role": "主营销", "bizType": "国内KOL"}, {"name": "陈越", "role": "策划", "bizType": "国内KOL"}]}]}, {"code": "G66", "name": "G66-明日之后", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "丁琳", "role": "PM", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "林晓茜", "role": "主运营", "bizType": "国内KOL"}, {"name": "师帅", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗凯", "role": "主营销", "bizType": "国内KOL"}, {"name": "林统", "role": "主营销", "bizType": "国内KOL"}, {"name": "梁韵婷", "role": "策划", "bizType": "国内KOL"}, {"name": "张冰玉", "role": "QC", "bizType": "国内KOL"}]}]}, {"code": "H74NA", "name": "H74-Sea of Remnants-遗忘之海", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "G112", "name": "G112-Racing Master-巅峰极速", "relations": [{"bizType": "国内KOL", "persons": [{"name": "刘岩", "role": "销售", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "何霡坚", "role": "主营销", "bizType": "国内KOL"}]}]}, {"code": "L10", "name": "L10-倩女幽魂", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "周翔", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "施一雯", "role": "主营销", "bizType": "国内KOL"}, {"name": "高美媛", "role": "策划", "bizType": "国内KOL"}, {"name": "王俊杰", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "L26", "name": "L26-FragPunk-界外狂潮", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "黄赐罗", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗战", "role": "主营销", "bizType": "国内KOL"}, {"name": "丁毓雯", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "李萌萌", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "X19", "name": "X19-Minecraft-我的世界", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "A11", "name": "A11-MUMU模拟器", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "外部运营", "role": "主运营", "bizType": "国内KOL"}, {"name": "SEO", "role": "合作类型", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "李欣", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}]}]}, {"code": "A56", "name": "A56-UU加速器", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "外部运营", "role": "主运营", "bizType": "国内KOL"}, {"name": "SEO", "role": "合作类型", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗恒", "role": "主营销", "bizType": "国内KOL"}, {"name": "范恩颖", "role": "策划", "bizType": "国内KOL"}, {"name": "李欣", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}, {"name": "李君如", "role": "主运营", "bizType": "海外KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "马麟", "role": "主营销", "bizType": "海外KOL"}, {"name": "廖海旭", "role": "策划", "bizType": "海外KOL"}, {"name": "张冰玉", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "G92", "name": "G92-哈利波特魔法觉醒", "relations": []}, {"code": "L28", "name": "L28-Planet Party Time-星球派对", "relations": []}, {"code": "L50NA", "name": "L50-ANANTA-无限大", "relations": []}, {"code": "G108", "name": "G108-Destiny: Rising-命运：群星", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "MA167na", "name": "MA167na-歧路旅人", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "王俊杰", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "李昀芷", "role": "PM", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "于跃", "role": "PM", "bizType": "海外KOL"}, {"name": "于跃", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "谢宇蔚", "role": "主营销", "bizType": "海外KOL"}, {"name": "谢宇蔚", "role": "主营销", "bizType": "海外KOL"}, {"name": "mix", "role": "策划", "bizType": "海外KOL"}, {"name": "石宛金", "role": "主运营", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "TX3", "name": "TX3-天下3：万象", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "于跃", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "陈永亮", "role": "主营销", "bizType": "国内KOL"}, {"name": "萨尔(刘业勤)", "role": "主营销", "bizType": "国内KOL"}, {"name": "伍昭悦", "role": "QC", "bizType": "国内KOL"}]}]}, {"code": "DJ01", "name": "DJ01-Blood Message-归唐", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "赵轩", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "A15", "name": "A15-steam游戏", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "周翔", "role": "PM", "bizType": "国内KOL"}, {"name": "周翔", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "生态", "role": "合作类型", "bizType": "国内KOL"}, {"name": "吴晓", "role": "主营销", "bizType": "国内KOL"}, {"name": "吴晓", "role": "主营销", "bizType": "国内KOL"}, {"name": "赵梓欣", "role": "策划", "bizType": "国内KOL"}, {"name": "赵梓欣", "role": "策划", "bizType": "国内KOL"}, {"name": "林阳锋", "role": "主营销", "bizType": "国内KOL"}]}]}], "persons": [{"name": "刘岩", "products": ["X20-Marvel Rivals-漫威争锋", "G112-Racing Master-巅峰极速"], "roles": ["销售"]}, {"name": "萨摩", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主运营"]}, {"name": "马哲南", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主运营"]}, {"name": "郭隽珂", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主营销"]}, {"name": "李卉娴", "products": ["X20-Marvel Rivals-漫威争锋", "G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "吴杜妍", "products": ["X20-Marvel Rivals-漫威争锋", "D90-Naraka-永劫无间", "L26-FragPunk-界外狂潮"], "roles": ["QC", "策划"]}, {"name": "黎建希", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["商务"]}, {"name": "赵琪", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H73-Once Human-七日世界"], "roles": ["销售"]}, {"name": "罗力", "products": ["X20-Marvel Rivals-漫威争锋", "H72-Where Winds Meet-燕云十六声"], "roles": ["PM", "主运营"]}, {"name": "林翠萍", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主营销"]}, {"name": "乔安琪", "products": ["X20-Marvel Rivals-漫威争锋", "H73-Once Human-七日世界", "D90-Naraka-永劫无间"], "roles": ["策划", "主营销"]}, {"name": "霍昱彤", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["QC"]}, {"name": "Mike", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界", "G83US-BloodStrike-代号：血战", "G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间", "A56-UU加速器", "MA167na-歧路旅人"], "roles": ["商务"]}, {"name": "amber", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界"], "roles": ["销售"]}, {"name": "林津琪", "products": ["X20-Marvel Rivals-漫威争锋", "H72-Where Winds Meet-燕云十六声"], "roles": ["PM", "主运营"]}, {"name": "詹小婷", "products": ["H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声"], "roles": ["销售"]}, {"name": "丁加加", "products": ["H55-Identity V-第五人格"], "roles": ["PM"]}, {"name": "王璐", "products": ["H55-Identity V-第五人格"], "roles": ["主运营"]}, {"name": "孟向阳", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界", "G112-Racing Master-巅峰极速", "G66-明日之后"], "roles": ["主运营"]}, {"name": "夏杨", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "何邱童", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "王雨婷", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "耿菱", "products": ["H55-Identity V-第五人格"], "roles": ["策划"]}, {"name": "李嘉俐", "products": ["H55-Identity V-第五人格"], "roles": ["商务"]}, {"name": "治治", "products": ["H55-Identity V-第五人格", "G83NA-Knives Out-荒野行动"], "roles": ["PM", "主运营"]}, {"name": "麦麦", "products": ["H55-Identity V-第五人格"], "roles": ["主运营"]}, {"name": "李昀芷", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界", "MA167na-歧路旅人"], "roles": ["主运营", "PM"]}, {"name": "suan", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "廖海旭", "products": ["H55-Identity V-第五人格", "A56-UU加速器"], "roles": ["策划"]}, {"name": "邱钰婷", "products": ["H55-Identity V-第五人格"], "roles": ["QC"]}, {"name": "黄梓宜", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界"], "roles": ["PM", "主运营"]}, {"name": "沈佳赟", "products": ["H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对", "G66-明日之后", "H74NA-遗忘之海", "X19-Minecraft-我的世界", "G108-Destiny: Rising-命运：群星"], "roles": ["销售"]}, {"name": "黄赐罗", "products": ["H72-Where Winds Meet-燕云十六声", "L26-FragPunk-界外狂潮"], "roles": ["PM", "主运营"]}, {"name": "李昊燃", "products": ["H72-Where Winds Meet-燕云十六声", "G83NA-Knives Out-荒野行动", "U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "殷鸿", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "罗丹玲", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "高敏", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "王崟", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["策划"]}, {"name": "付羿轩", "products": ["H72-Where Winds Meet-燕云十六声", "A11-MUMU模拟器", "A56-UU加速器", "MA167na-歧路旅人", "TX3-天下3：万象", "DJ01-Blood Message-归唐"], "roles": ["销售"]}, {"name": "雷沙沙", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["PM"]}, {"name": "沙沙", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "黄硕冰", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "张乔治", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "拖拖", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["策划"]}, {"name": "列颖欣", "products": ["H72-Where Winds Meet-燕云十六声", "D90-Naraka-永劫无间"], "roles": ["QC"]}, {"name": "叶惟", "products": ["H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对", "L10-倩女幽魂"], "roles": ["PM"]}, {"name": "罗皓", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "殷弘", "products": ["H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "师帅", "products": ["H73-Once Human-七日世界", "G66-明日之后"], "roles": ["主运营"]}, {"name": "杨熠宁", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "辜著崟", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "李胜泽", "products": ["H73-Once Human-七日世界", "D90-Naraka-永劫无间"], "roles": ["策划", "商务"]}, {"name": "吴麒国", "products": ["H73-Once Human-七日世界"], "roles": ["策划"]}, {"name": "夏培霖", "products": ["H73-Once Human-七日世界"], "roles": ["QC"]}, {"name": "白雨佳", "products": ["H73-Once Human-七日世界"], "roles": ["PM"]}, {"name": "小羊", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "谢丹", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "唐玥琪", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "金日", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "钟娇", "products": ["G83US-BloodStrike-代号：血战", "G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间"], "roles": ["销售"]}, {"name": "田涛", "products": ["G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间", "L10-倩女幽魂", "L26-FragPunk-界外狂潮"], "roles": ["销售"]}, {"name": "马恒", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主营销"]}, {"name": "吴裕承", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "陈雨青", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["商务"]}, {"name": "鹤子", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主运营"]}, {"name": "迷路", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主营销"]}, {"name": "钟安琪", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "宋俪霖", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["QC"]}, {"name": "侍芳", "products": ["D90-Naraka-永劫无间", "L36-逆水寒", "L26-FragPunk-界外狂潮", "A11-MUMU模拟器", "A56-UU加速器", "A15-steam游戏"], "roles": ["销售"]}, {"name": "杨莹", "products": ["D90-Naraka-永劫无间", "L36-逆水寒"], "roles": ["主运营"]}, {"name": "韩彧丰", "products": ["D90-Naraka-永劫无间", "G66-明日之后", "H74NA-遗忘之海", "G108-Destiny: Rising-命运：群星"], "roles": ["主运营"]}, {"name": "金弦", "products": ["D90-Naraka-永劫无间"], "roles": ["主营销"]}, {"name": "刁统一", "products": ["D90-Naraka-永劫无间"], "roles": ["策划"]}, {"name": "黄烁冰", "products": ["D90-Naraka-永劫无间"], "roles": ["PM", "主运营"]}, {"name": "王皓杰", "products": ["D90-Naraka-永劫无间"], "roles": ["主营销"]}, {"name": "丁琳", "products": ["L36-逆水寒", "G66-明日之后"], "roles": ["PM"]}, {"name": "林晓茜", "products": ["L36-逆水寒", "G66-明日之后"], "roles": ["主运营"]}, {"name": "丁势宸", "products": ["L36-逆水寒"], "roles": ["主营销"]}, {"name": "孙沁嫄", "products": ["L36-逆水寒"], "roles": ["主营销"]}, {"name": "戴小凡", "products": ["L36-逆水寒"], "roles": ["策划"]}, {"name": "李萌萌", "products": ["L36-逆水寒", "L26-FragPunk-界外狂潮"], "roles": ["商务"]}, {"name": "王一雯", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "王思语", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["主营销"]}, {"name": "陈越", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["策划"]}, {"name": "罗凯", "products": ["G66-明日之后"], "roles": ["主营销"]}, {"name": "林统", "products": ["G66-明日之后"], "roles": ["主营销"]}, {"name": "梁韵婷", "products": ["G66-明日之后"], "roles": ["策划"]}, {"name": "张冰玉", "products": ["G66-明日之后", "A56-UU加速器"], "roles": ["QC"]}, {"name": "何霡坚", "products": ["G112-Racing Master-巅峰极速"], "roles": ["主营销"]}, {"name": "周翔", "products": ["L10-倩女幽魂", "A15-steam游戏"], "roles": ["主运营", "PM"]}, {"name": "施一雯", "products": ["L10-倩女幽魂"], "roles": ["主营销"]}, {"name": "高美媛", "products": ["L10-倩女幽魂"], "roles": ["策划"]}, {"name": "王俊杰", "products": ["L10-倩女幽魂", "MA167na-歧路旅人"], "roles": ["商务"]}, {"name": "罗战", "products": ["L26-FragPunk-界外狂潮"], "roles": ["主营销"]}, {"name": "丁毓雯", "products": ["L26-FragPunk-界外狂潮"], "roles": ["策划"]}, {"name": "外部运营", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["主运营"]}, {"name": "SEO", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["合作类型"]}, {"name": "李欣", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["商务"]}, {"name": "罗恒", "products": ["A56-UU加速器"], "roles": ["主营销"]}, {"name": "范恩颖", "products": ["A56-UU加速器"], "roles": ["策划"]}, {"name": "李君如", "products": ["A56-UU加速器"], "roles": ["主运营"]}, {"name": "马麟", "products": ["A56-UU加速器"], "roles": ["主营销"]}, {"name": "于跃", "products": ["MA167na-歧路旅人", "TX3-天下3：万象"], "roles": ["主运营", "PM"]}, {"name": "mix", "products": ["MA167na-歧路旅人"], "roles": ["策划"]}, {"name": "石宛金", "products": ["MA167na-歧路旅人"], "roles": ["主运营"]}, {"name": "陈永亮", "products": ["TX3-天下3：万象"], "roles": ["主营销"]}, {"name": "萨尔(刘业勤)", "products": ["TX3-天下3：万象"], "roles": ["主营销"]}, {"name": "伍昭悦", "products": ["TX3-天下3：万象"], "roles": ["QC"]}, {"name": "吴晓", "products": ["A15-steam游戏"], "roles": ["主营销"]}, {"name": "赵梓欣", "products": ["A15-steam游戏"], "roles": ["策划"]}, {"name": "生态", "products": ["A15-steam游戏"], "roles": ["合作类型"]}, {"name": "林阳锋", "products": ["A15-steam游戏"], "roles": ["主营销"]}, {"name": "赵轩", "products": ["DJ01-Blood Message-归唐"], "roles": ["商务"]}]};
+    
+    // 角色配色
+    const ROLE_COLORS = {
+        '销售': '#3498db',
+        'PM': '#9b59b6',
+        '主运营': '#e67e22',
+        '合作类型': '#1abc9c',
+        '主营销': '#e74c3c',
+        '策划': '#2ecc71',
+        'QC': '#f39c12',
+        '商务': '#34495e'
+    };
+    
+    // 角色排序权重
+    const ROLE_ORDER = ['销售', 'PM', '主运营', '主营销', '策划', 'QC', '商务', '合作类型'];
+    
+    // 业务线配色
+    const BIZ_COLORS = {
+        '国内KOL': '#5c7ae9',
+        '海外KOL': '#f5a623',
+        '海外UA': '#9b59b6',
+        '生态': '#27ae60',
+        '生态-短视频': '#27ae60',
+        '生态-直播': '#2ecc71',
+        '直播': '#e74c3c',
+        '视频': '#c0392b',
+        '线下高校': '#1abc9c',
+        'UGC/KOC': '#34495e',
+        'SEO/KOL': '#7f8c8d',
+        'ALL': '#95a5a6'
+    };
+    
+    // 初始化图表
+    const chart = echarts.init(document.getElementById('chart'));
+    let allNodes = [];
+    let allLinks = [];
+    
+    // 状态
+    let currentNodeId = null;
+    let isFocused = false;
+    let showMode = 'all';
+    let searchKeyword = '';
+    let visibleBizTypes = new Set();
+    
+    // ============ 构建图数据 ============
+    function buildGraphData() {
+        const nodes = [];
+        const links = [];
+        const personMap = new Map();
+        
+        DATA.products.forEach(product => {
+            nodes.push({
+                id: 'prod_' + product.code,
+                name: product.code,
+                fullName: product.name,
+                type: 'product',
+                itemStyle: { color: '#4a90d9' },
+                symbol: 'roundRect',
+                symbolSize: 45
+            });
+            
+            product.relations.forEach(rel => {
+                rel.persons.forEach(person => {
+                    const personId = 'per_' + person.name;
+                    
+                    if (!personMap.has(person.name)) {
+                        personMap.set(person.name, personId);
+                        const color = ROLE_COLORS[person.role] || '#6c757d';
+                        nodes.push({
+                            id: personId,
+                            name: person.name,
+                            type: 'person',
+                            role: person.role,
+                            itemStyle: { color: color },
+                            symbol: 'circle',
+                            symbolSize: 26
+                        });
+                    }
+                    
+                    links.push({
+                        source: personId,
+                        target: 'prod_' + product.code,
+                        relationType: person.bizType,
+                        lineStyle: { 
+                            color: BIZ_COLORS[person.bizType] || '#95a5a6',
+                            width: 1.5,
+                            opacity: 0.6
+                        }
+                    });
+                });
+            });
+        });
+        
+        return { nodes, links };
+    }
+    
+    // ============ 图例构建 ============
+    function buildLegend() {
+        const legend = document.getElementById('legend');
+        
+        const productCount = DATA.products.length;
+        const personCount = DATA.persons.length;
+        
+        const bizStats = {};
+        const coopTypeSet = new Set();
+        DATA.products.forEach(p => {
+            p.relations.forEach(r => {
+                bizStats[r.bizType] = (bizStats[r.bizType] || 0) + r.persons.length;
+                r.persons.forEach(p => {
+                    if (p.role === '合作类型') coopTypeSet.add(p.name);
+                });
+            });
+        });
+        
+        const roleStats = {};
+        DATA.persons.forEach(p => {
+            p.roles.forEach(r => {
+                roleStats[r] = (roleStats[r] || 0) + 1;
+            });
+        });
+        
+        let html = `<h4>📊 图例</h4>`;
+        
+        html += `<div class="legend-section">
+            <div style="font-size:11px;color:#999;margin-bottom:6px;">节点类型</div>
+            <div class="legend-item"><div class="legend-square" style="background:#4a90d9"></div>产品<span class="legend-count">${productCount}</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#6c757d"></div>对接人<span class="legend-count">${personCount}</span></div>
+        </div>`;
+        
+        html += `<div class="legend-section">
+            <div style="font-size:11px;color:#999;margin-bottom:6px;">业务线（点击筛选）</div>`;
+        
+        Object.keys(bizStats).sort().forEach(biz => {
+            const color = BIZ_COLORS[biz] || '#95a5a6';
+            html += `<div class="legend-item" data-type="biz" data-value="${biz}">
+                <div class="legend-line" style="background:${color}"></div>${biz}<span class="legend-count">${bizStats[biz]}</span>
+            </div>`;
+        });
+        
+        html += `</div><div class="legend-section">
+            <div style="font-size:11px;color:#999;margin-bottom:6px;">角色（点击筛选）</div>`;
+        
+        Object.keys(roleStats).filter(r => r !== '合作类型').sort().forEach(role => {
+            const color = ROLE_COLORS[role] || '#95a5a6';
+            html += `<div class="legend-item" data-type="role" data-value="${role}">
+                <div class="legend-dot" style="background:${color};width:10px;height:10px;"></div>${role}<span class="legend-count">${roleStats[role]}</span>
+            </div>`;
+        });
+        
+        html += `</div><div class="legend-section">
+            <div style="font-size:11px;color:#999;margin-bottom:6px;">合作类型（点击筛选）</div>`;
+        
+        [...coopTypeSet].sort().forEach(ct => {
+            const color = ROLE_COLORS['合作类型'];
+            html += `<div class="legend-item" data-type="cooptype" data-value="${ct}">
+                <div class="legend-dot" style="background:${color};width:10px;height:10px;"></div>${ct}
+            </div>`;
+        });
+        
+        html += `</div>`;
+        legend.innerHTML = html;
+        
+        // 筛选状态 - 单选
+        let selectedBizType = null;
+        let selectedRole = null;
+        
+        // 业务线筛选 - 单选（点击选中，再点同一个取消）
+        legend.querySelectorAll('.legend-item[data-type="biz"]').forEach(item => {
+            item.addEventListener('click', () => {
+                const value = item.dataset.value;
+                
+                if (selectedBizType === value) {
+                    // 取消选中
+                    selectedBizType = null;
+                    item.classList.remove('selected');
+                } else {
+                    // 选中新的，取消之前的
+                    legend.querySelectorAll('.legend-item[data-type="biz"]').forEach(i => i.classList.remove('selected'));
+                    selectedBizType = value;
+                    item.classList.add('selected');
+                }
+                
+                if (selectedBizType) {
+                    visibleBizTypes = new Set([selectedBizType]);
+                } else {
+                    visibleBizTypes = new Set();
+                }
+                
+                renderChart();
+            });
+        });
+        
+        // 角色筛选 - 单选（点击选中，再点同一个取消）
+        legend.querySelectorAll('.legend-item[data-type="role"]').forEach(item => {
+            item.addEventListener('click', () => {
+                const value = item.dataset.value;
+                
+                if (selectedRole === value) {
+                    // 取消选中
+                    selectedRole = null;
+                    item.classList.remove('selected');
+                } else {
+                    // 选中新的，取消之前的
+                    legend.querySelectorAll('.legend-item[data-type="role"]').forEach(i => i.classList.remove('selected'));
+                    selectedRole = value;
+                    item.classList.add('selected');
+                }
+                
+                renderChart();
+            });
+        });
+        
+        // 合作类型筛选 - 单选（点击选中，再点同一个取消）
+        let selectedCoopType = null;
+        
+        legend.querySelectorAll('.legend-item[data-type="cooptype"]').forEach(item => {
+            item.addEventListener('click', () => {
+                const value = item.dataset.value;
+                
+                if (selectedCoopType === value) {
+                    selectedCoopType = null;
+                    item.classList.remove('selected');
+                } else {
+                    legend.querySelectorAll('.legend-item[data-type="cooptype"]').forEach(i => i.classList.remove('selected'));
+                    selectedCoopType = value;
+                    item.classList.add('selected');
+                }
+                
+                renderChart();
+            });
+        });
+    }
+    
+    // ============ 图表配置 ============
+    function getChartOption(nodes, links) {
+        return {
+            animation: true,
+            animationDuration: 800,
+            animationDurationUpdate: 500,
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: '#eee',
+                borderWidth: 1,
+                textStyle: { color: '#333', fontSize: 12 },
+                formatter: function(params) {
+                    if (params.dataType === 'edge') {
+                        return `<span style="display:inline-block;width:10px;height:10px;background:${params.data.lineStyle.color};border-radius:50%;margin-right:6px;"></span>${params.data.relationType}`;
+                    }
+                    const node = params.data;
+                    if (node.type === 'product') {
+                        return `<strong>${node.name}</strong><br/><span style="color:#888">${node.fullName}</span>`;
+                    } else {
+                        return `<strong>${node.name}</strong><br/><span style="color:#888">${node.role || '对接人'}</span>`;
+                    }
+                }
+            },
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                force: {
+                    repulsion: 350,
+                    edgeLength: [30, 80],
+                    gravity: 0.05,
+                    layoutAnimation: true,
+                    alpha: 0.3,
+                    alphaDecay: 0.02,
+                    alphaMin: 0.001
+                },
+                symbol: function(value, params) {
+                    return params.data.symbol || 'circle';
+                },
+                symbolSize: function(value, params) {
+                    return params.data.symbolSize || 30;
+                },
+                roam: true,
+                draggable: true,
+                label: {
+                    show: true,
+                    position: 'bottom',
+                    formatter: function(params) {
+                        return params.data.name;
+                    },
+                    fontSize: 11,
+                    color: 'rgba(0,0,0,0.7)',
+                    textShadowColor: 'rgba(255,255,255,0.8)',
+                    textShadowBlur: 3
+                },
+                lineStyle: {
+                    width: 1.5,
+                    curveness: 0.1,
+                    opacity: 0.6
+                },
+                emphasis: {
+                    focus: 'none',
+                    scale: 1.5,
+                    lineStyle: { width: 3, opacity: 1 },
+                    itemStyle: { shadowBlur: 15, shadowColor: 'rgba(24,144,255,0.4)' },
+                    label: { fontSize: 13, fontWeight: 'bold' }
+                },
+                blur: {
+                    itemStyle: { opacity: 0.25 },
+                    lineStyle: { opacity: 0.1 },
+                    label: { opacity: 0.25 }
+                },
+                data: nodes,
+                links: links
+            }]
+        };
+    }
+    
+    // ============ 聚焦视图 ============
+    function getFirstDegreeNodes(nodeId) {
+        const connectedIds = new Set([nodeId]);
+        
+        allLinks.forEach(link => {
+            if (link.source === nodeId || link.target === nodeId) {
+                connectedIds.add(link.source);
+                connectedIds.add(link.target);
+            }
+        });
+        
+        return connectedIds;
+    }
+    
+    // ============ 渲染图表 ============
+    function renderChart() {
+        let visibleNodeIds;
+        let isSearchMode = false;
+        
+        // 搜索模式 - 只显示匹配节点和一级节点
+        if (searchKeyword) {
+            isSearchMode = true;
+            const matchedIds = new Set();
+            allNodes.forEach(n => {
+                if (n.name.toLowerCase().includes(searchKeyword) || 
+                    (n.fullName && n.fullName.toLowerCase().includes(searchKeyword)) ||
+                    (n.role && n.role.toLowerCase().includes(searchKeyword))) {
+                    matchedIds.add(n.id);
+                }
+            });
+            // 获取一级关联节点
+            const firstDegreeIds = new Set();
+            matchedIds.forEach(mid => {
+                allLinks.forEach(l => {
+                    if (l.source === mid || l.target === mid) {
+                        firstDegreeIds.add(l.source);
+                        firstDegreeIds.add(l.target);
+                    }
+                });
+            });
+            visibleNodeIds = firstDegreeIds;
+        }
+        // 聚焦模式
+        else if (isFocused && currentNodeId) {
+            visibleNodeIds = getFirstDegreeNodes(currentNodeId);
+        }
+        // 全局模式
+        else {
+            visibleNodeIds = new Set(allNodes.map(n => n.id));
+        }
+        
+        // 类型筛选 - 扩展可见节点（保留关联关系！）
+        // 聚焦模式下跳过类型筛选，保留聚焦视图
+        if (!isFocused) {
+            if (showMode === 'products') {
+                const productIds = new Set(allNodes.filter(n => n.type === 'product').map(n => n.id));
+                allLinks.forEach(l => {
+                    if (productIds.has(l.source) || productIds.has(l.target)) {
+                        visibleNodeIds.add(l.source);
+                        visibleNodeIds.add(l.target);
+                    }
+                });
+            } else if (showMode === 'persons') {
+                const personIds = new Set(allNodes.filter(n => n.type === 'person').map(n => n.id));
+                allLinks.forEach(l => {
+                    if (personIds.has(l.source) || personIds.has(l.target)) {
+                        visibleNodeIds.add(l.source);
+                        visibleNodeIds.add(l.target);
+                    }
+                });
+            }
+        }
+        
+        // 过滤节点
+        let filteredNodes = allNodes.filter(n => {
+            if (!visibleNodeIds.has(n.id)) return false;
+            // 聚焦模式下不过滤类型
+            if (!isFocused && showMode === 'products' && n.type === 'person') return false;
+            if (!isFocused && showMode === 'persons' && n.type === 'product') return false;
+            return true;
+        });
+        
+        // 过滤边
+        let filteredLinks = allLinks.filter(l => {
+            if (!visibleNodeIds.has(l.source) || !visibleNodeIds.has(l.target)) return false;
+            // 业务线筛选：只保留选中的业务线
+            if (visibleBizTypes.size > 0 && !visibleBizTypes.has(l.relationType)) return false;
+            return true;
+        });
+        
+        // 角色筛选 - 在过滤后的节点上应用
+        let roleFilteredNodes = filteredNodes;
+        let roleFilteredLinks = filteredLinks;
+        
+        // 获取选中的角色（从图例获取）
+        const selectedRoleItem = document.querySelector('.legend-item[data-type="role"].selected');
+        const selectedRoleValue = selectedRoleItem ? selectedRoleItem.dataset.value : null;
+        
+        if (selectedRoleValue && !isSearchMode) {
+            // 角色筛选模式：只显示该角色的对接人及其关联产品
+            const rolePersonIds = new Set();
+            filteredNodes.forEach(n => {
+                if (n.type === 'person' && n.role === selectedRoleValue) {
+                    rolePersonIds.add(n.id);
+                }
+            });
+            
+            // 扩展到关联产品
+            filteredLinks.forEach(l => {
+                if (rolePersonIds.has(l.source)) {
+                    rolePersonIds.add(l.target);
+                }
+            });
+            
+            roleFilteredNodes = filteredNodes.filter(n => rolePersonIds.has(n.id));
+            roleFilteredLinks = filteredLinks.filter(l => rolePersonIds.has(l.source) && rolePersonIds.has(l.target));
+        }
+        
+        // 合作类型筛选
+        const selectedCoopTypeItem = document.querySelector('.legend-item[data-type="cooptype"].selected');
+        const selectedCoopTypeValue = selectedCoopTypeItem ? selectedCoopTypeItem.dataset.value : null;
+        
+        if (selectedCoopTypeValue && !isSearchMode) {
+            // 找到包含该合作类型的边
+            const coopNodeIds = new Set();
+            roleFilteredLinks.forEach(l => {
+                const personNode = allNodes.find(n => n.id === l.source);
+                if (personNode && personNode.role === '合作类型' && personNode.name === selectedCoopTypeValue) {
+                    coopNodeIds.add(l.source);
+                    coopNodeIds.add(l.target);
+                }
+            });
+            
+            // 获取与这些边关联的产品，找出所有关联该产品的对接人
+            const connectedProductIds = new Set();
+            coopNodeIds.forEach(nid => {
+                const node = allNodes.find(n => n.id === nid);
+                if (node && node.type === 'product') connectedProductIds.add(nid);
+            });
+            
+            connectedProductIds.forEach(pid => {
+                roleFilteredLinks.forEach(l => {
+                    if (l.target === pid) {
+                        coopNodeIds.add(l.source);
+                        coopNodeIds.add(l.target);
+                    }
+                    if (l.source === pid) {
+                        coopNodeIds.add(l.source);
+                        coopNodeIds.add(l.target);
+                    }
+                });
+            });
+            
+            roleFilteredNodes = roleFilteredNodes.filter(n => coopNodeIds.has(n.id));
+            roleFilteredLinks = roleFilteredLinks.filter(l => coopNodeIds.has(l.source) && coopNodeIds.has(l.target));
+        }
+        
+        // 更新统计
+        const productCount = roleFilteredNodes.filter(n => n.type === 'product').length;
+        const personCount = roleFilteredNodes.filter(n => n.type === 'person').length;
+        document.getElementById('statProducts').textContent = productCount;
+        document.getElementById('statPersons').textContent = personCount;
+        document.getElementById('statRelations').textContent = roleFilteredLinks.length;
+        
+        chart.setOption(getChartOption(roleFilteredNodes, roleFilteredLinks));
+    }
+    
+    // ============ 详情面板 ============
+    function showNodeDetail(node) {
+        currentNodeId = node.id;
+        isFocused = true;
+        
+        const panel = document.getElementById('detailPanel');
+        panel.classList.add('active');
+        
+        document.getElementById('detailName').textContent = node.name;
+        
+        if (node.type === 'product') {
+            document.getElementById('detailAvatar').textContent = '🎮';
+            document.getElementById('detailAvatar').style.background = '#4a90d9';
+            document.getElementById('detailHeader').style.background = 'linear-gradient(135deg, #4a90d9, #67b26f)';
+            document.getElementById('detailType').textContent = node.fullName;
+            
+            let bodyHtml = `<div class="detail-row"><div class="detail-label">编号</div><div class="detail-value">${node.name}</div></div>`;
+            document.getElementById('detailBody').innerHTML = bodyHtml;
+            
+            const relatedPersons = [];
+            const bizCoopTypes = {}; // 业务线→合作类型集合
+            allLinks.filter(l => l.target === node.id).forEach(l => {
+                const personNode = allNodes.find(n => n.id === l.source);
+                if (personNode) {
+                    if (personNode.role === '合作类型') {
+                        if (!bizCoopTypes[l.relationType]) bizCoopTypes[l.relationType] = new Set();
+                        bizCoopTypes[l.relationType].add(personNode.name);
+                    } else {
+                        relatedPersons.push({
+                            name: personNode.name,
+                            bizType: l.relationType,
+                            personRole: personNode.role,
+                            nodeId: personNode.id
+                        });
+                    }
+                }
+            });
+            
+            const byBiz = {};
+            relatedPersons.forEach(p => {
+                if (!byBiz[p.bizType]) byBiz[p.bizType] = [];
+                byBiz[p.bizType].push(p);
+            });
+            
+            // 每个业务线内按角色重要性排序
+            Object.values(byBiz).forEach(persons => {
+                persons.sort((a, b) => {
+                    const ia = ROLE_ORDER.indexOf(a.personRole);
+                    const ib = ROLE_ORDER.indexOf(b.personRole);
+                    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+                });
+            });
+            
+            let relHtml = '<h5>关联对接人</h5>';
+            Object.keys(byBiz).sort().forEach(biz => {
+                const coopStr = bizCoopTypes[biz] ? ' · ' + [...bizCoopTypes[biz]].join('/') : '';
+                relHtml += `<div style="margin-bottom:8px">`;
+                relHtml += `<span style="font-size:10px;color:#999;margin-bottom:4px;display:block">${biz}<span style="color:#1abc9c;font-size:9px">${coopStr}</span></span>`;
+                relHtml += `<div class="relation-tags">`;
+                byBiz[biz].forEach(p => {
+                    const roleColor = ROLE_COLORS[p.personRole] || '#6c757d';
+                    const bgColor = roleColor + '15';
+                    relHtml += `<span class="relation-tag person" onclick="jumpToNode('${p.nodeId}')" style="border-color:${roleColor};background:${bgColor}"><span class="role" style="color:${roleColor}">${p.personRole}</span>${p.name}</span>`;
+                });
+                relHtml += `</div></div>`;
+            });
+            
+            document.getElementById('detailRelations').innerHTML = relHtml || '<p style="color:#999;font-size:12px;text-align:center;padding:20px">暂无关联</p>';
+            
+        } else {
+            document.getElementById('detailAvatar').textContent = node.name[0];
+            document.getElementById('detailAvatar').style.background = node.itemStyle.color;
+            document.getElementById('detailHeader').style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            document.getElementById('detailType').textContent = node.role;
+            
+            const relatedProducts = [];
+            // 收集每个产品-业务线组合的合作类型
+            const prodBizCoopMap = {}; // key: "prodCode|bizType" -> [coop names]
+            allLinks.forEach(l => {
+                const pNode = allNodes.find(n => n.id === l.source);
+                if (pNode && pNode.role === '合作类型') {
+                    const key = l.target + '|' + l.relationType;
+                    if (!prodBizCoopMap[key]) prodBizCoopMap[key] = [];
+                    prodBizCoopMap[key].push(pNode.name);
+                }
+            });
+            
+            allLinks.filter(l => l.source === node.id).forEach(l => {
+                const productNode = allNodes.find(n => n.id === l.target);
+                if (productNode) {
+                    relatedProducts.push({
+                        name: productNode.name,
+                        fullName: productNode.fullName,
+                        bizType: l.relationType,
+                        nodeId: productNode.id
+                    });
+                }
+            });
+            
+            let bodyHtml = `<div class="detail-row"><div class="detail-label">角色</div><div class="detail-value">${node.role || '对接人'}</div></div>`;
+            bodyHtml += `<div class="detail-row"><div class="detail-label">负责</div><div class="detail-value">${relatedProducts.length} 个产品</div></div>`;
+            document.getElementById('detailBody').innerHTML = bodyHtml;
+            
+            const byBiz = {};
+            relatedProducts.forEach(p => {
+                if (!byBiz[p.bizType]) byBiz[p.bizType] = [];
+                byBiz[p.bizType].push(p);
+            });
+            
+            let relHtml = '<h5>负责产品</h5>';
+            Object.keys(byBiz).sort().forEach(biz => {
+                relHtml += `<div style="margin-bottom:8px">`;
+                relHtml += `<span style="font-size:10px;color:#999;margin-bottom:4px;display:block">${biz}</span>`;
+                relHtml += `<div class="relation-tags">`;
+                byBiz[biz].forEach(p => {
+                    const coopKey = p.nodeId + '|' + biz;
+                    const coops = prodBizCoopMap[coopKey] || [];
+                    const coopSuffix = coops.length > 0 ? ` <span style="font-size:9px;color:#1abc9c">(${coops.join('/')})</span>` : '';
+                    relHtml += `<span class="relation-tag product" onclick="jumpToNode('${p.nodeId}')">${p.name}${coopSuffix}</span>`;
+                });
+                relHtml += `</div></div>`;
+            });
+            
+            document.getElementById('detailRelations').innerHTML = relHtml || '<p style="color:#999;font-size:12px;text-align:center;padding:20px">暂无关联</p>';
+        }
+        
+        document.getElementById('focusHint').classList.add('active');
+        document.getElementById('breadcrumb').classList.add('active');
+        
+        renderChart();
+    }
+    
+    function jumpToNode(nodeId) {
+        const node = allNodes.find(n => n.id === nodeId);
+        if (node) {
+            showNodeDetail(node);
+        }
+    }
+    
+    function closeDetail() {
+        document.getElementById('detailPanel').classList.remove('active');
+        document.getElementById('focusHint').classList.remove('active');
+        document.getElementById('breadcrumb').classList.remove('active');
+        currentNodeId = null;
+        isFocused = false;
+        renderChart();
+    }
+    
+    function resetView() {
+        isFocused = false;
+        currentNodeId = null;
+        document.getElementById('detailPanel').classList.remove('active');
+        document.getElementById('focusHint').classList.remove('active');
+        document.getElementById('breadcrumb').classList.remove('active');
+        renderChart();
+    }
+    
+    // ============ 事件绑定 ============
+    
+    // 节点点击
+    chart.on('click', function(params) {
+        if (!params.data || params.data.type === undefined) return;
+        showNodeDetail(params.data);
+    });
+    
+    // 点击空白关闭详情
+    let clickHandled = false;
+    chart.getZr().on('click', function(params) {
+        if (params.target === undefined && !clickHandled) {
+            closeDetail();
+        }
+        setTimeout(() => { clickHandled = false; }, 100);
+    });
+    
+    chart.on('click', () => { clickHandled = true; });
+    
+    // 工具栏按钮
+    document.getElementById('btnAll').addEventListener('click', () => {
+        showMode = 'all';
+        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btnAll').classList.add('active');
+        renderChart();
+    });
+    document.getElementById('btnProducts').addEventListener('click', () => {
+        showMode = 'products';
+        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btnProducts').classList.add('active');
+        renderChart();
+    });
+    document.getElementById('btnPersons').addEventListener('click', () => {
+        showMode = 'persons';
+        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btnPersons').classList.add('active');
+        renderChart();
+    });
+    
+    // 搜索功能
+    document.getElementById('searchInput').addEventListener('input', e => {
+        searchKeyword = e.target.value.trim().toLowerCase();
+        if (searchKeyword) {
+            closeDetail();
+        }
+        renderChart();
+    });
+    
+    // 切片器固定展开/收起
+    let isPinned = false;
+    document.getElementById('legendTab').addEventListener('click', (e) => {
+        e.stopPropagation();
+        isPinned = !isPinned;
+        const container = document.getElementById('legendContainer');
+        if (isPinned) {
+            container.classList.add('pinned');
+            document.getElementById('legend').classList.add('expanded');
+        } else {
+            container.classList.remove('pinned');
+            document.getElementById('legend').classList.remove('expanded');
+        }
+    });
+    
+    // 详情面板拖拽
+    const detailPanel = document.getElementById('detailPanel');
+    let isDragging = false;
+    let dragOffsetX, dragOffsetY;
+    
+    detailPanel.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.detail-close') || e.target.closest('.relation-tag')) return;
+        isDragging = true;
+        detailPanel.style.cursor = 'grabbing';
+        const rect = detailPanel.getBoundingClientRect();
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+        detailPanel.style.transform = 'none';
+        detailPanel.style.top = rect.top + 'px';
+        detailPanel.style.right = 'auto';
+        detailPanel.style.left = rect.left + 'px';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        detailPanel.style.left = (e.clientX - dragOffsetX) + 'px';
+        detailPanel.style.top = (e.clientY - dragOffsetY) + 'px';
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            detailPanel.style.cursor = 'move';
+        }
+    });
+    
+    // ============ 初始化 ============
+    const graphData = buildGraphData();
+    allNodes = graphData.nodes;
+    allLinks = graphData.links;
+    
+    buildLegend();
+    renderChart();
+    
+    window.addEventListener('resize', () => {
+        chart.resize();
+    });
+    
+    console.log('网易系产品对接人网络图加载完成', {
+        products: DATA.products.length,
+        persons: DATA.persons.length,
+        links: allLinks.length
+    });
+    </script>
 </body>
 </html>
