@@ -6,281 +6,142 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网易系产品对接人网络图</title>
+    <title>网易系产品对接人网络图（人维度）v2.3</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; height: 100vh; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; height: 100vh; overflow: hidden; }
         #chart { width: 100vw; height: 100vh; }
-        
-        /* 图例/切片器 - 悬停展开 */
+
+        /* 图例/切片器 */
         .legend-container {
-            position: fixed;
-            top: 110px;
-            left: 0;
-            z-index: 100;
-            display: flex;
-            align-items: stretch;
+            position: fixed; top: 110px; left: 0; z-index: 100;
+            display: flex; align-items: stretch;
             height: calc(100vh - 110px - 60px);
         }
         .legend-tab {
-            width: 36px;
-            height: 100%;
-            background: white;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.08);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #999;
-            writing-mode: vertical-rl;
+            width: 36px; height: 100%;
+            background: rgba(30,33,40,0.95); border-radius: 0 8px 8px 0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+            cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: 12px; color: #888; writing-mode: vertical-rl;
             transition: background 0.2s;
         }
         .legend-tab:hover,
         .legend-container:hover .legend-tab,
-        .legend-container.pinned .legend-tab { background: #e6f7ff; color: #1890ff; }
-        
+        .legend-container.pinned .legend-tab { background: rgba(51,154,240,0.15); color: #339af0; }
+
         .legend {
-            width: 0;
-            height: 100%;
-            background: white;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
-            overflow: hidden;
-            opacity: 0;
+            width: 0; height: 100%;
+            background: rgba(30,33,40,0.95); border-radius: 0 12px 12px 0;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.4);
+            overflow: hidden; opacity: 0;
             transform: translateX(-20px);
             transition: opacity 0.35s ease, transform 0.35s ease, width 0.35s ease;
             white-space: nowrap;
         }
-        .legend-container:hover .legend,
-        .legend.expanded {
-            width: clamp(220px, 20vw, 280px);
-            opacity: 1;
-            transform: translateX(0);
-            padding: 16px;
-            overflow-y: auto;
+        .legend-container:hover .legend, .legend.expanded {
+            width: 240px; opacity: 1; transform: translateX(0);
+            padding: 16px; overflow-y: auto;
         }
-        
-        .legend h4 { margin-bottom: 12px; font-size: 14px; color: #333; display: flex; align-items: center; gap: 6px; }
+        .legend h4 { margin-bottom: 12px; font-size: 14px; color: #ccc; display: flex; align-items: center; gap: 6px; }
         .legend-section { margin-bottom: 16px; }
-        .legend-item { display: flex; align-items: center; margin-bottom: 6px; font-size: 12px; cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: background 0.2s; }
-        .legend-item:hover { background: #f5f5f5; }
-        .legend-item.selected { 
-            background: #e6f7ff !important; 
-            border: 1px solid #91d5ff;
-        }
-        .legend-item.selected .legend-dot,
-        .legend-item.selected .legend-square,
-        .legend-item.selected .legend-line {
-            box-shadow: 0 0 6px currentColor;
-        }
-        .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
-        .legend-square { width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; flex-shrink: 0; }
-        .legend-line { width: 24px; height: 2px; margin-right: 8px; flex-shrink: 0; }
-        .legend-count { margin-left: auto; font-size: 10px; color: #999; }
-        
+        .legend-section-title { font-size: 11px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 5px; font-size: 12px; cursor: pointer; padding: 5px 8px; border-radius: 6px; transition: background 0.2s; color: #aaa; }
+        .legend-item:hover { background: rgba(255,255,255,0.05); }
+        .legend-item.selected { background: rgba(51,154,240,0.12) !important; border: 1px solid rgba(51,154,240,0.3); }
+        .legend-symbol { width: 14px; height: 14px; margin-right: 8px; flex-shrink: 0; }
+        .legend-symbol.square { border-radius: 2px; }
+        .legend-symbol.circle { border-radius: 50%; }
+        .legend-symbol.hex { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+        .legend-count { margin-left: auto; font-size: 10px; color: #666; }
+
         /* 工具栏 */
-        .toolbar { 
-            position: fixed; 
-            top: 20px; 
-            left: 40px; 
-            display: flex; 
-            gap: 8px; 
-            z-index: 100; 
-            flex-wrap: wrap;
-            max-width: calc(100vw - 400px);
-        }
-        .toolbar-btn { background: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s; white-space: nowrap; }
-        .toolbar-btn:hover { background: #f5f5f5; }
-        .toolbar-btn.active { background: #1890ff; color: white; }
-        
+        .toolbar { position: fixed; top: 20px; left: 40px; display: flex; gap: 8px; z-index: 100; flex-wrap: wrap; }
+        .toolbar-btn { background: rgba(30,33,40,0.9); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; color: #aaa; white-space: nowrap; }
+        .toolbar-btn:hover { background: rgba(255,255,255,0.05); color: #ddd; }
+        .toolbar-btn.active { background: #339af0; color: white; border-color: #339af0; }
+
         /* 搜索框 */
-        .search-box { 
-            position: fixed; 
-            top: 70px; 
-            left: 40px; 
-            z-index: 100; 
-        }
-        .search-input { 
-            width: clamp(140px, 20vw, 240px); 
-            padding: 8px 12px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
-            font-size: 13px; 
-            outline: none; 
-            background: white;
-        }
-        .search-input:focus { border-color: #1890ff; }
-        
-        /* 面包屑导航 */
-        .breadcrumb { 
-            position: fixed; 
-            top: 110px; 
-            left: 40px; 
-            display: flex; 
-            gap: 4px; 
-            z-index: 100; 
-            font-size: 13px; 
-            color: #666; 
-            display: none; 
-        }
+        .search-box { position: fixed; top: 70px; left: 40px; z-index: 100; }
+        .search-input { width: 220px; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 13px; outline: none; background: rgba(30,33,40,0.9); color: #ddd; }
+        .search-input::placeholder { color: #666; }
+        .search-input:focus { border-color: #339af0; }
+
+        /* 面包屑 */
+        .breadcrumb { position: fixed; top: 110px; left: 40px; display: flex; gap: 4px; z-index: 100; font-size: 13px; color: #888; display: none; }
         .breadcrumb.active { display: flex; }
         .breadcrumb-item { cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.2s; }
-        .breadcrumb-item:hover { background: #f0f0f0; color: #1890ff; }
-        
+        .breadcrumb-item:hover { background: rgba(255,255,255,0.05); color: #339af0; }
+
         /* 详情面板 */
-        .detail-panel { 
-            position: fixed; 
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            width: clamp(240px, 22vw, 300px); 
-            max-height: calc(100vh - 140px);
-            background: white; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 24px rgba(0,0,0,0.15); 
-            z-index: 100; 
-            display: none; 
-            overflow: hidden;
-            flex-direction: column;
-            cursor: move;
-            user-select: none;
-        }
+        .detail-panel { position: fixed; top: 50%; right: 20px; transform: translateY(-50%); width: 360px; max-height: calc(100vh - 100px); background: rgba(30,33,40,0.97); border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); z-index: 100; display: none; overflow: hidden; flex-direction: column; cursor: move; user-select: none; border: 1px solid rgba(255,255,255,0.06); }
         .detail-panel.active { display: flex; }
-        .detail-header { 
-            padding: 16px 20px; 
-            color: white; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            position: relative; 
-            flex-shrink: 0; 
-        }
-        .detail-avatar { 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 20px; 
-            font-weight: bold; 
-            border: 3px solid rgba(255,255,255,0.3); 
-            flex-shrink: 0; 
-        }
-        .detail-name-wrap {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .detail-name { 
-            font-size: 18px; 
-            font-weight: 600; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap;
-            color: white;
-        }
-        .detail-type { 
-            font-size: 12px; 
-            opacity: 0.9; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap;
-            color: rgba(255,255,255,0.85);
-        }
-        .detail-close { 
-            position: absolute; 
-            top: 12px; 
-            right: 12px; 
-            width: 26px; 
-            height: 26px; 
-            border: none; 
-            background: rgba(255,255,255,0.2); 
-            border-radius: 50%; 
-            cursor: pointer; 
-            color: white; 
-            font-size: 14px; 
-            transition: background 0.2s;
-            z-index: 10;
-        }
-        .detail-close:hover { background: rgba(255,255,255,0.4); }
-        
-        .detail-body { padding: 12px 20px; flex-shrink: 0; max-height: 120px; overflow-y: auto; }
-        .detail-row { display: flex; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+        .detail-header { padding: 20px 24px; color: white; display: flex; align-items: center; gap: 14px; position: relative; flex-shrink: 0; }
+        .detail-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; border: 3px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+        .detail-avatar.square-avatar { border-radius: 8px; }
+        .detail-name-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .detail-name { font-size: 20px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .detail-type { font-size: 13px; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .detail-close { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border: none; background: rgba(255,255,255,0.1); border-radius: 50%; cursor: pointer; color: white; font-size: 15px; transition: background 0.2s; z-index: 10; }
+        .detail-close:hover { background: rgba(255,255,255,0.25); }
+        .detail-body { padding: 14px 24px; flex-shrink: 0; max-height: 160px; overflow-y: auto; }
+        .detail-row { display: flex; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: #666; width: 50px; flex-shrink: 0; }
-        .detail-value { color: #333; flex: 1; word-break: break-all; }
-        
-        .detail-relations { padding: 0 16px 16px; overflow-y: auto; flex: 1; min-height: 0; }
-        .detail-relations h5 { font-size: 12px; color: #666; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .detail-label { color: #888; width: 60px; flex-shrink: 0; }
+        .detail-value { color: #ccc; flex: 1; word-break: break-all; }
+        .detail-relations { padding: 0 20px 20px; overflow-y: auto; flex: 1; min-height: 0; }
+        .detail-relations h5 { font-size: 13px; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .relation-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .relation-tag { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 16px; font-size: 11px; background: #f5f5f5; color: #333; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
-        .relation-tag:hover { background: #e6f7ff; border-color: #1890ff; color: #1890ff; }
-        .relation-tag .role { font-size: 10px; color: #999; margin-right: 4px; }
-        .relation-tag.product { background: #e6f7ff; border-color: #91d5ff; }
-        .relation-tag.person { background: #fff7e6; border-color: #ffc53d; color: #d46b08; }
-        
-        /* 统计栏 */
-        .stats-bar { 
-            position: fixed; 
-            bottom: 20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: white; 
-            padding: 10px 24px; 
-            border-radius: 24px; 
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1); 
-            display: flex; 
-            gap: clamp(16px, 4vw, 32px); 
-            z-index: 100; 
-        }
-        .stat-item { text-align: center; }
-        .stat-value { font-size: clamp(16px, 2vw, 20px); font-weight: 600; color: #333; }
-        .stat-label { font-size: clamp(10px, 1.2vw, 11px); color: #999; }
-        
+        .relation-tag { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 16px; font-size: 12px; background: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .relation-tag:hover { background: rgba(51,154,240,0.12); border-color: rgba(51,154,240,0.3); color: #339af0; }
+        .relation-tag .biz { font-size: 11px; color: #666; margin-right: 4px; }
+
         /* 聚焦提示 */
-        .focus-hint { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1890ff; color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; z-index: 100; display: none; box-shadow: 0 2px 12px rgba(24,144,255,0.3); white-space: nowrap; }
+        .focus-hint { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #339af0; color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; z-index: 100; display: none; box-shadow: 0 2px 12px rgba(51,154,240,0.3); white-space: nowrap; }
         .focus-hint.active { display: block; }
+
+        /* 统计栏 */
+        .stats-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(30,33,40,0.95); padding: 10px 24px; border-radius: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); display: flex; gap: 32px; z-index: 100; border: 1px solid rgba(255,255,255,0.06); }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 20px; font-weight: 600; color: #ddd; }
+        .stat-value.internal-color { color: #f08c00; }
+        .stat-value.external-color { color: #339af0; }
+        .stat-label { font-size: 11px; color: #666; }
     </style>
 </head>
 <body>
     <div id="chart"></div>
-    
+
     <!-- 切片器 -->
     <div class="legend-container" id="legendContainer">
         <div class="legend-tab" id="legendTab">筛选</div>
         <div class="legend" id="legend"></div>
     </div>
-    
+
     <!-- 聚焦提示 -->
-    <div class="focus-hint" id="focusHint">🔍 已聚焦到一级关联节点</div>
-    
+    <div class="focus-hint" id="focusHint">🔍 已聚焦到一级关联</div>
+
     <!-- 工具栏 -->
     <div class="toolbar">
-        <button class="toolbar-btn active" id="btnAll">显示全部</button>
-        <button class="toolbar-btn" id="btnProducts">只看产品</button>
-        <button class="toolbar-btn" id="btnPersons">只看对接人</button>
+        <button class="toolbar-btn active" id="btnInternal">🔶 有道内部</button>
+        <button class="toolbar-btn" id="btnExternal">🔵 网易游戏</button>
+        <button class="toolbar-btn" id="btnProducts">⬡ 包含产品</button>
     </div>
-    
+
     <!-- 搜索框 -->
     <div class="search-box">
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索产品/对接人...">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索姓名 / 产品...">
     </div>
-    
+
     <!-- 面包屑 -->
-    <div class="breadcrumb" id="breadcrumb">
-        <span class="breadcrumb-item" onclick="resetView()">🏠 全局视图</span>
-    </div>
-    
+    <div class="breadcrumb" id="breadcrumb"></div>
+
     <!-- 详情面板 -->
     <div class="detail-panel" id="detailPanel">
         <div class="detail-header" id="detailHeader">
-            <div class="detail-avatar" id="detailAvatar">📦</div>
+            <div class="detail-avatar" id="detailAvatar">👤</div>
             <div class="detail-name-wrap">
                 <div class="detail-name" id="detailName">名称</div>
                 <div class="detail-type" id="detailType">类型</div>
@@ -290,634 +151,495 @@
         <div class="detail-body" id="detailBody"></div>
         <div class="detail-relations" id="detailRelations"></div>
     </div>
-    
+
     <!-- 统计栏 -->
     <div class="stats-bar">
+        <div class="stat-item"><div class="stat-value internal-color" id="statInternal">0</div><div class="stat-label">有道内部</div></div>
+        <div class="stat-item"><div class="stat-value external-color" id="statExternal">0</div><div class="stat-label">网易游戏</div></div>
         <div class="stat-item"><div class="stat-value" id="statProducts">0</div><div class="stat-label">产品</div></div>
-        <div class="stat-item"><div class="stat-value" id="statPersons">0</div><div class="stat-label">对接人</div></div>
         <div class="stat-item"><div class="stat-value" id="statRelations">0</div><div class="stat-label">关联</div></div>
     </div>
 
     <script>
-    // ============ 数据定义 ============
-    const DATA = {"products": [{"code": "X20", "name": "X20-Marvel Rivals-漫威争锋", "relations": [{"bizType": "国内KOL", "persons": [{"name": "刘岩", "role": "销售", "bizType": "国内KOL"}, {"name": "萨摩", "role": "主运营", "bizType": "国内KOL"}, {"name": "马哲南", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "郭隽珂", "role": "主营销", "bizType": "国内KOL"}, {"name": "李卉娴", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "黎建希", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "罗力", "role": "PM", "bizType": "海外KOL"}, {"name": "罗力", "role": "主运营", "bizType": "海外KOL"}, {"name": "直播", "role": "合作类型", "bizType": "海外KOL"}, {"name": "林翠萍", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "霍昱彤", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "林津琪", "role": "PM", "bizType": "海外UA"}, {"name": "林津琪", "role": "主运营", "bizType": "海外UA"}, {"name": "ALL", "role": "合作类型", "bizType": "海外UA"}]}]}, {"code": "H55", "name": "H55-Identity V-第五人格", "relations": [{"bizType": "国内KOL", "persons": [{"name": "詹小婷", "role": "销售", "bizType": "国内KOL"}, {"name": "丁加加", "role": "PM", "bizType": "国内KOL"}, {"name": "王璐", "role": "主运营", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "夏杨", "role": "主营销", "bizType": "国内KOL"}, {"name": "何邱童", "role": "主营销", "bizType": "国内KOL"}, {"name": "王雨婷", "role": "主营销", "bizType": "国内KOL"}, {"name": "耿菱", "role": "策划", "bizType": "国内KOL"}, {"name": "李嘉俐", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "治治", "role": "PM", "bizType": "海外KOL"}, {"name": "治治", "role": "主运营", "bizType": "海外KOL"}, {"name": "麦麦", "role": "主运营", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "suan", "role": "主营销", "bizType": "海外KOL"}, {"name": "廖海旭", "role": "策划", "bizType": "海外KOL"}, {"name": "邱钰婷", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "PM", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "H72", "name": "H72-Where Winds Meet-燕云十六声", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "詹小婷", "role": "销售", "bizType": "国内KOL"}, {"name": "黄赐罗", "role": "PM", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "殷鸿", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗丹玲", "role": "主营销", "bizType": "国内KOL"}, {"name": "高敏", "role": "主营销", "bizType": "国内KOL"}, {"name": "王崟", "role": "策划", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}, {"name": "雷沙沙", "role": "PM", "bizType": "海外KOL"}, {"name": "沙沙", "role": "主运营", "bizType": "海外KOL"}, {"name": "罗力", "role": "主运营", "bizType": "海外KOL"}, {"name": "黄硕冰", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "张乔治", "role": "主营销", "bizType": "海外KOL"}, {"name": "拖拖", "role": "策划", "bizType": "海外KOL"}, {"name": "列颖欣", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "林津琪", "role": "PM", "bizType": "海外UA"}, {"name": "林津琪", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "H73", "name": "H73-Once Human-七日世界", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "罗皓", "role": "主运营", "bizType": "国内KOL"}, {"name": "殷弘", "role": "主运营", "bizType": "国内KOL"}, {"name": "师帅", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "杨熠宁", "role": "主营销", "bizType": "国内KOL"}, {"name": "辜著崟", "role": "主营销", "bizType": "国内KOL"}, {"name": "李胜泽", "role": "策划", "bizType": "国内KOL"}, {"name": "吴麒国", "role": "策划", "bizType": "国内KOL"}, {"name": "夏培霖", "role": "QC", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "赵琪", "role": "销售", "bizType": "海外KOL"}, {"name": "白雨佳", "role": "PM", "bizType": "海外KOL"}, {"name": "小羊", "role": "主运营", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "谢丹", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "唐玥琪", "role": "主营销", "bizType": "海外KOL"}, {"name": "金日", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "夏培霖", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}, {"bizType": "海外UA", "persons": [{"name": "amber", "role": "销售", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "PM", "bizType": "海外UA"}, {"name": "黄梓宜", "role": "主运营", "bizType": "海外UA"}]}]}, {"code": "G83US", "name": "G83US-BloodStrike-代号：血战", "relations": [{"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "G83NA", "name": "G83NA-Knives Out-荒野行动", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "马恒", "role": "主营销", "bizType": "国内KOL"}, {"name": "吴裕承", "role": "策划", "bizType": "国内KOL"}, {"name": "李卉娴", "role": "策划", "bizType": "国内KOL"}, {"name": "陈雨青", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "治治", "role": "PM", "bizType": "海外KOL"}, {"name": "治治", "role": "主运营", "bizType": "海外KOL"}, {"name": "鹤子", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "迷路", "role": "主营销", "bizType": "海外KOL"}, {"name": "钟安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "宋俪霖", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "D90", "name": "D90-Naraka-永劫无间", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "杨莹", "role": "主运营", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "金弦", "role": "主营销", "bizType": "国内KOL"}, {"name": "刁统一", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "李胜泽", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "钟娇", "role": "销售", "bizType": "海外KOL"}, {"name": "黄烁冰", "role": "PM", "bizType": "海外KOL"}, {"name": "黄烁冰", "role": "主运营", "bizType": "海外KOL"}, {"name": "线下高校", "role": "合作类型", "bizType": "海外KOL"}, {"name": "王皓杰", "role": "主营销", "bizType": "海外KOL"}, {"name": "乔安琪", "role": "策划", "bizType": "海外KOL"}, {"name": "列颖欣", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "L33", "name": "L33-Dunk City Dynasty-全明星街球派对", "relations": []}, {"code": "L36", "name": "L36-逆水寒", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "丁琳", "role": "PM", "bizType": "国内KOL"}, {"name": "林晓茜", "role": "主运营", "bizType": "国内KOL"}, {"name": "杨莹", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "丁势宸", "role": "主营销", "bizType": "国内KOL"}, {"name": "孙沁嫄", "role": "主营销", "bizType": "国内KOL"}, {"name": "戴小凡", "role": "策划", "bizType": "国内KOL"}, {"name": "李萌萌", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "U5", "name": "U5-Eggy Party-蛋仔派对", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "殷弘", "role": "主运营", "bizType": "国内KOL"}, {"name": "李昊燃", "role": "主运营", "bizType": "国内KOL"}, {"name": "王一雯", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "王思语", "role": "主营销", "bizType": "国内KOL"}, {"name": "陈越", "role": "策划", "bizType": "国内KOL"}]}]}, {"code": "G66", "name": "G66-明日之后", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "丁琳", "role": "PM", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "林晓茜", "role": "主运营", "bizType": "国内KOL"}, {"name": "师帅", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗凯", "role": "主营销", "bizType": "国内KOL"}, {"name": "林统", "role": "主营销", "bizType": "国内KOL"}, {"name": "梁韵婷", "role": "策划", "bizType": "国内KOL"}, {"name": "张冰玉", "role": "QC", "bizType": "国内KOL"}]}]}, {"code": "H74NA", "name": "H74-Sea of Remnants-遗忘之海", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "G112", "name": "G112-Racing Master-巅峰极速", "relations": [{"bizType": "国内KOL", "persons": [{"name": "刘岩", "role": "销售", "bizType": "国内KOL"}, {"name": "孟向阳", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "何霡坚", "role": "主营销", "bizType": "国内KOL"}]}]}, {"code": "L10", "name": "L10-倩女幽魂", "relations": [{"bizType": "国内KOL", "persons": [{"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "叶惟", "role": "PM", "bizType": "国内KOL"}, {"name": "周翔", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "施一雯", "role": "主营销", "bizType": "国内KOL"}, {"name": "高美媛", "role": "策划", "bizType": "国内KOL"}, {"name": "王俊杰", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "L26", "name": "L26-FragPunk-界外狂潮", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "田涛", "role": "销售", "bizType": "国内KOL"}, {"name": "黄赐罗", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗战", "role": "主营销", "bizType": "国内KOL"}, {"name": "丁毓雯", "role": "策划", "bizType": "国内KOL"}, {"name": "吴杜妍", "role": "QC", "bizType": "国内KOL"}, {"name": "李萌萌", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "X19", "name": "X19-Minecraft-我的世界", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "A11", "name": "A11-MUMU模拟器", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "外部运营", "role": "主运营", "bizType": "国内KOL"}, {"name": "SEO", "role": "合作类型", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "李欣", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}]}]}, {"code": "A56", "name": "A56-UU加速器", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "外部运营", "role": "主运营", "bizType": "国内KOL"}, {"name": "SEO", "role": "合作类型", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "罗恒", "role": "主营销", "bizType": "国内KOL"}, {"name": "范恩颖", "role": "策划", "bizType": "国内KOL"}, {"name": "李欣", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "海外KOL"}, {"name": "李君如", "role": "主运营", "bizType": "海外KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "马麟", "role": "主营销", "bizType": "海外KOL"}, {"name": "廖海旭", "role": "策划", "bizType": "海外KOL"}, {"name": "张冰玉", "role": "QC", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "G92", "name": "G92-哈利波特魔法觉醒", "relations": []}, {"code": "L28", "name": "L28-Planet Party Time-星球派对", "relations": []}, {"code": "L50NA", "name": "L50-ANANTA-无限大", "relations": []}, {"code": "G108", "name": "G108-Destiny: Rising-命运：群星", "relations": [{"bizType": "国内KOL", "persons": [{"name": "沈佳赟", "role": "销售", "bizType": "国内KOL"}, {"name": "韩彧丰", "role": "主运营", "bizType": "国内KOL"}, {"name": "KOL", "role": "合作类型", "bizType": "国内KOL"}]}]}, {"code": "MA167na", "name": "MA167na-歧路旅人", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "王俊杰", "role": "商务", "bizType": "国内KOL"}]}, {"bizType": "海外KOL", "persons": [{"name": "李昀芷", "role": "PM", "bizType": "海外KOL"}, {"name": "李昀芷", "role": "主运营", "bizType": "海外KOL"}, {"name": "于跃", "role": "PM", "bizType": "海外KOL"}, {"name": "于跃", "role": "主运营", "bizType": "海外KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "海外KOL"}, {"name": "谢宇蔚", "role": "主营销", "bizType": "海外KOL"}, {"name": "谢宇蔚", "role": "主营销", "bizType": "海外KOL"}, {"name": "mix", "role": "策划", "bizType": "海外KOL"}, {"name": "石宛金", "role": "主运营", "bizType": "海外KOL"}, {"name": "Mike", "role": "商务", "bizType": "海外KOL"}]}]}, {"code": "TX3", "name": "TX3-天下3：万象", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "于跃", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "陈永亮", "role": "主营销", "bizType": "国内KOL"}, {"name": "萨尔(刘业勤)", "role": "主营销", "bizType": "国内KOL"}, {"name": "伍昭悦", "role": "QC", "bizType": "国内KOL"}]}]}, {"code": "DJ01", "name": "DJ01-Blood Message-归唐", "relations": [{"bizType": "国内KOL", "persons": [{"name": "付羿轩", "role": "销售", "bizType": "国内KOL"}, {"name": "赵轩", "role": "商务", "bizType": "国内KOL"}]}]}, {"code": "A15", "name": "A15-steam游戏", "relations": [{"bizType": "国内KOL", "persons": [{"name": "侍芳", "role": "销售", "bizType": "国内KOL"}, {"name": "周翔", "role": "PM", "bizType": "国内KOL"}, {"name": "周翔", "role": "主运营", "bizType": "国内KOL"}, {"name": "ALL", "role": "合作类型", "bizType": "国内KOL"}, {"name": "生态", "role": "合作类型", "bizType": "国内KOL"}, {"name": "吴晓", "role": "主营销", "bizType": "国内KOL"}, {"name": "吴晓", "role": "主营销", "bizType": "国内KOL"}, {"name": "赵梓欣", "role": "策划", "bizType": "国内KOL"}, {"name": "赵梓欣", "role": "策划", "bizType": "国内KOL"}, {"name": "林阳锋", "role": "主营销", "bizType": "国内KOL"}]}]}], "persons": [{"name": "刘岩", "products": ["X20-Marvel Rivals-漫威争锋", "G112-Racing Master-巅峰极速"], "roles": ["销售"]}, {"name": "萨摩", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主运营"]}, {"name": "马哲南", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主运营"]}, {"name": "郭隽珂", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主营销"]}, {"name": "李卉娴", "products": ["X20-Marvel Rivals-漫威争锋", "G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "吴杜妍", "products": ["X20-Marvel Rivals-漫威争锋", "D90-Naraka-永劫无间", "L26-FragPunk-界外狂潮"], "roles": ["QC", "策划"]}, {"name": "黎建希", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["商务"]}, {"name": "赵琪", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H73-Once Human-七日世界"], "roles": ["销售"]}, {"name": "罗力", "products": ["X20-Marvel Rivals-漫威争锋", "H72-Where Winds Meet-燕云十六声"], "roles": ["PM", "主运营"]}, {"name": "林翠萍", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["主营销"]}, {"name": "乔安琪", "products": ["X20-Marvel Rivals-漫威争锋", "H73-Once Human-七日世界", "D90-Naraka-永劫无间"], "roles": ["策划", "主营销"]}, {"name": "霍昱彤", "products": ["X20-Marvel Rivals-漫威争锋"], "roles": ["QC"]}, {"name": "Mike", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界", "G83US-BloodStrike-代号：血战", "G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间", "A56-UU加速器", "MA167na-歧路旅人"], "roles": ["商务"]}, {"name": "amber", "products": ["X20-Marvel Rivals-漫威争锋", "H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界"], "roles": ["销售"]}, {"name": "林津琪", "products": ["X20-Marvel Rivals-漫威争锋", "H72-Where Winds Meet-燕云十六声"], "roles": ["PM", "主运营"]}, {"name": "詹小婷", "products": ["H55-Identity V-第五人格", "H72-Where Winds Meet-燕云十六声"], "roles": ["销售"]}, {"name": "丁加加", "products": ["H55-Identity V-第五人格"], "roles": ["PM"]}, {"name": "王璐", "products": ["H55-Identity V-第五人格"], "roles": ["主运营"]}, {"name": "孟向阳", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界", "G112-Racing Master-巅峰极速", "G66-明日之后"], "roles": ["主运营"]}, {"name": "夏杨", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "何邱童", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "王雨婷", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "耿菱", "products": ["H55-Identity V-第五人格"], "roles": ["策划"]}, {"name": "李嘉俐", "products": ["H55-Identity V-第五人格"], "roles": ["商务"]}, {"name": "治治", "products": ["H55-Identity V-第五人格", "G83NA-Knives Out-荒野行动"], "roles": ["PM", "主运营"]}, {"name": "麦麦", "products": ["H55-Identity V-第五人格"], "roles": ["主运营"]}, {"name": "李昀芷", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界", "MA167na-歧路旅人"], "roles": ["主运营", "PM"]}, {"name": "suan", "products": ["H55-Identity V-第五人格"], "roles": ["主营销"]}, {"name": "廖海旭", "products": ["H55-Identity V-第五人格", "A56-UU加速器"], "roles": ["策划"]}, {"name": "邱钰婷", "products": ["H55-Identity V-第五人格"], "roles": ["QC"]}, {"name": "黄梓宜", "products": ["H55-Identity V-第五人格", "H73-Once Human-七日世界"], "roles": ["PM", "主运营"]}, {"name": "沈佳赟", "products": ["H72-Where Winds Meet-燕云十六声", "H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对", "G66-明日之后", "H74NA-遗忘之海", "X19-Minecraft-我的世界", "G108-Destiny: Rising-命运：群星"], "roles": ["销售"]}, {"name": "黄赐罗", "products": ["H72-Where Winds Meet-燕云十六声", "L26-FragPunk-界外狂潮"], "roles": ["PM", "主运营"]}, {"name": "李昊燃", "products": ["H72-Where Winds Meet-燕云十六声", "G83NA-Knives Out-荒野行动", "U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "殷鸿", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "罗丹玲", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "高敏", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "王崟", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["策划"]}, {"name": "付羿轩", "products": ["H72-Where Winds Meet-燕云十六声", "A11-MUMU模拟器", "A56-UU加速器", "MA167na-歧路旅人", "TX3-天下3：万象", "DJ01-Blood Message-归唐"], "roles": ["销售"]}, {"name": "雷沙沙", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["PM"]}, {"name": "沙沙", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "黄硕冰", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主运营"]}, {"name": "张乔治", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["主营销"]}, {"name": "拖拖", "products": ["H72-Where Winds Meet-燕云十六声"], "roles": ["策划"]}, {"name": "列颖欣", "products": ["H72-Where Winds Meet-燕云十六声", "D90-Naraka-永劫无间"], "roles": ["QC"]}, {"name": "叶惟", "products": ["H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对", "L10-倩女幽魂"], "roles": ["PM"]}, {"name": "罗皓", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "殷弘", "products": ["H73-Once Human-七日世界", "U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "师帅", "products": ["H73-Once Human-七日世界", "G66-明日之后"], "roles": ["主运营"]}, {"name": "杨熠宁", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "辜著崟", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "李胜泽", "products": ["H73-Once Human-七日世界", "D90-Naraka-永劫无间"], "roles": ["策划", "商务"]}, {"name": "吴麒国", "products": ["H73-Once Human-七日世界"], "roles": ["策划"]}, {"name": "夏培霖", "products": ["H73-Once Human-七日世界"], "roles": ["QC"]}, {"name": "白雨佳", "products": ["H73-Once Human-七日世界"], "roles": ["PM"]}, {"name": "小羊", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "谢丹", "products": ["H73-Once Human-七日世界"], "roles": ["主运营"]}, {"name": "唐玥琪", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "金日", "products": ["H73-Once Human-七日世界"], "roles": ["主营销"]}, {"name": "钟娇", "products": ["G83US-BloodStrike-代号：血战", "G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间"], "roles": ["销售"]}, {"name": "田涛", "products": ["G83NA-Knives Out-荒野行动", "D90-Naraka-永劫无间", "L10-倩女幽魂", "L26-FragPunk-界外狂潮"], "roles": ["销售"]}, {"name": "马恒", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主营销"]}, {"name": "吴裕承", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "陈雨青", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["商务"]}, {"name": "鹤子", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主运营"]}, {"name": "迷路", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["主营销"]}, {"name": "钟安琪", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["策划"]}, {"name": "宋俪霖", "products": ["G83NA-Knives Out-荒野行动"], "roles": ["QC"]}, {"name": "侍芳", "products": ["D90-Naraka-永劫无间", "L36-逆水寒", "L26-FragPunk-界外狂潮", "A11-MUMU模拟器", "A56-UU加速器", "A15-steam游戏"], "roles": ["销售"]}, {"name": "杨莹", "products": ["D90-Naraka-永劫无间", "L36-逆水寒"], "roles": ["主运营"]}, {"name": "韩彧丰", "products": ["D90-Naraka-永劫无间", "G66-明日之后", "H74NA-遗忘之海", "G108-Destiny: Rising-命运：群星"], "roles": ["主运营"]}, {"name": "金弦", "products": ["D90-Naraka-永劫无间"], "roles": ["主营销"]}, {"name": "刁统一", "products": ["D90-Naraka-永劫无间"], "roles": ["策划"]}, {"name": "黄烁冰", "products": ["D90-Naraka-永劫无间"], "roles": ["PM", "主运营"]}, {"name": "王皓杰", "products": ["D90-Naraka-永劫无间"], "roles": ["主营销"]}, {"name": "丁琳", "products": ["L36-逆水寒", "G66-明日之后"], "roles": ["PM"]}, {"name": "林晓茜", "products": ["L36-逆水寒", "G66-明日之后"], "roles": ["主运营"]}, {"name": "丁势宸", "products": ["L36-逆水寒"], "roles": ["主营销"]}, {"name": "孙沁嫄", "products": ["L36-逆水寒"], "roles": ["主营销"]}, {"name": "戴小凡", "products": ["L36-逆水寒"], "roles": ["策划"]}, {"name": "李萌萌", "products": ["L36-逆水寒", "L26-FragPunk-界外狂潮"], "roles": ["商务"]}, {"name": "王一雯", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["主运营"]}, {"name": "王思语", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["主营销"]}, {"name": "陈越", "products": ["U5-Eggy Party-蛋仔派对"], "roles": ["策划"]}, {"name": "罗凯", "products": ["G66-明日之后"], "roles": ["主营销"]}, {"name": "林统", "products": ["G66-明日之后"], "roles": ["主营销"]}, {"name": "梁韵婷", "products": ["G66-明日之后"], "roles": ["策划"]}, {"name": "张冰玉", "products": ["G66-明日之后", "A56-UU加速器"], "roles": ["QC"]}, {"name": "何霡坚", "products": ["G112-Racing Master-巅峰极速"], "roles": ["主营销"]}, {"name": "周翔", "products": ["L10-倩女幽魂", "A15-steam游戏"], "roles": ["主运营", "PM"]}, {"name": "施一雯", "products": ["L10-倩女幽魂"], "roles": ["主营销"]}, {"name": "高美媛", "products": ["L10-倩女幽魂"], "roles": ["策划"]}, {"name": "王俊杰", "products": ["L10-倩女幽魂", "MA167na-歧路旅人"], "roles": ["商务"]}, {"name": "罗战", "products": ["L26-FragPunk-界外狂潮"], "roles": ["主营销"]}, {"name": "丁毓雯", "products": ["L26-FragPunk-界外狂潮"], "roles": ["策划"]}, {"name": "外部运营", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["主运营"]}, {"name": "SEO", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["合作类型"]}, {"name": "李欣", "products": ["A11-MUMU模拟器", "A56-UU加速器"], "roles": ["商务"]}, {"name": "罗恒", "products": ["A56-UU加速器"], "roles": ["主营销"]}, {"name": "范恩颖", "products": ["A56-UU加速器"], "roles": ["策划"]}, {"name": "李君如", "products": ["A56-UU加速器"], "roles": ["主运营"]}, {"name": "马麟", "products": ["A56-UU加速器"], "roles": ["主营销"]}, {"name": "于跃", "products": ["MA167na-歧路旅人", "TX3-天下3：万象"], "roles": ["主运营", "PM"]}, {"name": "mix", "products": ["MA167na-歧路旅人"], "roles": ["策划"]}, {"name": "石宛金", "products": ["MA167na-歧路旅人"], "roles": ["主运营"]}, {"name": "陈永亮", "products": ["TX3-天下3：万象"], "roles": ["主营销"]}, {"name": "萨尔(刘业勤)", "products": ["TX3-天下3：万象"], "roles": ["主营销"]}, {"name": "伍昭悦", "products": ["TX3-天下3：万象"], "roles": ["QC"]}, {"name": "吴晓", "products": ["A15-steam游戏"], "roles": ["主营销"]}, {"name": "赵梓欣", "products": ["A15-steam游戏"], "roles": ["策划"]}, {"name": "生态", "products": ["A15-steam游戏"], "roles": ["合作类型"]}, {"name": "林阳锋", "products": ["A15-steam游戏"], "roles": ["主营销"]}, {"name": "赵轩", "products": ["DJ01-Blood Message-归唐"], "roles": ["商务"]}]};
-    
-    // 角色配色
-    const ROLE_COLORS = {
-        '销售': '#3498db',
-        'PM': '#9b59b6',
-        '主运营': '#e67e22',
-        '合作类型': '#1abc9c',
-        '主营销': '#e74c3c',
-        '策划': '#2ecc71',
-        'QC': '#f39c12',
-        '商务': '#34495e'
+    // ============ 数据 ============
+    const DATA = {"persons":[{"name":"Mike","dept":"网易游戏","roles":["商务"],"products":["A56","G108","G83NA","G83US","H55","H73","L26","MA167na","TX3","X20","D90"],"bizLines":["海外KOL"],"coopTypes":["KOL","UGC/KOC","ALL","直播","视频"],"productCount":11},{"name":"孟向阳","dept":"有道内部","roles":["主运营"],"products":["G108","G112","G138","G66","H55","H73","L44","MA167na"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":8},{"name":"沈佳赟","dept":"有道内部","roles":["销售"],"products":["A15","G108","G66","H72","H73","H74NA","U5","X19"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态","生态-短视频","生态-直播"],"productCount":8},{"name":"付羿轩","dept":"有道内部","roles":["销售"],"products":["A11","A56","G108","H72","L26","TX3"],"bizLines":["海外KOL","国内KOL"],"coopTypes":["KOL","UGC/KOC","ALL","SEO/KOL"],"productCount":6},{"name":"侍芳","dept":"有道内部","roles":["销售"],"products":["A11","A56","D90","L26","L36"],"bizLines":["国内KOL"],"coopTypes":["KOL","SEO/KOL"],"productCount":5},{"name":"刘岩","dept":"有道内部","roles":["销售"],"products":["G112","G124","G138","TX3","X20"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":5},{"name":"田涛","dept":"有道内部","roles":["销售"],"products":["D90","G83NA","L10","L26","MA167na"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":5},{"name":"韩彧丰","dept":"有道内部","roles":["主运营"],"products":["A15","D90","G66","H74NA","L44"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":5},{"name":"amber","dept":"有道内部","roles":["销售"],"products":["H55","H72","H73","X20"],"bizLines":["海外UA"],"coopTypes":["ALL"],"productCount":4},{"name":"丁琳","dept":"有道内部","roles":["PM"],"products":["A15","G66","L36"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":3},{"name":"叶惟","dept":"有道内部","roles":["PM"],"products":["G66","H73","L10","U5"],"bizLines":["国内KOL"],"coopTypes":["KOL","生态-短视频","生态-直播","ALL"],"productCount":4},{"name":"黄赐罗","dept":"有道内部","roles":["PM","主运营"],"products":["H72","L26","TX3"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":3},{"name":"李昊燃","dept":"有道内部","roles":["主运营"],"products":["G83NA","H72","U5"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":3},{"name":"林晓茜","dept":"有道内部","roles":["主运营"],"products":["A15","G66","L36"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":3},{"name":"萨摩","dept":"有道内部","roles":["主运营","销售"],"products":["G124","TX3","X20"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":3},{"name":"师帅","dept":"有道内部","roles":["主运营"],"products":["G66","H73","TX3"],"bizLines":["国内KOL"],"coopTypes":["KOL","生态-短视频","生态-直播","ALL"],"productCount":3},{"name":"詹小婷","dept":"有道内部","roles":["销售"],"products":["DJ01","H55","H72"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":3},{"name":"赵琪","dept":"有道内部","roles":["销售"],"products":["H55","H73","X20"],"bizLines":["海外KOL"],"coopTypes":["ALL","直播","视频"],"productCount":3},{"name":"钟娇","dept":"有道内部","roles":["销售"],"products":["D90","G83NA","G83US"],"bizLines":["海外KOL"],"coopTypes":["ALL","线下高校"],"productCount":3},{"name":"周翔","dept":"有道内部","roles":["主运营","销售"],"products":["A15","L10"],"bizLines":["国内KOL","生态"],"coopTypes":["ALL","生态"],"productCount":2},{"name":"丁加加","dept":"有道内部","roles":["PM"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"黄梓宜","dept":"有道内部","roles":["PM","主运营"],"products":["H55","H73"],"bizLines":["海外UA"],"coopTypes":[],"productCount":2},{"name":"雷沙沙","dept":"有道内部","roles":["PM"],"products":["H72"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"林津琪","dept":"有道内部","roles":["PM","主运营"],"products":["H72","X20"],"bizLines":["海外UA"],"coopTypes":["ALL"],"productCount":2},{"name":"罗皓","dept":"有道内部","roles":["主运营"],"products":["G66","H73"],"bizLines":["国内KOL","生态-短视频","生态-直播"],"coopTypes":["KOL","生态-短视频","生态-直播"],"productCount":2},{"name":"罗力","dept":"有道内部","roles":["PM","主运营"],"products":["H72","X20"],"bizLines":["海外KOL"],"coopTypes":["ALL","直播","视频"],"productCount":2},{"name":"马哲南","dept":"有道内部","roles":["主运营"],"products":["TX3","X20"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":2},{"name":"杨莹","dept":"有道内部","roles":["主运营"],"products":["D90","L36"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":2},{"name":"殷弘","dept":"有道内部","roles":["主运营"],"products":["H73","U5"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":2},{"name":"于跃","dept":"有道内部","roles":["PM","主运营"],"products":["G108","L26","TX3"],"bizLines":["海外KOL"],"coopTypes":["KOL","UGC/KOC"],"productCount":3},{"name":"治治","dept":"有道内部","roles":["PM","主运营"],"products":["G83NA","H55"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":2},{"name":"白雨佳","dept":"有道内部","roles":["PM"],"products":["H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"鹤子","dept":"有道内部","roles":["主运营"],"products":["G83NA"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"黄烁冰","dept":"有道内部","roles":["PM","主运营"],"products":["D90"],"bizLines":["海外KOL"],"coopTypes":["线下高校"],"productCount":1},{"name":"李洲","dept":"有道内部","roles":["PM"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["生态"],"productCount":1},{"name":"麦麦","dept":"有道内部","roles":["主运营"],"products":["H55"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"沙沙","dept":"有道内部","roles":["主运营"],"products":["H72"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"石宛金","dept":"有道内部","roles":["主运营"],"products":["L26"],"bizLines":["海外KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"王璐","dept":"有道内部","roles":["主运营"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"王一雯","dept":"有道内部","roles":["主运营"],"products":["U5"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"小羊","dept":"有道内部","roles":["主运营"],"products":["H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"谢丹","dept":"有道内部","roles":["主运营"],"products":["H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"徐世鑫","dept":"有道内部","roles":["主运营"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["生态"],"productCount":1},{"name":"李昀芷","dept":"有道内部","roles":["主运营"],"products":["H55","H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":2},{"name":"乔安琪","dept":"网易游戏","roles":["策划"],"products":["D90","H73","X20"],"bizLines":["海外KOL"],"coopTypes":["ALL","线下高校","直播","视频"],"productCount":3},{"name":"吴杜妍","dept":"网易游戏","roles":["QC"],"products":["D90","L26","X20"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":3},{"name":"夏培霖","dept":"网易游戏","roles":["QC"],"products":["H73"],"bizLines":["海外KOL","国内KOL"],"coopTypes":["KOL","ALL"],"productCount":2},{"name":"李卉娴","dept":"网易游戏","roles":["策划"],"products":["G83NA","TX3","X20"],"bizLines":["国内KOL"],"coopTypes":["KOL","ALL"],"productCount":3},{"name":"李胜泽","dept":"网易游戏","roles":["策划","商务"],"products":["D90","H73"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":2},{"name":"列颖欣","dept":"网易游戏","roles":["QC"],"products":["D90","H72"],"bizLines":["海外KOL"],"coopTypes":["ALL","线下高校"],"productCount":2},{"name":"廖海旭","dept":"网易游戏","roles":["策划"],"products":["A56","H55"],"bizLines":["海外KOL"],"coopTypes":["KOL","ALL"],"productCount":2},{"name":"邱钰婷","dept":"网易游戏","roles":["QC"],"products":["H55","L26"],"bizLines":["海外KOL"],"coopTypes":["KOL","ALL"],"productCount":2},{"name":"拖拖","dept":"网易游戏","roles":["策划"],"products":["H72","L26"],"bizLines":["海外KOL"],"coopTypes":["KOL","ALL"],"productCount":2},{"name":"吴裕承","dept":"网易游戏","roles":["策划"],"products":["G66","G83NA"],"bizLines":["国内KOL","生态-短视频","生态-直播"],"coopTypes":["KOL","生态-短视频","生态-直播"],"productCount":2},{"name":"张冰玉","dept":"网易游戏","roles":["QC"],"products":["A56","G66"],"bizLines":["国内KOL","海外KOL","生态-短视频","生态-直播"],"coopTypes":["KOL","生态-短视频","生态-直播"],"productCount":2},{"name":"钟安琪","dept":"网易游戏","roles":["策划"],"products":["G83NA","TX3"],"bizLines":["海外KOL"],"coopTypes":["KOL","ALL"],"productCount":2},{"name":"陈越","dept":"网易游戏","roles":["策划"],"products":["H72","U5"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":2},{"name":"郭隽珂","dept":"网易游戏","roles":["主营销/项目组"],"products":["X20"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"霍昱彤","dept":"网易游戏","roles":["QC"],"products":["G108","X20"],"bizLines":["海外KOL","国内KOL"],"coopTypes":["KOL","直播","视频","UGC/KOC","ALL"],"productCount":2},{"name":"黎建希","dept":"网易游戏","roles":["商务"],"products":["TX3","X20"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":2},{"name":"李萌萌","dept":"网易游戏","roles":["商务"],"products":["L26","L36"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":2},{"name":"李欣","dept":"网易游戏","roles":["商务"],"products":["A11","A56"],"bizLines":["国内KOL","海外KOL"],"coopTypes":["SEO/KOL","KOL"],"productCount":2},{"name":"王俊杰","dept":"网易游戏","roles":["商务"],"products":["L10","MA167na"],"bizLines":["国内KOL"],"coopTypes":["ALL","KOL"],"productCount":2},{"name":"赵梓欣","dept":"网易游戏","roles":["策划"],"products":["A15"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":1},{"name":"陈雨青","dept":"网易游戏","roles":["商务"],"products":["G83NA"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"戴小凡","dept":"网易游戏","roles":["策划"],"products":["L36"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"刁统一","dept":"网易游戏","roles":["策划"],"products":["D90"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"丁势宸","dept":"网易游戏","roles":["主营销/项目组"],"products":["L36"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"丁毓雯","dept":"网易游戏","roles":["策划"],"products":["L26"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"范恩颖","dept":"网易游戏","roles":["策划"],"products":["A56"],"bizLines":["国内KOL"],"coopTypes":["SEO/KOL"],"productCount":1},{"name":"高美媛","dept":"网易游戏","roles":["策划"],"products":["L10"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"高敏","dept":"网易游戏","roles":["主营销/项目组"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"耿菱","dept":"网易游戏","roles":["策划"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"辜著崟","dept":"网易游戏","roles":["主营销/项目组"],"products":["H73"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"何霡坚","dept":"网易游戏","roles":["主营销/项目组"],"products":["G112"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"何邱童","dept":"网易游戏","roles":["主营销/项目组"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"黄硕冰","dept":"网易游戏","roles":["主运营"],"products":["H72"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"金弦","dept":"网易游戏","roles":["主营销/项目组"],"products":["D90"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"金日","dept":"网易游戏","roles":["主营销/项目组"],"products":["H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"雷啸垚","dept":"网易游戏","roles":["主营销/项目组"],"products":["G66"],"bizLines":["国内KOL"],"coopTypes":["生态-短视频"],"productCount":1},{"name":"李嘉俐","dept":"网易游戏","roles":["商务"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"李君如","dept":"网易游戏","roles":["主运营"],"products":["A56"],"bizLines":["海外KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"梁韵婷","dept":"网易游戏","roles":["策划"],"products":["G66"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"林翠萍","dept":"网易游戏","roles":["主营销/项目组"],"products":["X20"],"bizLines":["海外KOL"],"coopTypes":["直播"],"productCount":1},{"name":"林乾苗","dept":"网易游戏","roles":["主营销/项目组"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["生态"],"productCount":1},{"name":"林统","dept":"网易游戏","roles":["主营销/项目组"],"products":["G66"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"林阳锋","dept":"网易游戏","roles":["主营销/项目组"],"products":["A15"],"bizLines":["国内KOL"],"coopTypes":["生态"],"productCount":1},{"name":"罗丹玲","dept":"网易游戏","roles":["主营销/项目组"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"罗恒","dept":"网易游戏","roles":["主营销/项目组"],"products":["A56"],"bizLines":["国内KOL"],"coopTypes":["SEO/KOL"],"productCount":1},{"name":"罗凯","dept":"网易游戏","roles":["主营销/项目组"],"products":["G66"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"罗战","dept":"网易游戏","roles":["主营销/项目组"],"products":["L26"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"马恒","dept":"网易游戏","roles":["主营销/项目组"],"products":["G83NA"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"马麟","dept":"网易游戏","roles":["主营销/项目组"],"products":["A56"],"bizLines":["海外KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"迷路","dept":"网易游戏","roles":["主营销/项目组"],"products":["G83NA"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"萨尔(刘业勤)","dept":"网易游戏","roles":["主营销/项目组"],"products":["TX3"],"bizLines":["海外KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"施一雯","dept":"网易游戏","roles":["主营销/项目组"],"products":["L10"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"宋俪霖","dept":"网易游戏","roles":["QC"],"products":["G83NA"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"孙沁嫄","dept":"网易游戏","roles":["主营销/项目组"],"products":["L36"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"唐玥琪","dept":"网易游戏","roles":["主营销/项目组"],"products":["H73"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"王皓杰","dept":"网易游戏","roles":["主营销/项目组"],"products":["D90"],"bizLines":["海外KOL"],"coopTypes":["线下高校"],"productCount":1},{"name":"王璟","dept":"网易游戏","roles":["主营销/项目组"],"products":["G108"],"bizLines":["海外KOL"],"coopTypes":["UGC/KOC"],"productCount":1},{"name":"王崟","dept":"网易游戏","roles":["策划"],"products":["H72"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"王思语","dept":"网易游戏","roles":["主营销/项目组"],"products":["U5"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"王雨婷","dept":"网易游戏","roles":["主营销/项目组"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"吴麒国","dept":"网易游戏","roles":["策划"],"products":["H73"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"吴晓","dept":"网易游戏","roles":["主营销/项目组"],"products":["A15"],"bizLines":["国内KOL","生态"],"coopTypes":["KOL","生态"],"productCount":1},{"name":"伍昭悦","dept":"网易游戏","roles":["QC"],"products":["TX3"],"bizLines":["海外KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"夏杨","dept":"网易游戏","roles":["主营销/项目组"],"products":["H55"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"谢宇蔚","dept":"网易游戏","roles":["主营销/项目组"],"products":["L26","MA167na"],"bizLines":["海外KOL","国内KOL"],"coopTypes":["KOL"],"productCount":2},{"name":"杨熠宁","dept":"网易游戏","roles":["主营销/项目组"],"products":["H73"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1},{"name":"杨元","dept":"网易游戏","roles":["策划"],"products":["G108"],"bizLines":["海外KOL"],"coopTypes":["UGC/KOC"],"productCount":1},{"name":"余正科","dept":"网易游戏","roles":["主营销/项目组"],"products":["G66"],"bizLines":["国内KOL"],"coopTypes":["生态-直播"],"productCount":1},{"name":"张乔治","dept":"网易游戏","roles":["主营销/项目组"],"products":["H72"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"赵轩","dept":"网易游戏","roles":["商务"],"products":["DJ01"],"bizLines":["国内KOL"],"coopTypes":[],"productCount":1},{"name":"陈永亮","dept":"网易游戏","roles":["主营销/项目组"],"products":["TX3"],"bizLines":["国内KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"黄灏","dept":"网易游戏","roles":["主营销/项目组"],"products":["X20"],"bizLines":["海外KOL"],"coopTypes":["视频"],"productCount":1},{"name":"suan","dept":"网易游戏","roles":["主营销/项目组"],"products":["H55"],"bizLines":["海外KOL"],"coopTypes":["ALL"],"productCount":1},{"name":"mix","dept":"网易游戏","roles":["策划"],"products":["MA167na"],"bizLines":["国内KOL"],"coopTypes":["KOL"],"productCount":1}],"products":[{"code":"A11","fullName":"A11-MUMU模拟器","bizLines":["国内KOL","海外KOL"]},{"code":"A15","fullName":"A15-steam游戏","bizLines":["国内KOL","生态"]},{"code":"A56","fullName":"A56-UU加速器","bizLines":["国内KOL","海外KOL"]},{"code":"D90","fullName":"D90-Naraka-永劫无间","bizLines":["国内KOL","海外KOL"]},{"code":"DJ01","fullName":"DJ01-Blood Message-归唐","bizLines":["国内KOL"]},{"code":"G108","fullName":"G108-Destiny: Rising-命运：群星","bizLines":["国内KOL","海外KOL"]},{"code":"G112","fullName":"G112-Racing Master-巅峰极速","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"G124","fullName":"G124-漫威秘法狂潮","bizLines":["国内KOL"]},{"code":"G138","fullName":"G138-unVEIL the world-安贝尔世界","bizLines":["国内KOL"]},{"code":"G66","fullName":"G66-明日之后","bizLines":["国内KOL","生态-短视频","生态-直播","海外KOL"]},{"code":"G83NA","fullName":"G83NA-Knives Out-荒野行动","bizLines":["国内KOL","海外KOL"]},{"code":"G83US","fullName":"G83US-BloodStrike-代号：血战","bizLines":["国内KOL","海外KOL"]},{"code":"G92","fullName":"G92-哈利波特魔法觉醒","bizLines":["国内KOL"]},{"code":"H55","fullName":"H55-Identity V-第五人格","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"H72","fullName":"H72-Where Winds Meet-燕云十六声","bizLines":["国内KOL","海外KOL","海外UA","生态"]},{"code":"H73","fullName":"H73-Once Human-七日世界","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"H74NA","fullName":"H74-Sea of Remnants-遗忘之海","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"L10","fullName":"L10-倩女幽魂","bizLines":["国内KOL"]},{"code":"L26","fullName":"L26-FragPunk-界外狂潮","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"L28","fullName":"L28-Planet Party Time-星球派对","bizLines":["国内KOL"]},{"code":"L33","fullName":"L33-Dunk City Dynasty-全明星街球派对","bizLines":["国内KOL"]},{"code":"L36","fullName":"L36-逆水寒","bizLines":["国内KOL"]},{"code":"L44","fullName":"L44-代号：项目","bizLines":["国内KOL"]},{"code":"L50NA","fullName":"L50-ANANTA-无限大","bizLines":["国内KOL"]},{"code":"MA167na","fullName":"MA167na-歧路旅人","bizLines":["国内KOL","海外KOL","海外UA"]},{"code":"TX3","fullName":"TX3-天下3：万象","bizLines":["国内KOL","海外KOL"]},{"code":"U5","fullName":"U5-Eggy Party-蛋仔派对","bizLines":["国内KOL"]},{"code":"X19","fullName":"X19-Minecraft-我的世界","bizLines":["国内KOL"]},{"code":"X20","fullName":"X20-Marvel Rivals-漫威争锋","bizLines":["国内KOL","海外KOL","海外UA"]}],"links":[{"source":"刘岩","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"萨摩","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"马哲南","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"郭隽珂","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"李卉娴","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"吴杜妍","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"黎建希","target":"X20","bizLine":"国内KOL","coopType":"ALL"},{"source":"赵琪","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"罗力","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"林翠萍","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"乔安琪","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"霍昱彤","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"Mike","target":"X20","bizLine":"海外KOL","coopType":"直播"},{"source":"赵琪","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"罗力","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"黄灏","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"乔安琪","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"霍昱彤","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"Mike","target":"X20","bizLine":"海外KOL","coopType":"视频"},{"source":"amber","target":"X20","bizLine":"海外UA","coopType":"ALL"},{"source":"林津琪","target":"X20","bizLine":"海外UA","coopType":"ALL"},{"source":"詹小婷","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁加加","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"王璐","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"夏杨","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"何邱童","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"王雨婷","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"耿菱","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"李嘉俐","target":"H55","bizLine":"国内KOL","coopType":"KOL"},{"source":"赵琪","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"治治","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"麦麦","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"李昀芷","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"suan","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"廖海旭","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"邱钰婷","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"Mike","target":"H55","bizLine":"海外KOL","coopType":"ALL"},{"source":"amber","target":"H55","bizLine":"海外UA","coopType":null},{"source":"黄梓宜","target":"H55","bizLine":"海外UA","coopType":null},{"source":"沈佳赟","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"詹小婷","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"黄赐罗","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"李昊燃","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"殷弘","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"罗丹玲","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"高敏","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"王崟","target":"H72","bizLine":"国内KOL","coopType":"KOL"},{"source":"沈佳赟","target":"H72","bizLine":"国内KOL","coopType":"生态"},{"source":"李洲","target":"H72","bizLine":"国内KOL","coopType":"生态"},{"source":"徐世鑫","target":"H72","bizLine":"国内KOL","coopType":"生态"},{"source":"林乾苗","target":"H72","bizLine":"国内KOL","coopType":"生态"},{"source":"陈越","target":"H72","bizLine":"国内KOL","coopType":"生态"},{"source":"付羿轩","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"雷沙沙","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"沙沙","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"罗力","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"黄硕冰","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"张乔治","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"拖拖","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"列颖欣","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"Mike","target":"H72","bizLine":"海外KOL","coopType":"ALL"},{"source":"amber","target":"H72","bizLine":"海外UA","coopType":null},{"source":"林津琪","target":"H72","bizLine":"海外UA","coopType":null},{"source":"沈佳赟","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"叶惟","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"罗皓","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"殷弘","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"师帅","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"杨熠宁","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"辜著崟","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"李胜泽","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"吴麒国","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"夏培霖","target":"H73","bizLine":"国内KOL","coopType":"KOL"},{"source":"赵琪","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"白雨佳","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"小羊","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"李昀芷","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"谢丹","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"唐玥琪","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"金日","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"乔安琪","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"夏培霖","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"Mike","target":"H73","bizLine":"海外KOL","coopType":"ALL"},{"source":"amber","target":"H73","bizLine":"海外UA","coopType":null},{"source":"黄梓宜","target":"H73","bizLine":"海外UA","coopType":null},{"source":"钟娇","target":"G83US","bizLine":"海外KOL","coopType":null},{"source":"Mike","target":"G83US","bizLine":"海外KOL","coopType":null},{"source":"田涛","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"李昊燃","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"马恒","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"吴裕承","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"李卉娴","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"陈雨青","target":"G83NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"钟娇","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"治治","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"鹤子","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"迷路","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"钟安琪","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"宋俪霖","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"Mike","target":"G83NA","bizLine":"海外KOL","coopType":"ALL"},{"source":"田涛","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"侍芳","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"杨莹","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"韩彧丰","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"金弦","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"刁统一","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"吴杜妍","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"李胜泽","target":"D90","bizLine":"国内KOL","coopType":"KOL"},{"source":"钟娇","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"黄烁冰","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"王皓杰","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"乔安琪","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"列颖欣","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"Mike","target":"D90","bizLine":"海外KOL","coopType":"线下高校"},{"source":"侍芳","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁琳","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"林晓茜","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"杨莹","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁势宸","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"孙沁嫄","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"戴小凡","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"李萌萌","target":"L36","bizLine":"国内KOL","coopType":"KOL"},{"source":"沈佳赟","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"叶惟","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"殷弘","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"李昊燃","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"王一雯","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"王思语","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"陈越","target":"U5","bizLine":"国内KOL","coopType":"KOL"},{"source":"沈佳赟","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁琳","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"韩彧丰","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"林晓茜","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"师帅","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"罗凯","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"林统","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"梁韵婷","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"张冰玉","target":"G66","bizLine":"国内KOL","coopType":"KOL"},{"source":"沈佳赟","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"叶惟","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"罗皓","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"孟向阳","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"雷啸垚","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"吴裕承","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"张冰玉","target":"G66","bizLine":"国内KOL","coopType":"生态-短视频"},{"source":"沈佳赟","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"叶惟","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"罗皓","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"余正科","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"吴裕承","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"张冰玉","target":"G66","bizLine":"国内KOL","coopType":"生态-直播"},{"source":"沈佳赟","target":"H74NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"韩彧丰","target":"H74NA","bizLine":"国内KOL","coopType":"KOL"},{"source":"刘岩","target":"G112","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"G112","bizLine":"国内KOL","coopType":"KOL"},{"source":"何霡坚","target":"G112","bizLine":"国内KOL","coopType":"KOL"},{"source":"田涛","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"叶惟","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"周翔","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"施一雯","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"高美媛","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"王俊杰","target":"L10","bizLine":"国内KOL","coopType":"ALL"},{"source":"侍芳","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"田涛","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"黄赐罗","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"罗战","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁毓雯","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"吴杜妍","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"李萌萌","target":"L26","bizLine":"国内KOL","coopType":"KOL"},{"source":"付羿轩","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"于跃","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"石宛金","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"谢宇蔚","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"拖拖","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"邱钰婷","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"Mike","target":"L26","bizLine":"海外KOL","coopType":"KOL"},{"source":"沈佳赟","target":"X19","bizLine":"国内KOL","coopType":"KOL"},{"source":"侍芳","target":"A11","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"李欣","target":"A11","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"付羿轩","target":"A11","bizLine":"海外KOL","coopType":"SEO/KOL"},{"source":"侍芳","target":"A56","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"罗恒","target":"A56","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"范恩颖","target":"A56","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"李欣","target":"A56","bizLine":"国内KOL","coopType":"SEO/KOL"},{"source":"付羿轩","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"李君如","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"马麟","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"廖海旭","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"张冰玉","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"Mike","target":"A56","bizLine":"海外KOL","coopType":"KOL"},{"source":"刘岩","target":"G124","bizLine":"国内KOL","coopType":"KOL"},{"source":"萨摩","target":"G124","bizLine":"国内KOL","coopType":"KOL"},{"source":"詹小婷","target":"DJ01","bizLine":"国内KOL","coopType":null},{"source":"孟向阳","target":"DJ01","bizLine":"国内KOL","coopType":null},{"source":"赵轩","target":"DJ01","bizLine":"国内KOL","coopType":null},{"source":"刘岩","target":"G138","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"G138","bizLine":"国内KOL","coopType":"KOL"},{"source":"田涛","target":"MA167na","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"MA167na","bizLine":"国内KOL","coopType":"KOL"},{"source":"谢宇蔚","target":"MA167na","bizLine":"国内KOL","coopType":"KOL"},{"source":"mix","target":"MA167na","bizLine":"国内KOL","coopType":"KOL"},{"source":"王俊杰","target":"MA167na","bizLine":"国内KOL","coopType":"KOL"},{"source":"付羿轩","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"于跃","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"谢宇蔚","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"拖拖","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"邱钰婷","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"Mike","target":"MA167na","bizLine":"海外KOL","coopType":"KOL"},{"source":"刘岩","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"萨摩","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"黄赐罗","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"萨摩","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"马哲南","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"师帅","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"陈永亮","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"李卉娴","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"黎建希","target":"TX3","bizLine":"国内KOL","coopType":"ALL"},{"source":"付羿轩","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"于跃","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"萨尔(刘业勤)","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"钟安琪","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"伍昭悦","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"Mike","target":"TX3","bizLine":"海外KOL","coopType":"KOL"},{"source":"沈佳赟","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"丁琳","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"孟向阳","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"林晓茜","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"韩彧丰","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"吴晓","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"赵梓欣","target":"A15","bizLine":"国内KOL","coopType":"KOL"},{"source":"沈佳赟","target":"A15","bizLine":"国内KOL","coopType":"生态"},{"source":"周翔","target":"A15","bizLine":"国内KOL","coopType":"生态"},{"source":"吴晓","target":"A15","bizLine":"国内KOL","coopType":"生态"},{"source":"林阳锋","target":"A15","bizLine":"国内KOL","coopType":"生态"},{"source":"赵梓欣","target":"A15","bizLine":"国内KOL","coopType":"生态"},{"source":"沈佳赟","target":"G108","bizLine":"国内KOL","coopType":"KOL"},{"source":"韩彧丰","target":"G108","bizLine":"国内KOL","coopType":"KOL"},{"source":"付羿轩","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"},{"source":"于跃","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"},{"source":"王璟","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"},{"source":"杨元","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"},{"source":"霍昱彤","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"},{"source":"Mike","target":"G108","bizLine":"海外KOL","coopType":"UGC/KOC"}]};
+
+    // 内外部配色
+    const DEPT_COLORS = {
+        '有道内部': { main: '#f08c00', bg: 'rgba(240,140,0,0.15)', border: 'rgba(240,140,0,0.5)' },
+        '网易游戏': { main: '#339af0', bg: 'rgba(51,154,240,0.15)', border: 'rgba(51,154,240,0.5)' }
     };
-    
-    // 角色排序权重
-    const ROLE_ORDER = ['销售', 'PM', '主运营', '主营销', '策划', 'QC', '商务', '合作类型'];
-    
-    // 业务线配色
+
+    // 角色色阶（内部用暖色变体，外部用冷色变体）
+    const ROLE_COLORS_INTERNAL = {
+        '销售': '#ff6b6b', 'PM': '#ffa94d', '主运营': '#ffd43b'
+    };
+    const ROLE_COLORS_EXTERNAL = {
+        '主营销/项目组': '#4ecdc4', '策划': '#5c7cfa', 'QC': '#845ef7', '商务': '#20c997'
+    };
+
+    // 业务线颜色
     const BIZ_COLORS = {
-        '国内KOL': '#5c7ae9',
-        '海外KOL': '#f5a623',
-        '海外UA': '#9b59b6',
-        '生态': '#27ae60',
-        '生态-短视频': '#27ae60',
-        '生态-直播': '#2ecc71',
-        '直播': '#e74c3c',
-        '视频': '#c0392b',
-        '线下高校': '#1abc9c',
-        'UGC/KOC': '#34495e',
-        'SEO/KOL': '#7f8c8d',
-        'ALL': '#95a5a6'
+        '国内KOL': '#ff6b6b', '海外KOL': '#339af0', '海外UA': '#20c997',
+        '生态': '#ffa94d', '生态-短视频': '#ffa94d', '生态-直播': '#ffa94d'
     };
-    
-    // 初始化图表
-    const chart = echarts.init(document.getElementById('chart'));
+
+    function getRoleColor(person) {
+        const role = person.roles[0];
+        if (person.dept === '有道内部') {
+            return ROLE_COLORS_INTERNAL[role] || DEPT_COLORS['有道内部'].main;
+        }
+        return ROLE_COLORS_EXTERNAL[role] || DEPT_COLORS['网易游戏'].main;
+    }
+
+    // ============ 构建图数据 ============
     let allNodes = [];
     let allLinks = [];
-    
-    // 状态
-    let currentNodeId = null;
-    let isFocused = false;
-    let showMode = 'all';
-    let searchKeyword = '';
-    let visibleBizTypes = new Set();
-    
-    // ============ 构建图数据 ============
+    let personIdMap = {};
+    let productIdMap = {};
+
     function buildGraphData() {
         const nodes = [];
         const links = [];
-        const personMap = new Map();
-        
-        DATA.products.forEach(product => {
+
+        // Person nodes
+        DATA.persons.forEach(p => {
+            const id = 'p_' + p.name;
+            personIdMap[p.name] = id;
+            const color = getRoleColor(p);
+            const size = Math.max(30, Math.min(60, 20 + p.productCount * 4));
             nodes.push({
-                id: 'prod_' + product.code,
-                name: product.code,
-                fullName: product.name,
-                type: 'product',
-                itemStyle: { color: '#4a90d9' },
-                symbol: 'roundRect',
-                symbolSize: 45
-            });
-            
-            product.relations.forEach(rel => {
-                rel.persons.forEach(person => {
-                    const personId = 'per_' + person.name;
-                    
-                    if (!personMap.has(person.name)) {
-                        personMap.set(person.name, personId);
-                        const color = ROLE_COLORS[person.role] || '#6c757d';
-                        nodes.push({
-                            id: personId,
-                            name: person.name,
-                            type: 'person',
-                            role: person.role,
-                            itemStyle: { color: color },
-                            symbol: 'circle',
-                            symbolSize: 26
-                        });
-                    }
-                    
-                    links.push({
-                        source: personId,
-                        target: 'prod_' + product.code,
-                        relationType: person.bizType,
-                        lineStyle: { 
-                            color: BIZ_COLORS[person.bizType] || '#95a5a6',
-                            width: 1.5,
-                            opacity: 0.6
-                        }
-                    });
-                });
+                id: id,
+                name: p.name,
+                type: 'person',
+                dept: p.dept,
+                roles: p.roles,
+                products: p.products,
+                bizLines: p.bizLines,
+                productCount: p.productCount,
+                symbol: p.dept === '有道内部' ? 'roundRect' : 'circle',
+                symbolSize: size,
+                itemStyle: {
+                    color: color,
+                    borderColor: DEPT_COLORS[p.dept].border,
+                    borderWidth: 2,
+                    shadowBlur: 8,
+                    shadowColor: color + '40'
+                },
+                label: { show: true, position: 'bottom', fontSize: 10, color: '#ccc', formatter: p.name }
             });
         });
-        
+
+        // Product nodes (smaller, neutral)
+        DATA.products.forEach(prod => {
+            const id = 'prod_' + prod.code;
+            productIdMap[prod.code] = id;
+            nodes.push({
+                id: id,
+                name: prod.code,
+                fullName: prod.fullName,
+                type: 'product',
+                symbol: 'diamond',
+                symbolSize: 28,
+                itemStyle: {
+                    color: '#444',
+                    borderColor: '#555',
+                    borderWidth: 1,
+                    shadowBlur: 4,
+                    shadowColor: 'rgba(255,255,255,0.05)'
+                },
+                label: { show: true, position: 'top', fontSize: 9, color: '#888', formatter: prod.code }
+            });
+        });
+
+        // Links: person -> product
+        // Deduplicate (same person-product pair across bizLines)
+        const linkMap = {};
+        DATA.links.forEach(l => {
+            const sourceId = personIdMap[l.source];
+            const targetId = productIdMap[l.target];
+            if (!sourceId || !targetId) return;
+            const key = sourceId + '|' + targetId;
+            if (!linkMap[key]) {
+                linkMap[key] = { source: sourceId, target: targetId, bizLines: new Set() };
+            }
+            linkMap[key].bizLines.add(l.bizLine);
+        });
+
+        Object.values(linkMap).forEach(l => {
+            const bizLines = [...l.bizLines];
+            const bizLine = bizLines[0]; // primary bizLine
+            links.push({
+                source: l.source,
+                target: l.target,
+                relationType: bizLine,
+                lineStyle: {
+                    color: BIZ_COLORS[bizLine] || '#555',
+                    width: 1,
+                    opacity: 0.4,
+                    curveness: 0.1
+                }
+            });
+        });
+
         return { nodes, links };
     }
-    
-    // ============ 图例构建 ============
+
+    const graphData = buildGraphData();
+    allNodes = graphData.nodes;
+    allLinks = graphData.links;
+
+    // ============ 初始化图表 ============
+    const chartDom = document.getElementById('chart');
+    const chart = echarts.init(chartDom, 'dark');
+
+    let showMode = 'internal'; // all, internal, external
+    let showProducts = false; // toggle product visibility
+    let selectedFilter = null; // { type: 'dept'|'biz', value: '...' }
+    let isFocused = false;
+    let currentNodeId = null;
+    let searchKeyword = '';
+
+    // ============ 图例 ============
     function buildLegend() {
         const legend = document.getElementById('legend');
-        
-        const productCount = DATA.products.length;
-        const personCount = DATA.persons.length;
-        
-        const bizStats = {};
-        const coopTypeSet = new Set();
-        DATA.products.forEach(p => {
-            p.relations.forEach(r => {
-                bizStats[r.bizType] = (bizStats[r.bizType] || 0) + r.persons.length;
-                r.persons.forEach(p => {
-                    if (p.role === '合作类型') coopTypeSet.add(p.name);
-                });
-            });
+        let html = '';
+
+        // 部门分组
+        html += '<div class="legend-section">';
+        html += '<div class="legend-section-title">🔶 有道内部（方形）</div>';
+        Object.entries(ROLE_COLORS_INTERNAL).forEach(([role, color]) => {
+            const count = DATA.persons.filter(p => p.dept === '有道内部' && p.roles[0] === role).length;
+            html += `<div class="legend-item" data-type="dept" data-value="internal_${role}"><div class="legend-symbol square" style="background:${color}"></div>${role}<span class="legend-count">${count}</span></div>`;
         });
-        
-        const roleStats = {};
-        DATA.persons.forEach(p => {
-            p.roles.forEach(r => {
-                roleStats[r] = (roleStats[r] || 0) + 1;
-            });
+        html += '</div>';
+
+        html += '<div class="legend-section">';
+        html += '<div class="legend-section-title">🔵 网易游戏（圆形）</div>';
+        Object.entries(ROLE_COLORS_EXTERNAL).forEach(([role, color]) => {
+            const count = DATA.persons.filter(p => p.dept === '网易游戏' && p.roles[0] === role).length;
+            html += `<div class="legend-item" data-type="dept" data-value="external_${role}"><div class="legend-symbol circle" style="background:${color}"></div>${role}<span class="legend-count">${count}</span></div>`;
         });
-        
-        let html = `<h4>📊 图例</h4>`;
-        
-        html += `<div class="legend-section">
-            <div style="font-size:11px;color:#999;margin-bottom:6px;">节点类型</div>
-            <div class="legend-item"><div class="legend-square" style="background:#4a90d9"></div>产品<span class="legend-count">${productCount}</span></div>
-            <div class="legend-item"><div class="legend-dot" style="background:#6c757d"></div>对接人<span class="legend-count">${personCount}</span></div>
-        </div>`;
-        
-        html += `<div class="legend-section">
-            <div style="font-size:11px;color:#999;margin-bottom:6px;">业务线（点击筛选）</div>`;
-        
-        Object.keys(bizStats).sort().forEach(biz => {
-            const color = BIZ_COLORS[biz] || '#95a5a6';
-            html += `<div class="legend-item" data-type="biz" data-value="${biz}">
-                <div class="legend-line" style="background:${color}"></div>${biz}<span class="legend-count">${bizStats[biz]}</span>
-            </div>`;
+        html += '</div>';
+
+        html += '<div class="legend-section">';
+        html += '<div class="legend-section-title">⬡ 产品（菱形）</div>';
+        html += `<div class="legend-item"><div class="legend-symbol hex" style="background:#444"></div>产品节点<span class="legend-count">${DATA.products.length}</span></div>`;
+        html += '</div>';
+
+        html += '<div class="legend-section">';
+        html += '<div class="legend-section-title">— 业务线</div>';
+        Object.entries(BIZ_COLORS).forEach(([biz, color]) => {
+            if (biz.includes('生态-')) return;
+            const count = DATA.links.filter(l => l.bizLine === biz).length;
+            html += `<div class="legend-item" data-type="biz" data-value="${biz}"><div class="legend-symbol" style="background:${color};border-radius:50%;width:8px;height:8px;margin:3px;"></div>${biz}<span class="legend-count">${count}</span></div>`;
         });
-        
-        html += `</div><div class="legend-section">
-            <div style="font-size:11px;color:#999;margin-bottom:6px;">角色（点击筛选）</div>`;
-        
-        Object.keys(roleStats).filter(r => r !== '合作类型').sort().forEach(role => {
-            const color = ROLE_COLORS[role] || '#95a5a6';
-            html += `<div class="legend-item" data-type="role" data-value="${role}">
-                <div class="legend-dot" style="background:${color};width:10px;height:10px;"></div>${role}<span class="legend-count">${roleStats[role]}</span>
-            </div>`;
-        });
-        
-        html += `</div><div class="legend-section">
-            <div style="font-size:11px;color:#999;margin-bottom:6px;">合作类型（点击筛选）</div>`;
-        
-        [...coopTypeSet].sort().forEach(ct => {
-            const color = ROLE_COLORS['合作类型'];
-            html += `<div class="legend-item" data-type="cooptype" data-value="${ct}">
-                <div class="legend-dot" style="background:${color};width:10px;height:10px;"></div>${ct}
-            </div>`;
-        });
-        
-        html += `</div>`;
+        html += '</div>';
+
         legend.innerHTML = html;
-        
-        // 筛选状态 - 单选
-        let selectedBizType = null;
-        let selectedRole = null;
-        
-        // 业务线筛选 - 单选（点击选中，再点同一个取消）
-        legend.querySelectorAll('.legend-item[data-type="biz"]').forEach(item => {
+
+        // 统一筛选：所有 legend-item 单选互斥
+        legend.querySelectorAll('.legend-item[data-type="dept"], .legend-item[data-type="biz"]').forEach(item => {
             item.addEventListener('click', () => {
+                const type = item.dataset.type;
                 const value = item.dataset.value;
-                
-                if (selectedBizType === value) {
-                    // 取消选中
-                    selectedBizType = null;
+                if (selectedFilter && selectedFilter.type === type && selectedFilter.value === value) {
+                    // 取消选中 → 恢复默认视图
+                    selectedFilter = null;
                     item.classList.remove('selected');
+                    showMode = 'internal';
+                    showProducts = false;
+                    syncToolbar();
                 } else {
-                    // 选中新的，取消之前的
-                    legend.querySelectorAll('.legend-item[data-type="biz"]').forEach(i => i.classList.remove('selected'));
-                    selectedBizType = value;
+                    // 选中当前，取消其他
+                    legend.querySelectorAll('.legend-item.selected').forEach(i => i.classList.remove('selected'));
+                    selectedFilter = { type, value };
                     item.classList.add('selected');
+                    // 视图联动
+                    if (type === 'dept') {
+                        const [deptPrefix] = value.split('_');
+                        showMode = deptPrefix === 'internal' ? 'internal' : 'external';
+                        showProducts = false;
+                    } else if (type === 'biz') {
+                        showProducts = true;
+                    }
+                    syncToolbar();
                 }
-                
-                if (selectedBizType) {
-                    visibleBizTypes = new Set([selectedBizType]);
-                } else {
-                    visibleBizTypes = new Set();
-                }
-                
-                renderChart();
-            });
-        });
-        
-        // 角色筛选 - 单选（点击选中，再点同一个取消）
-        legend.querySelectorAll('.legend-item[data-type="role"]').forEach(item => {
-            item.addEventListener('click', () => {
-                const value = item.dataset.value;
-                
-                if (selectedRole === value) {
-                    // 取消选中
-                    selectedRole = null;
-                    item.classList.remove('selected');
-                } else {
-                    // 选中新的，取消之前的
-                    legend.querySelectorAll('.legend-item[data-type="role"]').forEach(i => i.classList.remove('selected'));
-                    selectedRole = value;
-                    item.classList.add('selected');
-                }
-                
-                renderChart();
-            });
-        });
-        
-        // 合作类型筛选 - 单选（点击选中，再点同一个取消）
-        let selectedCoopType = null;
-        
-        legend.querySelectorAll('.legend-item[data-type="cooptype"]').forEach(item => {
-            item.addEventListener('click', () => {
-                const value = item.dataset.value;
-                
-                if (selectedCoopType === value) {
-                    selectedCoopType = null;
-                    item.classList.remove('selected');
-                } else {
-                    legend.querySelectorAll('.legend-item[data-type="cooptype"]').forEach(i => i.classList.remove('selected'));
-                    selectedCoopType = value;
-                    item.classList.add('selected');
-                }
-                
                 renderChart();
             });
         });
     }
-    
+
+    buildLegend();
+
+    function clearLegendFilter() {
+        selectedFilter = null;
+        document.querySelectorAll('.legend-item.selected').forEach(i => i.classList.remove('selected'));
+    }
+
+    function syncToolbar() {
+        const btnI = document.getElementById('btnInternal');
+        const btnE = document.getElementById('btnExternal');
+        const btnP = document.getElementById('btnProducts');
+        if (showMode === 'internal') {
+            btnI.classList.add('active');
+            btnE.classList.remove('active');
+        } else if (showMode === 'external') {
+            btnI.classList.remove('active');
+            btnE.classList.add('active');
+        } else {
+            btnI.classList.remove('active');
+            btnE.classList.remove('active');
+        }
+        if (showProducts) {
+            btnP.classList.add('active');
+        } else {
+            btnP.classList.remove('active');
+        }
+    }
+
     // ============ 图表配置 ============
     function getChartOption(nodes, links) {
         return {
             animation: true,
             animationDuration: 800,
             animationDurationUpdate: 500,
+            backgroundColor: '#0f1117',
             tooltip: {
                 trigger: 'item',
-                backgroundColor: 'rgba(255,255,255,0.95)',
-                borderColor: '#eee',
+                backgroundColor: 'rgba(20,22,28,0.95)',
+                borderColor: 'rgba(255,255,255,0.1)',
                 borderWidth: 1,
-                textStyle: { color: '#333', fontSize: 12 },
+                textStyle: { color: '#ddd', fontSize: 12 },
                 formatter: function(params) {
                     if (params.dataType === 'edge') {
                         return `<span style="display:inline-block;width:10px;height:10px;background:${params.data.lineStyle.color};border-radius:50%;margin-right:6px;"></span>${params.data.relationType}`;
                     }
                     const node = params.data;
                     if (node.type === 'product') {
-                        return `<strong>${node.name}</strong><br/><span style="color:#888">${node.fullName}</span>`;
-                    } else {
-                        return `<strong>${node.name}</strong><br/><span style="color:#888">${node.role || '对接人'}</span>`;
+                        return `<strong style="color:#aaa">${node.name}</strong><br/><span style="color:#888">${node.fullName}</span>`;
                     }
+                    const deptLabel = node.dept === '有道内部' ? '🔶 有道内部' : '🔵 网易游戏';
+                    return `<strong>${node.name}</strong><br/><span style="color:#888">${deptLabel} · ${node.roles.join('/')}</span><br/><span style="color:#666">负责 ${node.productCount} 个产品</span>`;
                 }
             },
             series: [{
                 type: 'graph',
                 layout: 'force',
                 force: {
-                    repulsion: 350,
-                    edgeLength: [30, 80],
-                    gravity: 0.05,
+                    repulsion: 400,
+                    edgeLength: [40, 120],
+                    gravity: 0.06,
                     layoutAnimation: true,
                     alpha: 0.3,
                     alphaDecay: 0.02,
                     alphaMin: 0.001
                 },
-                symbol: function(value, params) {
-                    return params.data.symbol || 'circle';
-                },
-                symbolSize: function(value, params) {
-                    return params.data.symbolSize || 30;
-                },
                 roam: true,
                 draggable: true,
-                label: {
-                    show: true,
-                    position: 'bottom',
-                    formatter: function(params) {
-                        return params.data.name;
-                    },
-                    fontSize: 11,
-                    color: 'rgba(0,0,0,0.7)',
-                    textShadowColor: 'rgba(255,255,255,0.8)',
-                    textShadowBlur: 3
-                },
-                lineStyle: {
-                    width: 1.5,
-                    curveness: 0.1,
-                    opacity: 0.6
-                },
+                lineStyle: { width: 1.5, curveness: 0.1, opacity: 0.5 },
                 emphasis: {
                     focus: 'none',
-                    scale: 1.5,
+                    scale: 1.8,
                     lineStyle: { width: 3, opacity: 1 },
-                    itemStyle: { shadowBlur: 15, shadowColor: 'rgba(24,144,255,0.4)' },
-                    label: { fontSize: 13, fontWeight: 'bold' }
+                    itemStyle: { shadowBlur: 20, shadowColor: 'rgba(51,154,240,0.5)' },
+                    label: { fontSize: 14, fontWeight: 'bold', color: '#fff' }
                 },
                 blur: {
-                    itemStyle: { opacity: 0.25 },
-                    lineStyle: { opacity: 0.1 },
-                    label: { opacity: 0.25 }
+                    itemStyle: { opacity: 0.15 },
+                    lineStyle: { opacity: 0.05 },
+                    label: { opacity: 0.15 }
                 },
                 data: nodes,
                 links: links
             }]
         };
     }
-    
-    // ============ 聚焦视图 ============
-    function getFirstDegreeNodes(nodeId) {
-        const connectedIds = new Set([nodeId]);
-        
-        allLinks.forEach(link => {
-            if (link.source === nodeId || link.target === nodeId) {
-                connectedIds.add(link.source);
-                connectedIds.add(link.target);
-            }
-        });
-        
-        return connectedIds;
-    }
-    
-    // ============ 渲染图表 ============
+
+    // ============ 渲染 ============
     function renderChart() {
-        let visibleNodeIds;
-        let isSearchMode = false;
-        
-        // 搜索模式 - 只显示匹配节点和一级节点
-        if (searchKeyword) {
-            isSearchMode = true;
+        let visibleNodeIds = new Set();
+
+        if (isFocused && currentNodeId) {
+            // 【聚焦模式】严格只显示一级关联：焦点节点 + 其直接关联的节点
+            visibleNodeIds.add(currentNodeId);
+            allLinks.forEach(l => {
+                if (l.source === currentNodeId) visibleNodeIds.add(l.target);
+                if (l.target === currentNodeId) visibleNodeIds.add(l.source);
+            });
+        } else if (searchKeyword) {
+            // 【搜索模式】匹配节点 + 一级关联
             const matchedIds = new Set();
             allNodes.forEach(n => {
-                if (n.name.toLowerCase().includes(searchKeyword) || 
-                    (n.fullName && n.fullName.toLowerCase().includes(searchKeyword)) ||
-                    (n.role && n.role.toLowerCase().includes(searchKeyword))) {
-                    matchedIds.add(n.id);
-                }
+                const searchStr = (n.name + (n.fullName || '') + (n.roles || []).join('')).toLowerCase();
+                if (searchStr.includes(searchKeyword)) matchedIds.add(n.id);
             });
-            // 获取一级关联节点
-            const firstDegreeIds = new Set();
             matchedIds.forEach(mid => {
+                visibleNodeIds.add(mid);
                 allLinks.forEach(l => {
-                    if (l.source === mid || l.target === mid) {
-                        firstDegreeIds.add(l.source);
-                        firstDegreeIds.add(l.target);
-                    }
+                    if (l.source === mid) visibleNodeIds.add(l.target);
+                    if (l.target === mid) visibleNodeIds.add(l.source);
                 });
             });
-            visibleNodeIds = firstDegreeIds;
-        }
-        // 聚焦模式
-        else if (isFocused && currentNodeId) {
-            visibleNodeIds = getFirstDegreeNodes(currentNodeId);
-        }
-        // 全局模式
-        else {
-            visibleNodeIds = new Set(allNodes.map(n => n.id));
-        }
-        
-        // 类型筛选 - 扩展可见节点（保留关联关系！）
-        // 聚焦模式下跳过类型筛选，保留聚焦视图
-        if (!isFocused) {
-            if (showMode === 'products') {
-                const productIds = new Set(allNodes.filter(n => n.type === 'product').map(n => n.id));
+        } else {
+            // 【普通模式】按部门筛选人员 + 按开关控制产品 + 图例筛选
+            const deptMatch = (showMode === 'all') ? () => true :
+                (showMode === 'internal') ? (n) => n.dept === '有道内部' :
+                (showMode === 'external') ? (n) => n.dept === '网易游戏' : () => true;
+
+            if (selectedFilter && selectedFilter.type === 'dept') {
+                // 角色筛选：按部门+角色过滤
+                const [deptPrefix, role] = selectedFilter.value.split('_');
+                const deptName = deptPrefix === 'internal' ? '有道内部' : '网易游戏';
+                allNodes.forEach(n => {
+                    if (n.type === 'person' && n.dept === deptName && n.roles[0] === role) {
+                        visibleNodeIds.add(n.id);
+                    }
+                });
+                if (showProducts) {
+                    allLinks.forEach(l => {
+                        if (visibleNodeIds.has(l.source)) visibleNodeIds.add(l.target);
+                        if (visibleNodeIds.has(l.target)) visibleNodeIds.add(l.source);
+                    });
+                }
+            } else if (selectedFilter && selectedFilter.type === 'biz') {
+                // 业务线筛选：从所有链接中找出匹配业务线的节点
+                const biz = selectedFilter.value;
                 allLinks.forEach(l => {
-                    if (productIds.has(l.source) || productIds.has(l.target)) {
+                    if (l.relationType === biz) {
                         visibleNodeIds.add(l.source);
                         visibleNodeIds.add(l.target);
                     }
                 });
-            } else if (showMode === 'persons') {
-                const personIds = new Set(allNodes.filter(n => n.type === 'person').map(n => n.id));
-                allLinks.forEach(l => {
-                    if (personIds.has(l.source) || personIds.has(l.target)) {
-                        visibleNodeIds.add(l.source);
-                        visibleNodeIds.add(l.target);
+                // 叠加部门模式过滤
+                if (showMode !== 'all') {
+                    const deptName = showMode === 'internal' ? '有道内部' : '网易游戏';
+                    const filtered = new Set();
+                    visibleNodeIds.forEach(id => {
+                        const node = allNodes.find(n => n.id === id);
+                        if (node && node.type === 'person' && node.dept === deptName) filtered.add(id);
+                        if (node && node.type === 'product') filtered.add(id);
+                    });
+                    visibleNodeIds = filtered;
+                }
+            } else {
+                // 无图例筛选：仅按部门模式
+                allNodes.forEach(n => {
+                    if (n.type === 'person' && deptMatch(n)) {
+                        visibleNodeIds.add(n.id);
                     }
                 });
+                if (showProducts) {
+                    allLinks.forEach(l => {
+                        if (visibleNodeIds.has(l.source)) visibleNodeIds.add(l.target);
+                        if (visibleNodeIds.has(l.target)) visibleNodeIds.add(l.source);
+                    });
+                }
             }
         }
-        
-        // 过滤节点
-        let filteredNodes = allNodes.filter(n => {
-            if (!visibleNodeIds.has(n.id)) return false;
-            // 聚焦模式下不过滤类型
-            if (!isFocused && showMode === 'products' && n.type === 'person') return false;
-            if (!isFocused && showMode === 'persons' && n.type === 'product') return false;
-            return true;
-        });
-        
-        // 过滤边
-        let filteredLinks = allLinks.filter(l => {
-            if (!visibleNodeIds.has(l.source) || !visibleNodeIds.has(l.target)) return false;
-            // 业务线筛选：只保留选中的业务线
-            if (visibleBizTypes.size > 0 && !visibleBizTypes.has(l.relationType)) return false;
-            return true;
-        });
-        
-        // 角色筛选 - 在过滤后的节点上应用
-        let roleFilteredNodes = filteredNodes;
-        let roleFilteredLinks = filteredLinks;
-        
-        // 获取选中的角色（从图例获取）
-        const selectedRoleItem = document.querySelector('.legend-item[data-type="role"].selected');
-        const selectedRoleValue = selectedRoleItem ? selectedRoleItem.dataset.value : null;
-        
-        if (selectedRoleValue && !isSearchMode) {
-            // 角色筛选模式：只显示该角色的对接人及其关联产品
-            const rolePersonIds = new Set();
-            filteredNodes.forEach(n => {
-                if (n.type === 'person' && n.role === selectedRoleValue) {
-                    rolePersonIds.add(n.id);
-                }
-            });
-            
-            // 扩展到关联产品
-            filteredLinks.forEach(l => {
-                if (rolePersonIds.has(l.source)) {
-                    rolePersonIds.add(l.target);
-                }
-            });
-            
-            roleFilteredNodes = filteredNodes.filter(n => rolePersonIds.has(n.id));
-            roleFilteredLinks = filteredLinks.filter(l => rolePersonIds.has(l.source) && rolePersonIds.has(l.target));
-        }
-        
-        // 合作类型筛选
-        const selectedCoopTypeItem = document.querySelector('.legend-item[data-type="cooptype"].selected');
-        const selectedCoopTypeValue = selectedCoopTypeItem ? selectedCoopTypeItem.dataset.value : null;
-        
-        if (selectedCoopTypeValue && !isSearchMode) {
-            // 找到包含该合作类型的边
-            const coopNodeIds = new Set();
-            roleFilteredLinks.forEach(l => {
-                const personNode = allNodes.find(n => n.id === l.source);
-                if (personNode && personNode.role === '合作类型' && personNode.name === selectedCoopTypeValue) {
-                    coopNodeIds.add(l.source);
-                    coopNodeIds.add(l.target);
-                }
-            });
-            
-            // 获取与这些边关联的产品，找出所有关联该产品的对接人
-            const connectedProductIds = new Set();
-            coopNodeIds.forEach(nid => {
-                const node = allNodes.find(n => n.id === nid);
-                if (node && node.type === 'product') connectedProductIds.add(nid);
-            });
-            
-            connectedProductIds.forEach(pid => {
-                roleFilteredLinks.forEach(l => {
-                    if (l.target === pid) {
-                        coopNodeIds.add(l.source);
-                        coopNodeIds.add(l.target);
-                    }
-                    if (l.source === pid) {
-                        coopNodeIds.add(l.source);
-                        coopNodeIds.add(l.target);
-                    }
-                });
-            });
-            
-            roleFilteredNodes = roleFilteredNodes.filter(n => coopNodeIds.has(n.id));
-            roleFilteredLinks = roleFilteredLinks.filter(l => coopNodeIds.has(l.source) && coopNodeIds.has(l.target));
-        }
-        
-        // 更新统计
-        const productCount = roleFilteredNodes.filter(n => n.type === 'product').length;
-        const personCount = roleFilteredNodes.filter(n => n.type === 'person').length;
+
+        let filteredNodes = allNodes.filter(n => visibleNodeIds.has(n.id));
+        let filteredLinks = allLinks.filter(l => visibleNodeIds.has(l.source) && visibleNodeIds.has(l.target));
+
+        // 统计
+        const internalCount = filteredNodes.filter(n => n.type === 'person' && n.dept === '有道内部').length;
+        const externalCount = filteredNodes.filter(n => n.type === 'person' && n.dept === '网易游戏').length;
+        const productCount = filteredNodes.filter(n => n.type === 'product').length;
+
+        document.getElementById('statInternal').textContent = internalCount;
+        document.getElementById('statExternal').textContent = externalCount;
         document.getElementById('statProducts').textContent = productCount;
-        document.getElementById('statPersons').textContent = personCount;
-        document.getElementById('statRelations').textContent = roleFilteredLinks.length;
-        
-        chart.setOption(getChartOption(roleFilteredNodes, roleFilteredLinks));
+        document.getElementById('statRelations').textContent = filteredLinks.length;
+
+        chart.setOption(getChartOption(filteredNodes, filteredLinks));
     }
-    
+
     // ============ 详情面板 ============
     function showNodeDetail(node) {
         currentNodeId = node.id;
         isFocused = true;
-        
+
         const panel = document.getElementById('detailPanel');
         panel.classList.add('active');
-        
+
         document.getElementById('detailName').textContent = node.name;
-        
+
         if (node.type === 'product') {
-            document.getElementById('detailAvatar').textContent = '🎮';
-            document.getElementById('detailAvatar').style.background = '#4a90d9';
-            document.getElementById('detailHeader').style.background = 'linear-gradient(135deg, #4a90d9, #67b26f)';
+            document.getElementById('detailAvatar').textContent = '⬡';
+            document.getElementById('detailAvatar').className = 'detail-avatar';
+            document.getElementById('detailAvatar').style.background = '#444';
+            document.getElementById('detailHeader').style.background = 'linear-gradient(135deg, #333, #555)';
             document.getElementById('detailType').textContent = node.fullName;
-            
+
             let bodyHtml = `<div class="detail-row"><div class="detail-label">编号</div><div class="detail-value">${node.name}</div></div>`;
             document.getElementById('detailBody').innerHTML = bodyHtml;
-            
-            const relatedPersons = [];
-            const bizCoopTypes = {}; // 业务线→合作类型集合
+
+            // Find connected persons
+            const connectedPersons = [];
             allLinks.filter(l => l.target === node.id).forEach(l => {
-                const personNode = allNodes.find(n => n.id === l.source);
-                if (personNode) {
-                    if (personNode.role === '合作类型') {
-                        if (!bizCoopTypes[l.relationType]) bizCoopTypes[l.relationType] = new Set();
-                        bizCoopTypes[l.relationType].add(personNode.name);
-                    } else {
-                        relatedPersons.push({
-                            name: personNode.name,
-                            bizType: l.relationType,
-                            personRole: personNode.role,
-                            nodeId: personNode.id
-                        });
-                    }
-                }
-            });
-            
-            const byBiz = {};
-            relatedPersons.forEach(p => {
-                if (!byBiz[p.bizType]) byBiz[p.bizType] = [];
-                byBiz[p.bizType].push(p);
-            });
-            
-            // 每个业务线内按角色重要性排序
-            Object.values(byBiz).forEach(persons => {
-                persons.sort((a, b) => {
-                    const ia = ROLE_ORDER.indexOf(a.personRole);
-                    const ib = ROLE_ORDER.indexOf(b.personRole);
-                    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-                });
-            });
-            
-            let relHtml = '<h5>关联对接人</h5>';
-            Object.keys(byBiz).sort().forEach(biz => {
-                const coopStr = bizCoopTypes[biz] ? ' · ' + [...bizCoopTypes[biz]].join('/') : '';
-                relHtml += `<div style="margin-bottom:8px">`;
-                relHtml += `<span style="font-size:10px;color:#999;margin-bottom:4px;display:block">${biz}<span style="color:#1abc9c;font-size:9px">${coopStr}</span></span>`;
-                relHtml += `<div class="relation-tags">`;
-                byBiz[biz].forEach(p => {
-                    const roleColor = ROLE_COLORS[p.personRole] || '#6c757d';
-                    const bgColor = roleColor + '15';
-                    relHtml += `<span class="relation-tag person" onclick="jumpToNode('${p.nodeId}')" style="border-color:${roleColor};background:${bgColor}"><span class="role" style="color:${roleColor}">${p.personRole}</span>${p.name}</span>`;
-                });
-                relHtml += `</div></div>`;
-            });
-            
-            document.getElementById('detailRelations').innerHTML = relHtml || '<p style="color:#999;font-size:12px;text-align:center;padding:20px">暂无关联</p>';
-            
-        } else {
-            document.getElementById('detailAvatar').textContent = node.name[0];
-            document.getElementById('detailAvatar').style.background = node.itemStyle.color;
-            document.getElementById('detailHeader').style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            document.getElementById('detailType').textContent = node.role;
-            
-            const relatedProducts = [];
-            // 收集每个产品-业务线组合的合作类型
-            const prodBizCoopMap = {}; // key: "prodCode|bizType" -> [coop names]
-            allLinks.forEach(l => {
                 const pNode = allNodes.find(n => n.id === l.source);
-                if (pNode && pNode.role === '合作类型') {
-                    const key = l.target + '|' + l.relationType;
-                    if (!prodBizCoopMap[key]) prodBizCoopMap[key] = [];
-                    prodBizCoopMap[key].push(pNode.name);
+                if (pNode && pNode.type === 'person') {
+                    connectedPersons.push({ name: pNode.name, dept: pNode.dept, role: pNode.roles[0], nodeId: pNode.id, biz: l.relationType });
                 }
             });
-            
-            allLinks.filter(l => l.source === node.id).forEach(l => {
-                const productNode = allNodes.find(n => n.id === l.target);
-                if (productNode) {
-                    relatedProducts.push({
-                        name: productNode.name,
-                        fullName: productNode.fullName,
-                        bizType: l.relationType,
-                        nodeId: productNode.id
-                    });
-                }
+
+            const byDept = { '有道内部': [], '网易游戏': [] };
+            connectedPersons.forEach(p => {
+                byDept[p.dept].push(p);
             });
-            
-            let bodyHtml = `<div class="detail-row"><div class="detail-label">角色</div><div class="detail-value">${node.role || '对接人'}</div></div>`;
-            bodyHtml += `<div class="detail-row"><div class="detail-label">负责</div><div class="detail-value">${relatedProducts.length} 个产品</div></div>`;
-            document.getElementById('detailBody').innerHTML = bodyHtml;
-            
-            const byBiz = {};
-            relatedProducts.forEach(p => {
-                if (!byBiz[p.bizType]) byBiz[p.bizType] = [];
-                byBiz[p.bizType].push(p);
-            });
-            
-            let relHtml = '<h5>负责产品</h5>';
-            Object.keys(byBiz).sort().forEach(biz => {
-                relHtml += `<div style="margin-bottom:8px">`;
-                relHtml += `<span style="font-size:10px;color:#999;margin-bottom:4px;display:block">${biz}</span>`;
-                relHtml += `<div class="relation-tags">`;
-                byBiz[biz].forEach(p => {
-                    const coopKey = p.nodeId + '|' + biz;
-                    const coops = prodBizCoopMap[coopKey] || [];
-                    const coopSuffix = coops.length > 0 ? ` <span style="font-size:9px;color:#1abc9c">(${coops.join('/')})</span>` : '';
-                    relHtml += `<span class="relation-tag product" onclick="jumpToNode('${p.nodeId}')">${p.name}${coopSuffix}</span>`;
+
+            let relHtml = '<h5>关联对接人</h5>';
+            ['有道内部', '网易游戏'].forEach(dept => {
+                if (byDept[dept].length === 0) return;
+                const icon = dept === '有道内部' ? '🔶' : '🔵';
+                relHtml += `<div style="margin-bottom:8px"><span style="font-size:10px;color:#888;margin-bottom:4px;display:block">${icon} ${dept} (${byDept[dept].length}人)</span><div class="relation-tags">`;
+                byDept[dept].forEach(p => {
+                    relHtml += `<span class="relation-tag" onclick="jumpToNode('${p.nodeId}')" style="border-color:${DEPT_COLORS[p.dept].main}40"><span class="biz">${p.role}</span>${p.name}</span>`;
                 });
                 relHtml += `</div></div>`;
             });
-            
-            document.getElementById('detailRelations').innerHTML = relHtml || '<p style="color:#999;font-size:12px;text-align:center;padding:20px">暂无关联</p>';
+            document.getElementById('detailRelations').innerHTML = relHtml;
+        } else {
+            // Person node
+            const isInternal = node.dept === '有道内部';
+            document.getElementById('detailAvatar').textContent = node.name[0];
+            document.getElementById('detailAvatar').className = isInternal ? 'detail-avatar square-avatar' : 'detail-avatar';
+            document.getElementById('detailAvatar').style.background = getRoleColor(node);
+            document.getElementById('detailHeader').style.background = `linear-gradient(135deg, ${getRoleColor(node)}, ${isInternal ? '#f08c00' : '#1971c2'})`;
+            document.getElementById('detailType').textContent = `${isInternal ? '🔶 有道内部' : '🔵 网易游戏'} · ${node.roles.join('/')}`;
+
+            let bodyHtml = `<div class="detail-row"><div class="detail-label">部门</div><div class="detail-value">${node.dept}</div></div>`;
+            bodyHtml += `<div class="detail-row"><div class="detail-label">角色</div><div class="detail-value">${node.roles.join(' / ')}</div></div>`;
+            bodyHtml += `<div class="detail-row"><div class="detail-label">负责</div><div class="detail-value">${node.productCount} 个产品</div></div>`;
+            document.getElementById('detailBody').innerHTML = bodyHtml;
+
+            // Find connected products
+            const connectedProducts = [];
+            allLinks.filter(l => l.source === node.id).forEach(l => {
+                const prodNode = allNodes.find(n => n.id === l.target);
+                if (prodNode && prodNode.type === 'product') {
+                    connectedProducts.push({ code: prodNode.name, fullName: prodNode.fullName, nodeId: prodNode.id, biz: l.relationType });
+                }
+            });
+
+            let relHtml = '<h5>负责产品</h5><div class="relation-tags">';
+            connectedProducts.forEach(p => {
+                relHtml += `<span class="relation-tag" onclick="jumpToNode('${p.nodeId}')" style="border-color:${BIZ_COLORS[p.biz] || '#555'}40"><span class="biz">${p.biz}</span>${p.code}</span>`;
+            });
+            relHtml += '</div>';
+            document.getElementById('detailRelations').innerHTML = relHtml;
         }
-        
+
         document.getElementById('focusHint').classList.add('active');
         document.getElementById('breadcrumb').classList.add('active');
-        
         renderChart();
     }
-    
+
     function jumpToNode(nodeId) {
         const node = allNodes.find(n => n.id === nodeId);
-        if (node) {
-            showNodeDetail(node);
-        }
+        if (node) showNodeDetail(node);
     }
-    
+
     function closeDetail() {
         document.getElementById('detailPanel').classList.remove('active');
         document.getElementById('focusHint').classList.remove('active');
@@ -926,7 +648,7 @@
         isFocused = false;
         renderChart();
     }
-    
+
     function resetView() {
         isFocused = false;
         currentNodeId = null;
@@ -935,56 +657,47 @@
         document.getElementById('breadcrumb').classList.remove('active');
         renderChart();
     }
-    
+
     // ============ 事件绑定 ============
-    
-    // 节点点击
     chart.on('click', function(params) {
         if (!params.data || params.data.type === undefined) return;
         showNodeDetail(params.data);
     });
-    
-    // 点击空白关闭详情
+
     let clickHandled = false;
     chart.getZr().on('click', function(params) {
-        if (params.target === undefined && !clickHandled) {
-            closeDetail();
-        }
+        if (params.target === undefined && !clickHandled) closeDetail();
         setTimeout(() => { clickHandled = false; }, 100);
     });
-    
     chart.on('click', () => { clickHandled = true; });
-    
-    // 工具栏按钮
-    document.getElementById('btnAll').addEventListener('click', () => {
-        showMode = 'all';
-        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btnAll').classList.add('active');
+
+    // 工具栏：部门按钮可切换
+    document.getElementById('btnInternal').addEventListener('click', () => {
+        showMode = (showMode === 'internal') ? 'all' : 'internal';
+        clearLegendFilter();
+        syncToolbar();
+        renderChart();
+    });
+    document.getElementById('btnExternal').addEventListener('click', () => {
+        showMode = (showMode === 'external') ? 'all' : 'external';
+        clearLegendFilter();
+        syncToolbar();
         renderChart();
     });
     document.getElementById('btnProducts').addEventListener('click', () => {
-        showMode = 'products';
-        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btnProducts').classList.add('active');
+        showProducts = !showProducts;
+        syncToolbar();
         renderChart();
     });
-    document.getElementById('btnPersons').addEventListener('click', () => {
-        showMode = 'persons';
-        document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btnPersons').classList.add('active');
-        renderChart();
-    });
-    
-    // 搜索功能
+
+    // 搜索
     document.getElementById('searchInput').addEventListener('input', e => {
         searchKeyword = e.target.value.trim().toLowerCase();
-        if (searchKeyword) {
-            closeDetail();
-        }
+        if (searchKeyword) closeDetail();
         renderChart();
     });
-    
-    // 切片器固定展开/收起
+
+    // 切片器
     let isPinned = false;
     document.getElementById('legendTab').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -998,12 +711,10 @@
             document.getElementById('legend').classList.remove('expanded');
         }
     });
-    
+
     // 详情面板拖拽
     const detailPanel = document.getElementById('detailPanel');
-    let isDragging = false;
-    let dragOffsetX, dragOffsetY;
-    
+    let isDragging = false, dragOffsetX, dragOffsetY;
     detailPanel.addEventListener('mousedown', (e) => {
         if (e.target.closest('.detail-close') || e.target.closest('.relation-tag')) return;
         isDragging = true;
@@ -1016,35 +727,22 @@
         detailPanel.style.right = 'auto';
         detailPanel.style.left = rect.left + 'px';
     });
-    
     document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         detailPanel.style.left = (e.clientX - dragOffsetX) + 'px';
         detailPanel.style.top = (e.clientY - dragOffsetY) + 'px';
     });
-    
     document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            detailPanel.style.cursor = 'move';
-        }
+        if (isDragging) { isDragging = false; detailPanel.style.cursor = 'move'; }
     });
-    
-    // ============ 初始化 ============
-    const graphData = buildGraphData();
-    allNodes = graphData.nodes;
-    allLinks = graphData.links;
-    
-    buildLegend();
+
+    // ============ 启动 ============
     renderChart();
-    
-    window.addEventListener('resize', () => {
-        chart.resize();
-    });
-    
-    console.log('网易系产品对接人网络图加载完成', {
-        products: DATA.products.length,
-        persons: DATA.persons.length,
+    window.addEventListener('resize', () => chart.resize());
+
+    console.log('网易系产品对接人网络图 v2（人维度）加载完成', {
+        persons: allNodes.filter(n => n.type === 'person').length,
+        products: allNodes.filter(n => n.type === 'product').length,
         links: allLinks.length
     });
     </script>
