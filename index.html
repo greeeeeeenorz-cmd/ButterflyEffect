@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网易系产品对接人网络图（人维度）v2.3</title>
+    <title>网易系产品对接人网络图（人维度）v2.5</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -109,6 +109,31 @@
         .stat-value.internal-color { color: #f08c00; }
         .stat-value.external-color { color: #339af0; }
         .stat-label { font-size: 11px; color: #666; }
+
+        /* 帮助弹窗 */
+        .help-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .help-overlay.active { display: flex; }
+        .help-modal { background: rgba(30,33,40,0.98); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); width: 520px; max-height: 80vh; overflow-y: auto; box-shadow: 0 16px 48px rgba(0,0,0,0.6); padding: 0; animation: helpFadeIn 0.3s ease; }
+        @keyframes helpFadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .help-header { padding: 28px 28px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
+        .help-header h2 { font-size: 22px; color: #fff; margin: 0; display: flex; align-items: center; gap: 10px; }
+        .help-close { width: 32px; height: 32px; border: none; background: rgba(255,255,255,0.08); border-radius: 50%; cursor: pointer; color: #aaa; font-size: 18px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .help-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .help-body { padding: 20px 28px 28px; }
+        .help-section { margin-bottom: 20px; }
+        .help-section:last-child { margin-bottom: 0; }
+        .help-section h3 { font-size: 15px; color: #339af0; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .help-section p { font-size: 13px; color: #aaa; line-height: 1.8; margin: 0; }
+        .help-section .tip { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; font-size: 13px; color: #ccc; line-height: 1.6; }
+        .help-section .tip .emoji { flex-shrink: 0; font-size: 16px; width: 22px; }
+        .help-footer { margin-top: 20px; padding: 16px; background: rgba(51,154,240,0.08); border-radius: 12px; border: 1px solid rgba(51,154,240,0.15); text-align: center; }
+        .help-footer p { font-size: 13px; color: #ccc; margin: 0; line-height: 1.8; }
+        .help-footer .popo { color: #339af0; font-weight: 600; }
+
+        /* 帮助图标 */
+        .help-icon { position: fixed; top: 20px; right: 20px; z-index: 150; width: 40px; height: 40px; border-radius: 50%; background: rgba(30,33,40,0.9); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .help-icon.visible { display: flex; }
+        .help-icon:hover { background: rgba(51,154,240,0.15); border-color: rgba(51,154,240,0.3); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -159,6 +184,47 @@
         <div class="stat-item"><div class="stat-value" id="statProducts">0</div><div class="stat-label">产品</div></div>
         <div class="stat-item"><div class="stat-value" id="statRelations">0</div><div class="stat-label">关联</div></div>
     </div>
+
+    <!-- 帮助弹窗 -->
+    <div class="help-overlay active" id="helpOverlay">
+        <div class="help-modal">
+            <div class="help-header">
+                <h2>📖 操作说明书</h2>
+                <button class="help-close" onclick="closeHelp()">×</button>
+            </div>
+            <div class="help-body">
+                <div class="help-section">
+                    <h3>🔍 筛选栏</h3>
+                    <div class="tip"><span class="emoji">👆</span>鼠标悬停左侧「筛选」标签即可展开，点击标签可锁定面板</div>
+                    <div class="tip"><span class="emoji">📍</span>点击任意角色或业务线 — 画布立马只显示匹配的节点，再点一下取消筛选</div>
+                    <div class="tip"><span class="emoji">🔄</span>筛选栏和顶部工具栏是联动的！选网易游戏角色，视图自动切到网易游戏；选业务线，产品节点自动点亮</div>
+                </div>
+                <div class="help-section">
+                    <h3>🛠 工具栏</h3>
+                    <div class="tip"><span class="emoji">🔶</span><b>有道内部</b> — 只看有道同学，再点切回全部</div>
+                    <div class="tip"><span class="emoji">🔵</span><b>网易游戏</b> — 只看网易游戏对接人，再点切回全部</div>
+                    <div class="tip"><span class="emoji">⬡</span><b>包含产品</b> — 点亮后，产品菱形节点才会出现，连线也一并展示</div>
+                </div>
+                <div class="help-section">
+                    <h3>🔎 搜索</h3>
+                    <div class="tip"><span class="emoji">⌨️</span>输入姓名或产品编号，回车即搜，只显示匹配节点和它的一级关联</div>
+                </div>
+                <div class="help-section">
+                    <h3>🖱 画布操作</h3>
+                    <div class="tip"><span class="emoji">🖱</span>滚轮缩放、拖拽平移，节点也能随意拖</div>
+                    <div class="tip"><span class="emoji">👆</span>点击任意节点 → 右侧弹出详情卡片，展示该节点的一级关联</div>
+                    <div class="tip"><span class="emoji">📌</span>详情卡片可以拖！按住头部随便挪</div>
+                    <div class="tip"><span class="emoji">✕</span>点击空白处或卡片右上角关闭按钮退出聚焦</div>
+                </div>
+                <div class="help-footer">
+                    <p>💬 还有搞不定的？<br>POPO 搜 <span class="popo">刘智龙</span>，真人客服在线摇人！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 帮助图标 -->
+    <div class="help-icon" id="helpIcon" onclick="openHelp()">❓</div>
 
     <script>
     // ============ 数据 ============
@@ -735,6 +801,16 @@
     document.addEventListener('mouseup', () => {
         if (isDragging) { isDragging = false; detailPanel.style.cursor = 'move'; }
     });
+
+    // ============ 帮助弹窗 ============
+    function openHelp() {
+        document.getElementById('helpOverlay').classList.add('active');
+        document.getElementById('helpIcon').classList.remove('visible');
+    }
+    function closeHelp() {
+        document.getElementById('helpOverlay').classList.remove('active');
+        document.getElementById('helpIcon').classList.add('visible');
+    }
 
     // ============ 启动 ============
     renderChart();
